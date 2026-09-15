@@ -1,1 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BOSS SYSTEM</title>
 
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #050505;
+      color: #eee;
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .screen {
+      width: 92%;
+      max-width: 700px;
+      border: 1px solid #333;
+      padding: 35px;
+      background: #090909;
+      box-shadow: 0 0 40px rgba(255,255,255,0.04);
+    }
+
+    .title {
+      font-size: 28px;
+      letter-spacing: 6px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #777;
+      font-size: 12px;
+      letter-spacing: 3px;
+      margin-bottom: 30px;
+    }
+
+    .status {
+      color: #aaa;
+      font-family: monospace;
+      line-height: 2;
+      margin-bottom: 30px;
+    }
+
+    .status span {
+      color: #8aff8a;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      background: transparent;
+      border: 1px solid #555;
+      color: white;
+      cursor: pointer;
+      letter-spacing: 3px;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: white;
+      color: black;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      margin: 20px 0;
+      background: #111;
+      border: 1px solid #444;
+      color: white;
+      outline: none;
+    }
+
+    .welcome {
+      margin-bottom: 25px;
+    }
+
+    .modules {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    .module {
+      padding: 20px;
+      border: 1px solid #292929;
+      background: #0d0d0d;
+      text-align: center;
+      color: #aaa;
+    }
+
+    .santa {
+      margin-top: 25px;
+      padding: 18px;
+      border-left: 2px solid #777;
+      background: #0d0d0d;
+      color: #bbb;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- BOOT SCREEN -->
+  <div class="screen" id="boot">
+
+    <div class="title">BOSS SYSTEM</div>
+    <div class="subtitle">PRIVATE DIGITAL CONTROL NETWORK</div>
+
+    <div class="status">
+      SYSTEM CHECK........ <span>OK</span><br>
+      SECURITY............ <span>STANDBY</span><br>
+      SANTA CORE.......... <span>ONLINE</span><br>
+      BOSS PROTOCOL....... <span>READY</span><br>
+     
