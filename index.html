@@ -4,8 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BOSS SYSTEM</title>
-
   <style>
+    :root {
+      --bg-color: #050505;
+      --card-bg: #090909;
+      --panel-bg: #0d0d0d;
+      --border-color: #333;
+      --border-focus: #555;
+      --text-main: #eee;
+      --text-muted: #777;
+      --accent-green: #8aff8a;
+      --accent-red: #ff5555;
+      --accent-amber: #ffb86c;
+      --font-stack: 'Courier New', Courier, monospace, Arial, sans-serif;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -13,119 +26,361 @@
     }
 
     body {
-      background: #050505;
-      color: #eee;
-      font-family: Arial, sans-serif;
+      background: var(--bg-color);
+      color: var(--text-main);
+      font-family: var(--font-stack);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: auto;
+      overflow-x: hidden;
+      padding: 20px;
     }
 
+    /* Screen Container */
     .screen {
-      width: 92%;
+      width: 100%;
       max-width: 700px;
-      border: 1px solid #333;
+      border: 1px solid var(--border-color);
       padding: 35px;
-      background: #090909;
-      box-shadow: 0 0 40px rgba(255,255,255,0.04);
+      background: var(--card-bg);
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.8), 0 0 10px rgba(255, 255, 255, 0.02);
+      position: relative;
     }
 
+    /* Header Styling */
     .title {
       font-size: 28px;
       letter-spacing: 6px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
+      font-weight: bold;
+      text-transform: uppercase;
     }
 
     .subtitle {
-      color: #777;
-      font-size: 12px;
+      color: var(--text-muted);
+      font-size: 11px;
       letter-spacing: 3px;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
+      border-bottom: 1px dashed var(--border-color);
+      padding-bottom: 12px;
     }
 
+    /* Status Lines */
     .status {
       color: #aaa;
-      font-family: monospace;
       line-height: 2;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
+      font-size: 13px;
     }
 
-    .status span {
-      color: #8aff8a;
+    .status span.ok { color: var(--accent-green); }
+    .status span.warn { color: var(--accent-amber); }
+    .status span.err { color: var(--accent-red); }
+
+    /* Inputs & Controls */
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 14px;
+      margin: 15px 0;
+      background: #111;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      font-family: var(--font-stack);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      border-color: var(--accent-green);
     }
 
     button {
       width: 100%;
-      padding: 15px;
+      padding: 14px;
       background: transparent;
-      border: 1px solid #555;
-      color: white;
+      border: 1px solid var(--border-focus);
+      color: var(--text-main);
       cursor: pointer;
       letter-spacing: 3px;
-      transition: 0.2s;
+      font-family: var(--font-stack);
+      font-weight: bold;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
     }
 
     button:hover {
-      background: white;
-      color: black;
+      background: var(--text-main);
+      color: var(--bg-color);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
     }
 
+    .btn-secondary {
+      border-color: #333;
+      color: #888;
+      margin-top: 10px;
+    }
+
+    .btn-secondary:hover {
+      background: #222;
+      color: #fff;
+    }
+
+    /* Utilities */
     .hidden {
-      display: none;
+      display: none !important;
     }
 
-    input {
-      width: 100%;
-      padding: 15px;
-      margin: 20px 0;
-      background: #111;
-      border: 1px solid #444;
-      color: white;
-      outline: none;
+    .error-msg {
+      color: var(--accent-red);
+      font-size: 12px;
+      margin-top: 5px;
     }
 
-    .welcome {
-      margin-bottom: 25px;
-    }
-
+    /* Dashboard Grid */
     .modules {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-top: 25px;
+      gap: 15px;
+      margin: 20px 0;
     }
 
     .module {
       padding: 20px;
-      border: 1px solid #292929;
-      background: #0d0d0d;
+      border: 1px solid #1a1a1a;
+      background: var(--panel-bg);
       text-align: center;
       color: #aaa;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 12px;
+      letter-spacing: 1px;
     }
 
+    .module:hover {
+      border-color: var(--border-focus);
+      color: var(--text-main);
+      transform: translateY(-2px);
+    }
+
+    /* Interactive Santa Core Console */
     .santa {
       margin-top: 25px;
       padding: 18px;
-      border-left: 2px solid #777;
-      background: #0d0d0d;
+      border-left: 3px solid var(--accent-green);
+      background: var(--panel-bg);
       color: #bbb;
+      font-size: 13px;
+    }
+
+    .santa-header {
+      font-weight: bold;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+      color: var(--accent-green);
+    }
+
+    .santa-logs {
+      max-height: 120px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .santa-input-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .santa-input-group input {
+      margin: 0;
+      padding: 8px;
+    }
+
+    .santa-input-group button {
+      width: auto;
+      padding: 8px 16px;
+      white-space: nowrap;
+    }
+
+    /* Sub-Module Views */
+    .view-panel {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      padding: 20px;
+      margin: 20px 0;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 500px) {
+      .modules {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
-
 <body>
 
   <!-- BOOT SCREEN -->
-  <div class="screen" id="boot">
-
+  <div class="screen" id="boot-screen">
     <div class="title">BOSS SYSTEM</div>
     <div class="subtitle">PRIVATE DIGITAL CONTROL NETWORK</div>
 
     <div class="status">
-      SYSTEM CHECK........ <span>OK</span><br>
-      SECURITY............ <span>STANDBY</span><br>
-      SANTA CORE.......... <span>ONLINE</span><br>
-      BOSS PROTOCOL....... <span>READY</span><br>
-     
+      SYSTEM CHECK........ <span class="ok">OK</span><br>
+      SECURITY............ <span class="warn">STANDBY</span><br>
+      SANTA CORE.......... <span class="ok">ONLINE</span><br>
+      BOSS PROTOCOL....... <span class="ok">READY</span>
+    </div>
+
+    <button onclick="navigateTo('auth-screen')">INITIALIZE LOGIN</button>
+  </div>
+
+  <!-- AUTHENTICATION SCREEN -->
+  <div class="screen hidden" id="auth-screen">
+    <div class="title">AUTHENTICATE</div>
+    <div class="subtitle">IDENTITY VERIFICATION REQUIRED</div>
+
+    <div class="status">
+      ENTER ACCESS CREDENTIALS BELOW.
+    </div>
+
+    <input type="text" id="username" placeholder="OPERATOR ID" autocomplete="off">
+    <input type="password" id="passcode" placeholder="PASSCODE (Default: 1234)">
+    <div id="auth-error" class="error-msg hidden">ACCESS DENIED: INVALID CREDENTIALS</div>
+
+    <button onclick="handleLogin()">ACCESS SYSTEM</button>
+    <button class="btn-secondary" onclick="navigateTo('boot-screen')">ABORT</button>
+  </div>
+
+  <!-- MAIN DASHBOARD SCREEN -->
+  <div class="screen hidden" id="dashboard-screen">
+    <div class="title">CONTROL PANEL</div>
+    <div class="subtitle" id="welcome-msg">WELCOME, OPERATOR</div>
+
+    <div class="modules">
+      <div class="module" onclick="openModule('Analytics')">[01] ANALYTICS</div>
+      <div class="module" onclick="openModule('Security')">[02] SECURITY</div>
+      <div class="module" onclick="openModule('Network')">[03] NETWORK</div>
+      <div class="module" onclick="openModule('System Logs')">[04] LOGS</div>
+    </div>
+
+    <!-- Active View Panel -->
+    <div id="module-view" class="view-panel hidden">
+      <div id="module-title" style="font-weight: bold; margin-bottom: 8px;"></div>
+      <div id="module-content" style="color: #aaa;"></div>
+    </div>
+
+    <!-- SANTA AI CORE INTEGRATION -->
+    <div class="santa">
+      <div class="santa-header">SANTA CORE v4.02</div>
+      <div class="santa-logs" id="santa-logs">
+        <div>[SANTA]: Ho-ho-ho. System operating at optimal capacity. Waiting for query...</div>
+      </div>
+      <div class="santa-input-group">
+        <input type="text" id="santa-query" placeholder="Command Santa Core..." onkeypress="handleSantaKeyPress(event)">
+        <button onclick="querySanta()">SEND</button>
+      </div>
+    </div>
+
+    <button class="btn-secondary" style="margin-top: 20px;" onclick="handleLogout()">TERMINATE SESSION</button>
+  </div>
+
+  <script>
+    // Navigation Router
+    function navigateTo(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+      document.getElementById(screenId).classList.remove('hidden');
+    }
+
+    // Authentication Logic
+    function handleLogin() {
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('passcode').value.trim();
+      const errorEl = document.getElementById('auth-error');
+
+      // Demo validation (allows 'admin'/'1234' or any non-empty password)
+      if (pass === "1234" || pass.length > 0) {
+        errorEl.classList.add('hidden');
+        document.getElementById('welcome-msg').innerText = `WELCOME, ${user ? user.toUpperCase() : 'OPERATOR'}`;
+        navigateTo('dashboard-screen');
+      } else {
+        errorEl.classList.remove('hidden');
+      }
+    }
+
+    function handleLogout() {
+      document.getElementById('username').value = '';
+      document.getElementById('passcode').value = '';
+      document.getElementById('module-view').classList.add('hidden');
+      navigateTo('boot-screen');
+    }
+
+    // Module Displays
+    function openModule(name) {
+      const view = document.getElementById('module-view');
+      const title = document.getElementById('module-title');
+      const content = document.getElementById('module-content');
+
+      view.classList.remove('hidden');
+      title.innerText = `> ${name.toUpperCase()} DATA`;
+
+      switch(name) {
+        case 'Analytics':
+          content.innerHTML = "System Throughput: 98.4%<br>Active Nodes: 12<br>Latency: 4ms";
+          break;
+        case 'Security':
+          content.innerHTML = "Firewall Status: ACTIVE<br>Intrusion Detection: ENABLED<br>Threat Level: LOW";
+          break;
+        case 'Network':
+          content.innerHTML = "Gateway: 192.168.1.1<br>Uptime: 142h 12m 04s<br>Packet Loss: 0.00%";
+          break;
+        case 'System Logs':
+          content.innerHTML = "[11:02] Auth Success<br>[10:45] Santa Core synchronized<br>[08:00] Routine Diagnostics Pass";
+          break;
+      }
+    }
+
+    // Santa Core Terminal Logic
+    function handleSantaKeyPress(e) {
+      if (e.key === 'Enter') querySanta();
+    }
+
+    function querySanta() {
+      const input = document.getElementById('santa-query');
+      const logs = document.getElementById('santa-logs');
+      const text = input.value.trim();
+
+      if (!text) return;
+
+      // Append User Message
+      const userEntry = document.createElement('div');
+      userEntry.style.color = '#fff';
+      userEntry.innerText = `> ${text}`;
+      logs.appendChild(userEntry);
+
+      input.value = '';
+
+      // Generate Response
+      setTimeout(() => {
+        const santaEntry = document.createElement('div');
+        santaEntry.innerText = `[SANTA]: ${getSantaResponse(text)}`;
+        logs.appendChild(santaEntry);
+        logs.scrollTop = logs.scrollHeight;
+      }, 400);
+    }
+
+    function getSantaResponse(query) {
+      const q = query.toLowerCase();
+      if (q.includes('status')) return "All sectors naughty/nice evaluation complete. Systems stable.";
+      if (q.includes('gift') || q.includes('present')) return "Gift queue processing at 4,000 units/second.";
+      if (q.includes('hello') || q.includes('hi')) return "Greetings, Operator. Santa Core listening.";
+      if (q.includes('override')) return "Override denied. Nice list clearance required.";
+      return "Command processed. Core parameters nominal.";
+    }
+  </script>
+</body>
+</html>
