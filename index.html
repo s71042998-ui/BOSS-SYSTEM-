@@ -2,1529 +2,175 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>BOSS SYSTEM</title>
-
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
-
-:root{
-  --red:#b30000;
-  --darkred:#650000;
-  --white:#eee;
-  --gray:#777;
-  --line:#292929;
-}
-
-body{
-  min-height:100vh;
-  background:#020202;
-  color:var(--white);
-  font-family:Arial,Helvetica,sans-serif;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow-x:hidden;
-}
-
-/* DEATH NOTE INSPIRED BACKGROUND */
-
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:
-    linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
-  background-size:40px 40px;
-  pointer-events:none;
-}
-
-body::after{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:
-    radial-gradient(circle at 50% 45%,
-    rgba(120,0,0,.12),
-    transparent 45%);
-  pointer-events:none;
-}
-
-/* SCREEN */
-
-.screen{
-  width:92%;
-  max-width:800px;
-  border:1px solid #333;
-  background:rgba(5,5,5,.97);
-  padding:35px;
-  box-shadow:
-    0 0 80px rgba(0,0,0,.9),
-    0 0 25px rgba(150,0,0,.05);
-  position:relative;
-  z-index:2;
-}
-
-.hidden{
-  display:none!important;
-}
-
-/* OPENING */
-
-#opening{
-  text-align:center;
-  animation:fadeIn .8s ease;
-}
-
-.note-symbol{
-  font-family:Georgia,serif;
-  font-size:80px;
-  color:#eee;
-  text-shadow:
-    0 0 10px #fff,
-    0 0 30px rgba(255,255,255,.2);
-  margin-bottom:10px;
-}
-
-.opening-title{
-  font-family:Georgia,serif;
-  font-size:42px;
-  letter-spacing:9px;
-  margin-bottom:8px;
-}
-
-.opening-sub{
-  color:#777;
-  letter-spacing:5px;
-  font-size:10px;
-  margin-bottom:40px;
-}
-
-.loading{
-  width:100%;
-  height:2px;
-  background:#181818;
-  overflow:hidden;
-  margin-bottom:18px;
-}
-
-.loading-bar{
-  width:0%;
-  height:100%;
-  background:#aaa;
-  animation:load 3s forwards;
-}
-
-.boot-text{
-  font-family:monospace;
-  color:#777;
-  font-size:12px;
-  line-height:2;
-}
-
-.red{
-  color:#b30000;
-}
-
-.ok{
-  color:#8aff8a;
-}
-
-/* TITLE */
-
-.title{
-  font-family:Georgia,serif;
-  font-size:31px;
-  letter-spacing:7px;
-  margin-bottom:8px;
-}
-
-.subtitle{
-  color:#666;
-  font-size:10px;
-  letter-spacing:4px;
-  margin-bottom:35px;
-}
-
-/* BUTTONS */
-
-button{
-  width:100%;
-  padding:15px;
-  background:#080808;
-  color:#eee;
-  border:1px solid #444;
-  cursor:pointer;
-  letter-spacing:3px;
-  transition:.25s;
-  margin-top:8px;
-}
-
-button:hover{
-  background:#eee;
-  color:#000;
-  border-color:#eee;
-}
-
-.red-button{
-  border-color:#650000;
-}
-
-.red-button:hover{
-  background:#8d0000;
-  color:#fff;
-  border-color:#8d0000;
-}
-
-/* INPUTS */
-
-input{
-  width:100%;
-  padding:15px;
-  background:#101010;
-  border:1px solid #444;
-  color:white;
-  outline:none;
-  margin:10px 0 16px;
-}
-
-input:focus{
-  border-color:#aaa;
-  box-shadow:0 0 10px rgba(255,255,255,.04);
-}
-
-label{
-  display:block;
-  color:#777;
-  font-size:10px;
-  letter-spacing:2px;
-  margin-top:12px;
-}
-
-/* CHOICE */
-
-.choice{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-
-.choice button{
-  min-height:90px;
-}
-
-.choice-icon{
-  display:block;
-  font-size:25px;
-  margin-bottom:8px;
-}
-
-/* WELCOME */
-
-.welcome{
-  color:#aaa;
-  font-family:monospace;
-  margin-bottom:25px;
-  padding:12px;
-  border-left:2px solid #650000;
-  background:#090909;
-}
-
-/* MODULES */
-
-.modules{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
-}
-
-.module{
-  min-height:105px;
-  padding:22px 10px;
-  border:1px solid #252525;
-  background:#0b0b0b;
-  color:#aaa;
-  text-align:center;
-  cursor:pointer;
-  transition:.2s;
-}
-
-.module:hover{
-  border-color:#777;
-  color:#fff;
-  transform:translateY(-2px);
-  box-shadow:0 0 15px rgba(150,0,0,.08);
-}
-
-.icon{
-  display:block;
-  font-size:25px;
-  margin-bottom:10px;
-}
-
-/* SANTA */
-
-.santa{
-  margin-top:22px;
-  padding:18px;
-  border-left:2px solid #777;
-  background:#0b0b0b;
-}
-
-.santa strong{
-  font-family:monospace;
-  letter-spacing:2px;
-}
-
-.santa p{
-  margin-top:10px;
-  color:#aaa;
-  line-height:1.6;
-}
-
-/* ROLE BADGE */
-
-.role{
-  display:inline-block;
-  padding:6px 10px;
-  border:1px solid #444;
-  color:#aaa;
-  font-family:monospace;
-  font-size:10px;
-  letter-spacing:2px;
-  margin-bottom:20px;
-}
-
-.admin{
-  color:#ff5555;
-  border-color:#650000;
-}
-
-/* MODAL */
-
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.88);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  z-index:10;
-}
-
-.modal-box{
-  width:100%;
-  max-width:620px;
-  background:#090909;
-  border:1px solid #333;
-  padding:30px;
-  box-shadow:0 0 50px rgba(0,0,0,.9);
-  animation:modalIn .25s ease;
-}
-
-.modal-title{
-  font-family:Georgia,serif;
-  letter-spacing:4px;
-  margin-bottom:20px;
-}
-
-.modal-text{
-  color:#999;
-  line-height:1.7;
-  margin-bottom:25px;
-}
-
-/* CHAT */
-
-.chat-box{
-  height:240px;
-  overflow-y:auto;
-  background:#050505;
-  border:1px solid #222;
-  padding:15px;
-  margin-bottom:15px;
-  font-family:monospace;
-}
-
-.chat-message{
-  margin-bottom:12px;
-  line-height:1.5;
-}
-
-.chat-user{
-  color:#eee;
-}
-
-.chat-santa{
-  color:#aaa;
-}
-
-/* FOOTER */
-
-.footer{
-  margin-top:22px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  color:#444;
-  font-size:9px;
-  letter-spacing:2px;
-}
-
-.logout{
-  width:auto;
-  padding:8px 15px;
-  margin:0;
-  font-size:9px;
-}
-
-/* ANIMATIONS */
-
-@keyframes load{
-  from{width:0%}
-  to{width:100%}
-}
-
-@keyframes fadeIn{
-  from{
-    opacity:0;
-    transform:scale(.97);
-  }
-  to{
-    opacity:1;
-    transform:scale(1);
-  }
-}
-
-@keyframes modalIn{
-  from{
-    opacity:0;
-    transform:translateY(15px);
-  }
-  to{
-    opacity:1;
-    transform:translateY(0);
-  }
-}
-
-/* MOBILE */
-
-@media(max-width:600px){
-
-  .screen{
-    padding:25px 18px;
-  }
-
-  .opening-title{
-    font-size:28px;
-    letter-spacing:5px;
-  }
-
-  .title{
-    font-size:22px;
-    letter-spacing:4px;
-  }
-
-  .choice{
-    grid-template-columns:1fr;
-  }
-
-  .modules{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .module{
-    min-height:90px;
-  }
-}
+*{box-sizing:border-box}body{margin:0;background:#050505;color:#eee;font-family:Arial,sans-serif;min-height:100vh}
+button,input{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+.screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.card{width:min(520px,100%);background:#0b0b0b;border:1px solid #700;box-shadow:0 0 30px #300;padding:28px}
+h1,h2{color:#e50914;margin-top:0}.small{color:#999;font-size:13px}
+input{width:100%;padding:12px;margin:6px 0 12px;background:#111;color:#fff;border:1px solid #333;outline:0}
+input:focus{border-color:#b00}.btn{border:1px solid #800;background:#180000;color:#fff;padding:10px 15px;margin:4px}
+.btn:hover{background:#600}.error{color:#ff6666;min-height:20px}
+header{padding:18px 24px;border-bottom:1px solid #400;display:flex;justify-content:space-between}
+.dashboard{max-width:1100px;margin:auto;padding:24px}.modules{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+.module{min-height:115px;background:#0b0b0b;border:1px solid #400;padding:20px;color:#fff;text-align:left}.module:hover{border-color:#d00}
+.module b{display:block;color:#e50914;margin-bottom:8px}.panel{margin-top:20px;padding:20px;background:#090909;border:1px solid #300}
+.chatlog{height:280px;overflow:auto;background:#050505;border:1px solid #222;padding:10px}.msg{padding:8px 0;border-bottom:1px solid #181818}
+.msg b{color:#e50914}.row{display:flex;gap:8px;margin-top:8px}.row input{margin:0}
+.modal{position:fixed;inset:0;background:#000d;display:flex;align-items:center;justify-content:center;padding:20px;z-index:5}
+.modalbox{width:min(700px,100%);max-height:85vh;overflow:auto;background:#0b0b0b;border:1px solid #900;padding:22px}
+@media(max-width:600px){header{flex-direction:column;gap:10px}.dashboard{padding:14px}}
 </style>
 </head>
-
 <body>
-
-
-<!-- ======================================
-     OPENING ANIMATION
-====================================== -->
-
-<div class="screen" id="opening">
-
-  <div class="note-symbol">☠</div>
-
-  <div class="opening-title">
-    BOSS SYSTEM
-  </div>
-
-  <div class="opening-sub">
-    THE DIGITAL NOTEBOOK
-  </div>
-
-  <div class="loading">
-    <div class="loading-bar"></div>
-  </div>
-
-  <div class="boot-text" id="bootText">
-    INITIALIZING...
-  </div>
-
+<div id="welcome" class="screen">
+ <div class="card"><h1>BOSS SYSTEM</h1><p class="small">Firebase-powered control system.</p>
+  <button class="btn" onclick="showAuth('login')">LOGIN</button>
+  <button class="btn" onclick="showAuth('signup')">SIGN UP</button>
+ </div>
 </div>
 
+<div id="auth" class="screen hidden"><div class="card">
+ <h2 id="authTitle">LOGIN</h2>
+ <div id="signupFields" class="hidden">
+  <label>Username</label><input id="username" maxlength="20" autocomplete="username">
+  <label>Nickname</label><input id="nickname" maxlength="40">
+ </div>
+ <label>Email</label><input id="email" type="email" autocomplete="email">
+ <label>Password</label><input id="password" type="password" autocomplete="current-password">
+ <div id="confirmBox" class="hidden"><label>Confirm password</label><input id="confirmPassword" type="password"></div>
+ <div id="authError" class="error"></div>
+ <button class="btn" id="authBtn" onclick="submitAuth()">LOGIN</button>
+ <button class="btn" onclick="showScreen('welcome')">BACK</button>
+</div></div>
 
-<!-- ======================================
-     LOGIN / SIGNUP CHOICE
-====================================== -->
-
-<div class="screen hidden" id="access">
-
-  <div class="title">
-    ACCESS
-  </div>
-
-  <div class="subtitle">
-    IDENTIFICATION REQUIRED
-  </div>
-
-  <div class="choice">
-
-    <button onclick="showLogin()">
-      <span class="choice-icon">◉</span>
-      LOG IN
-    </button>
-
-    <button onclick="showSignup()">
-      <span class="choice-icon">✎</span>
-      SIGN UP
-    </button>
-
-  </div>
-
+<div id="dashboard" class="hidden">
+ <header><div><b style="color:#e50914">BOSS SYSTEM</b> <span id="identity" class="small"></span></div><button class="btn" onclick="logout()">LOGOUT</button></header>
+ <main class="dashboard"><h2>CONTROL PANEL</h2><div id="modules" class="modules"></div><div id="panel" class="panel"><h2>Welcome</h2><p>Select a module.</p></div></main>
 </div>
 
-
-<!-- ======================================
-     LOGIN
-====================================== -->
-
-<div class="screen hidden" id="login">
-
-  <div class="title">
-    LOG IN
-  </div>
-
-  <div class="subtitle">
-    EXISTING IDENTITY
-  </div>
-
-  <label>
-    USERNAME / NICKNAME
-  </label>
-
-  <input
-    id="loginUser"
-    type="text"
-    placeholder="Enter username or nickname"
-    autocomplete="off"
-  >
-
-  <label>
-    PASSWORD
-  </label>
-
-  <input
-    id="loginPassword"
-    type="password"
-    placeholder="Enter password"
-  >
-
-  <button onclick="login()">
-    ENTER SYSTEM
-  </button>
-
-  <button onclick="backToAccess()">
-    BACK
-  </button>
-
-</div>
-
-
-<!-- ======================================
-     SIGN UP
-====================================== -->
-
-<div class="screen hidden" id="signup">
-
-  <div class="title">
-    SIGN UP
-  </div>
-
-  <div class="subtitle">
-    CREATE NEW IDENTITY
-  </div>
-
-  <label>
-    USERNAME
-  </label>
-
-  <input
-    id="signupUsername"
-    type="text"
-    placeholder="Choose a username"
-    autocomplete="off"
-  >
-
-  <label>
-    NICKNAME
-  </label>
-
-  <input
-    id="signupNickname"
-    type="text"
-    placeholder="Choose a nickname"
-    autocomplete="off"
-  >
-
-  <label>
-    PASSWORD
-  </label>
-
-  <input
-    id="signupPassword"
-    type="password"
-    placeholder="Create a password"
-  >
-
-  <label>
-    CONFIRM PASSWORD
-  </label>
-
-  <input
-    id="signupConfirm"
-    type="password"
-    placeholder="Confirm password"
-  >
-
-  <button onclick="signup()">
-    CREATE ACCOUNT
-  </button>
-
-  <button onclick="backToAccess()">
-    BACK
-  </button>
-
-</div>
-
-
-<!-- ======================================
-     DASHBOARD
-====================================== -->
-
-<div class="screen hidden" id="dashboard">
-
-  <div class="title">
-    CONTROL PANEL
-  </div>
-
-  <div class="subtitle">
-    SYSTEM ONLINE
-  </div>
-
-  <div id="roleBadge" class="role">
-    USER ACCESS
-  </div>
-
-  <div class="welcome" id="welcomeText"></div>
-
-  <div class="modules">
-
-    <div class="module" onclick="openModule('LIBRARY')">
-      <span class="icon">📚</span>
-      LIBRARY
-    </div>
-
-    <div class="module" onclick="openModule('STORAGE')">
-      <span class="icon">💾</span>
-      STORAGE
-    </div>
-
-    <div class="module" onclick="openModule('GAMES')">
-      <span class="icon">🎮</span>
-      GAMES
-    </div>
-
-    <div class="module" onclick="openModule('RIDDLES')">
-      <span class="icon">🧠</span>
-      RIDDLES
-    </div>
-
-    <div class="module" onclick="openModule('QUIZ')">
-      <span class="icon">📝</span>
-      QUIZ
-    </div>
-
-    <div class="module" onclick="openModule('LINKS')">
-      <span class="icon">🔗</span>
-      LINKS
-    </div>
-
-    <div class="module" onclick="openModule('CHAT')">
-      <span class="icon">💬</span>
-      CHAT
-    </div>
-
-    <div class="module" onclick="openModule('SANTA')">
-      <span class="icon">🤖</span>
-      SANTA
-    </div>
-
-  </div>
-
-  <div class="santa">
-
-    <strong>
-      🤖 SANTA — ONLINE ●
-    </strong>
-
-    <p id="santaMessage"></p>
-
-  </div>
-
-  <div class="footer">
-
-    <span id="systemStatus">
-      SYSTEM STATUS: ONLINE
-    </span>
-
-    <button
-      class="logout"
-      onclick="logout()">
-      LOG OUT
-    </button>
-
-  </div>
-
-</div>
-
-
-<!-- ======================================
-     MODAL
-====================================== -->
-
-<div class="modal hidden" id="modal">
-
-  <div class="modal-box">
-
-    <div class="modal-title" id="modalTitle"></div>
-
-    <div class="modal-text" id="modalText"></div>
-
-    <div id="extraContent"></div>
-
-    <button
-      class="close"
-      onclick="closeModule()">
-      RETURN
-    </button>
-
-  </div>
-
-</div>
-
-
-<script>
-
-/* ======================================
-   ADMIN ACCOUNTS
-======================================
-
-   BOSS MAYSI and SANTA cannot be created
-   through normal registration.
-====================================== */
-
-const ADMIN_ACCOUNTS = {
-
-  "maysi":{
-    username:"maysi",
-    nickname:"BOSS MAYSI",
-    password:"mai.mai7707",
-    role:"BOSS"
-  },
-
-  "santa":{
-    username:"santa",
-    nickname:"SANTA",
-    password:"2212201115nanami",
-    role:"SANTA"
-  }
-
+<div id="modal" class="modal hidden"><div class="modalbox"><div id="modalContent"></div><button class="btn" onclick="closeModal()">CLOSE</button></div></div>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import{getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged,deleteUser}from"https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import{getFirestore,doc,getDoc,writeBatch,serverTimestamp,collection,addDoc,getDocs,deleteDoc,query,orderBy,onSnapshot,limit,where,updateDoc}from"https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+const firebaseConfig={
+ apiKey:"AIzaSyC255XuKEt8JJKbWRjqLEqhxcOn1TXGC2U",
+ authDomain:"boss-system-ddf6c.firebaseapp.com",
+ projectId:"boss-system-ddf6c",
+ storageBucket:"boss-system-ddf6c.firebasestorage.app",
+ messagingSenderId:"67593000613",
+ appId:"1:67593000613:web:b03c162be0e1661b171f4c",
+ measurementId:"G-E6NGWHFJXH"
+};
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+let mode="login",profile=null,stopChat=null;
+const $=id=>document.getElementById(id);
+
+window.showScreen=id=>{["welcome","auth"].forEach(x=>$(x).classList.add("hidden"));$(id).classList.remove("hidden")};
+window.showAuth=m=>{mode=m;showScreen("auth");$("authTitle").textContent=m==="login"?"LOGIN":"SIGN UP";$("authBtn").textContent=m==="login"?"LOGIN":"CREATE ACCOUNT";$("signupFields").classList.toggle("hidden",m!=="signup");$("confirmBox").classList.toggle("hidden",m!=="signup");$("authError").textContent=""};
+
+window.submitAuth=async()=>{
+ $("authError").textContent="";
+ try{
+  const email=$("email").value.trim(),password=$("password").value;
+  if(!email||!password)throw Error("Enter your email and password.");
+  if(mode==="signup"){
+   const username=$("username").value.trim(),nickname=$("nickname").value.trim(),confirm=$("confirmPassword").value,lower=username.toLowerCase();
+   if(!/^[A-Za-z0-9_]{3,20}$/.test(username))throw Error("Username must be 3-20 characters.");
+   if(!nickname||nickname.length>40)throw Error("Nickname must be 1-40 characters.");
+   if(password.length<6)throw Error("Password must be at least 6 characters.");
+   if(password!==confirm)throw Error("Passwords do not match.");
+   if(["maysi","santa","bossmaysi","boss_maysi"].includes(lower))throw Error("That username is reserved.");
+   const r=doc(db,"usernames",lower),old=await getDoc(r);
+   if(old.exists())throw Error("That username is already taken.");
+   const c=await createUserWithEmailAndPassword(auth,email,password);
+   try{
+    const b=writeBatch(db);
+    b.set(doc(db,"users",c.user.uid),{uid:c.user.uid,username,nickname,usernameLower:lower,role:"USER",createdAt:serverTimestamp()});
+    b.set(r,{uid:c.user.uid,username,usernameLower:lower,createdAt:serverTimestamp()});
+    await b.commit();
+   }catch(e){try{await deleteUser(c.user)}catch(_){}throw Error("Account profile setup failed. Please try again.")}
+  }else await signInWithEmailAndPassword(auth,email,password);
+ }catch(e){$("authError").textContent=nice(e)}
 };
 
-
-/* ======================================
-   OPENING ANIMATION
-====================================== */
-
-const bootLines = [
-  "CONNECTING TO PRIVATE NETWORK...",
-  "SCANNING ACCESS POINT...",
-  "LOADING DIGITAL NOTEBOOK...",
-  "CHECKING SECURITY...",
-  "SANTA CORE: ONLINE",
-  "BOSS PROTOCOL: READY",
-  "ACCESS TERMINAL: READY"
-];
-
-let bootIndex = 0;
-
-function bootAnimation(){
-
-  const bootText =
-    document.getElementById("bootText");
-
-  const interval =
-    setInterval(() => {
-
-      if(bootIndex >= bootLines.length){
-
-        clearInterval(interval);
-
-        setTimeout(() => {
-
-          document
-            .getElementById("opening")
-            .classList.add("hidden");
-
-          document
-            .getElementById("access")
-            .classList.remove("hidden");
-
-        },500);
-
-        return;
-      }
-
-      bootText.innerHTML =
-        bootLines[bootIndex];
-
-      bootIndex++;
-
-    },450);
-
+function nice(e){
+ const c=e?.code||"";
+ if(c.includes("invalid-credential"))return"Invalid email or password.";
+ if(c.includes("email-already-in-use"))return"Email already registered.";
+ if(c.includes("invalid-email"))return"Enter a valid email.";
+ if(c.includes("weak-password"))return"Password is too weak.";
+ if(c.includes("permission-denied"))return"Firebase permission denied. Check Firestore Rules.";
+ return e?.message||"Something went wrong.";
 }
 
-window.onload = bootAnimation;
+onAuthStateChanged(auth,async user=>{
+ if(!user){profile=null;$("dashboard").classList.add("hidden");showScreen("welcome");return}
+ try{
+  const s=await getDoc(doc(db,"users",user.uid));
+  if(!s.exists()){await signOut(auth);throw Error("Profile not found.")}
+  profile=s.data();enterDashboard();
+ }catch(e){$("authError").textContent=nice(e);await signOut(auth)}
+});
 
-
-/* ======================================
-   SCREEN CONTROL
-====================================== */
-
-function hideAllScreens(){
-
-  document
-    .querySelectorAll(".screen")
-    .forEach(screen => {
-
-      screen.classList.add("hidden");
-
-    });
-
+function enterDashboard(){
+ $("welcome").classList.add("hidden");$("auth").classList.add("hidden");$("dashboard").classList.remove("hidden");
+ $("identity").textContent=`${profile.nickname} · ${profile.role}`;renderModules();
 }
 
-
-function showLogin(){
-
-  hideAllScreens();
-
-  document
-    .getElementById("login")
-    .classList.remove("hidden");
-
+function renderModules(){
+ const a=[["Library","Personal Firebase notes.","library"],["Storage","Local browser storage.","storage"],["Games","Games room.","games"],["Riddles","Riddle room.","riddles"],["Quiz","Quiz room.","quiz"],["Links","Save useful links.","links"],["Chat","Shared chat.","chat"],["SANTA","Restricted console.","santa"]];
+ $("modules").innerHTML=a.map(x=>`<button class="module" onclick="openModule('${x[2]}')"><b>${x[0]}</b><span class="small">${x[1]}</span></button>`).join("");
 }
 
+window.openModule=async key=>{
+ const p=$("panel");
+ if(key==="library"){p.innerHTML='<h2>LIBRARY</h2><input id="noteTitle" placeholder="Note title"><input id="noteBody" placeholder="Note body"><button class="btn" onclick="saveNote()">SAVE NOTE</button><div id="notesList"></div>';await loadNotes()}
+ if(key==="storage")p.innerHTML='<h2>STORAGE</h2><p>Small browser-local data only. Cloud file uploads are not enabled.</p><button class="btn" onclick="localStorage.setItem(\'boss_demo\',\'Saved\')">SAVE TEST</button><button class="btn" onclick="alert(localStorage.getItem(\'boss_demo\')||\'Nothing saved\')">READ TEST</button>';
+ if(key==="games")p.innerHTML='<h2>GAMES</h2><button class="btn" onclick="memoryGame()">CAT MEMORY ARENA</button>';
+ if(key==="riddles")p.innerHTML='<h2>RIDDLES</h2><p>Riddle room ready for the next build.</p>';
+ if(key==="quiz")p.innerHTML='<h2>QUIZ</h2><p>Quiz room ready for the next build.</p>';
+ if(key==="links"){p.innerHTML='<h2>LINKS</h2><input id="linkLabel" placeholder="Label"><input id="linkUrl" placeholder="https://example.com"><button class="btn" onclick="saveLink()">SAVE LINK</button><div id="linksList"></div>';await loadLinks()}
+ if(key==="chat"){p.innerHTML='<h2>CHAT</h2><div id="chatLog" class="chatlog">Loading...</div><div class="row"><input id="chatInput" maxlength="1000" placeholder="Message"><button class="btn" onclick="sendChat()">SEND</button></div>';startChat()}
+ if(key==="santa"){if(!["BOSS","SANTA"].includes(profile.role)){p.innerHTML="<h2>SANTA</h2><p>Access denied.</p>";return}p.innerHTML=`<h2>SANTA COMMAND CONSOLE</h2><p>Authority: <b>${profile.role}</b></p><button class="btn" onclick="showReports()">VIEW REPORTS</button>`}
+};
 
-function showSignup(){
+window.saveNote=async()=>{try{const title=$("noteTitle").value.trim(),body=$("noteBody").value.trim();if(!title||!body)return alert("Enter title and body.");await addDoc(collection(db,"users",auth.currentUser.uid,"notes"),{title,body,createdAt:serverTimestamp(),updatedAt:serverTimestamp()});loadNotes()}catch(e){alert(nice(e))}};
+async function loadNotes(){const s=await getDocs(collection(db,"users",auth.currentUser.uid,"notes"));$("notesList").innerHTML=s.docs.map(d=>{const n=d.data();return`<div class="panel"><b>${esc(n.title)}</b><p>${esc(n.body)}</p><button class="btn" onclick="deleteNote('${d.id}')">DELETE</button></div>`}).join("")||"<p class='small'>No notes yet.</p>"}
+window.deleteNote=async id=>{await deleteDoc(doc(db,"users",auth.currentUser.uid,"notes",id));loadNotes()};
 
-  hideAllScreens();
+window.saveLink=async()=>{try{const label=$("linkLabel").value.trim(),url=$("linkUrl").value.trim();if(!label||!/^https?:\/\//i.test(url))return alert("Enter a valid http/https URL.");await addDoc(collection(db,"users",auth.currentUser.uid,"links"),{label,url,createdAt:serverTimestamp()});loadLinks()}catch(e){alert(nice(e))}};
+async function loadLinks(){const s=await getDocs(collection(db,"users",auth.currentUser.uid,"links"));$("linksList").innerHTML=s.docs.map(d=>{const l=d.data();return`<div class="panel"><b>${esc(l.label)}</b><br><a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.url)}</a><br><button class="btn" onclick="deleteLink('${d.id}')">DELETE</button></div>`}).join("")||"<p class='small'>No links yet.</p>"}
+window.deleteLink=async id=>{await deleteDoc(doc(db,"users",auth.currentUser.uid,"links",id));loadLinks()};
 
-  document
-    .getElementById("signup")
-    .classList.remove("hidden");
-
+function startChat(){
+ if(stopChat)stopChat();
+ const q=query(collection(db,"chatMessages"),orderBy("createdAt","asc"),limit(100));
+ stopChat=onSnapshot(q,s=>{$("chatLog").innerHTML=s.docs.map(d=>{const m=d.data();return`<div class="msg"><b>${esc(m.nickname||m.username)}</b>: ${esc(m.text)} <button class="btn" onclick="report('${d.id}','${esc(m.uid)}','${esc(m.nickname||m.username)}')">REPORT</button></div>`}).join("")||"No messages yet.";$("chatLog").scrollTop=$("chatLog").scrollHeight});
 }
-
-
-function backToAccess(){
-
-  hideAllScreens();
-
-  document
-    .getElementById("access")
-    .classList.remove("hidden");
-
-}
-
-
-/* ======================================
-   ACCOUNT STORAGE
-====================================== */
-
-function getAccounts(){
-
-  return JSON.parse(
-    localStorage.getItem("bossSystemAccounts")
-  ) || [];
-
-}
-
-
-function saveAccounts(accounts){
-
-  localStorage.setItem(
-    "bossSystemAccounts",
-    JSON.stringify(accounts)
-  );
-
-}
-
-
-/* ======================================
-   SIGN UP
-====================================== */
-
-function signup(){
-
-  const username =
-    document
-      .getElementById("signupUsername")
-      .value
-      .trim();
-
-  const nickname =
-    document
-      .getElementById("signupNickname")
-      .value
-      .trim();
-
-  const password =
-    document
-      .getElementById("signupPassword")
-      .value;
-
-  const confirm =
-    document
-      .getElementById("signupConfirm")
-      .value;
-
-
-  if(!username || !nickname || !password){
-
-    alert("ALL FIELDS ARE REQUIRED.");
-
-    return;
-
-  }
-
-
-  if(password !== confirm){
-
-    alert("PASSWORDS DO NOT MATCH.");
-
-    return;
-
-  }
-
-
-  if(password.length < 4){
-
-    alert("PASSWORD MUST CONTAIN AT LEAST 4 CHARACTERS.");
-
-    return;
-
-  }
-
-
-  const accounts = getAccounts();
-
-  const usernameTaken =
-    accounts.some(
-      account =>
-        account.username.toLowerCase()
-        === username.toLowerCase()
-    );
-
-
-  if(usernameTaken){
-
-    alert("USERNAME ALREADY EXISTS.");
-
-    return;
-
-  }
-
-
-  /* Prevent users from creating admin identities */
-
-  if(
-    username.toLowerCase() === "maysi" ||
-    username.toLowerCase() === "santa" ||
-    nickname.toLowerCase() === "boss maysi" ||
-    nickname.toLowerCase() === "santa"
-  ){
-
-    alert("THAT IDENTITY IS RESERVED.");
-
-    return;
-
-  }
-
-
-  accounts.push({
-
-    username:username,
-    nickname:nickname,
-    password:password,
-    role:"USER"
-
-  });
-
-
-  saveAccounts(accounts);
-
-
-  alert(
-    "ACCOUNT CREATED.\n\n" +
-    "WELCOME TO THE SYSTEM, " +
-    nickname.toUpperCase() +
-    "."
-  );
-
-
-  document
-    .getElementById("signupUsername")
-    .value="";
-
-  document
-    .getElementById("signupNickname")
-    .value="";
-
-  document
-    .getElementById("signupPassword")
-    .value="";
-
-  document
-    .getElementById("signupConfirm")
-    .value="";
-
-
-  showLogin();
-
-}
-
-
-/* ======================================
-   LOGIN
-====================================== */
-
-function login(){
-
-  const identity =
-    document
-      .getElementById("loginUser")
-      .value
-      .trim();
-
-  const password =
-    document
-      .getElementById("loginPassword")
-      .value;
-
-
-  if(!identity || !password){
-
-    alert("IDENTITY AND PASSWORD REQUIRED.");
-
-    return;
-
-  }
-
-
-  /* Check ADMIN accounts first */
-
-  let account = null;
-
-
-  for(const key in ADMIN_ACCOUNTS){
-
-    const admin =
-      ADMIN_ACCOUNTS[key];
-
-    if(
-      (
-        admin.username.toLowerCase()
-        === identity.toLowerCase()
-
-        ||
-
-        admin.nickname.toLowerCase()
-        === identity.toLowerCase()
-      )
-
-      &&
-
-      admin.password === password
-    ){
-
-      account = admin;
-
-      break;
-
-    }
-
-  }
-
-
-  /* Check normal accounts */
-
-  if(!account){
-
-    const accounts = getAccounts();
-
-    account =
-      accounts.find(
-        user =>
-
-          (
-            user.username.toLowerCase()
-            === identity.toLowerCase()
-
-            ||
-
-            user.nickname.toLowerCase()
-            === identity.toLowerCase()
-          )
-
-          &&
-
-          user.password === password
-      );
-
-  }
-
-
-  if(!account){
-
-    alert(
-      "ACCESS DENIED.\n\n" +
-      "INVALID IDENTITY OR PASSWORD."
-    );
-
-    return;
-
-  }
-
-
-  sessionStorage.setItem(
-    "bossSystemCurrentUser",
-    JSON.stringify(account)
-  );
-
-
-  enterDashboard(account);
-
-}
-
-
-/* ======================================
-   DASHBOARD
-====================================== */
-
-function enterDashboard(account){
-
-  hideAllScreens();
-
-  document
-    .getElementById("dashboard")
-    .classList.remove("hidden");
-
-
-  document
-    .getElementById("welcomeText")
-    .innerText =
-      "IDENTITY VERIFIED — WELCOME, " +
-      account.nickname.toUpperCase() +
-      ".";
-
-
-  const badge =
-    document.getElementById("roleBadge");
-
-
-  if(account.role === "BOSS"){
-
-    badge.innerText =
-      "◆ BOSS MAYSI — ADMIN ACCESS";
-
-    badge.classList.add("admin");
-
-
-  }else if(account.role === "SANTA"){
-
-    badge.innerText =
-      "◆ SANTA — ADMIN ACCESS";
-
-    badge.classList.add("admin");
-
-
-  }else{
-
-    badge.innerText =
-      "USER ACCESS";
-
-    badge.classList.remove("admin");
-
-  }
-
-
-  const santa =
-    document.getElementById("santaMessage");
-
-
-  if(account.role === "BOSS"){
-
-    santa.innerText =
-      "Finally. BOSS MAYSI has arrived. Full authority detected. Santa Core is standing by.";
-
-  }
-
-  else if(account.role === "SANTA"){
-
-    santa.innerText =
-      "SANTA CORE LOGIN DETECTED. Assistant identity replaced by direct SANTA system access.";
-
-  }
-
-  else{
-
-    santa.innerText =
-      "Identity accepted, " +
-      account.nickname +
-      ". Welcome to the system. Try not to cause chaos. 🤖";
-
-  }
-
-}
-
-
-/* ======================================
-   MODULE SYSTEM
-====================================== */
-
-function openModule(module){
-
-  const currentUser =
-    JSON.parse(
-      sessionStorage.getItem(
-        "bossSystemCurrentUser"
-      )
-    );
-
-
-  const title =
-    document.getElementById("modalTitle");
-
-  const text =
-    document.getElementById("modalText");
-
-  const extra =
-    document.getElementById("extraContent");
-
-
-  extra.innerHTML = "";
-
-
-  title.innerText = module;
-
-
-  const messages = {
-
-    LIBRARY:
-      "LIBRARY INITIALIZED. Notes, images, documents and shared information can be organized here.",
-
-    STORAGE:
-      "STORAGE INITIALIZED. File uploads, folders and trash management can be connected here.",
-
-    GAMES:
-      "GAME HUB INITIALIZED. CAT MEMORY ARENA will be the first main game.",
-
-    RIDDLES:
-      "RIDDLE SYSTEM INITIALIZED. SANTA can provide clues and hints.",
-
-    QUIZ:
-      "QUIZ SYSTEM INITIALIZED. Anime, study and gaming categories can be added.",
-
-    LINKS:
-      "LINK DATABASE INITIALIZED. Useful websites and resources can be saved here.",
-
-    CHAT:
-      "CHAT SYSTEM INITIALIZED. Real-time messaging requires a backend connection.",
-
-    SANTA:
-      ""
-  };
-
-
-  if(module === "SANTA"){
-
-    if(
-      currentUser &&
-      (
-        currentUser.role === "BOSS" ||
-        currentUser.role === "SANTA"
-      )
-    ){
-
-      text.innerText =
-        "SANTA CORE — DIRECT ACCESS.\n\n" +
-        "Personal assistant mode is available from this account.";
-
-      extra.innerHTML = `
-
-        <div class="chat-box" id="chatBox">
-
-          <div class="chat-message chat-santa">
-            SANTA: Core online. Awaiting command.
-          </div>
-
-        </div>
-
-        <input
-          id="chatInput"
-          type="text"
-          placeholder="Give SANTA a command..."
-        >
-
-        <button onclick="sendSantaMessage()">
-          SEND COMMAND
-        </button>
-
-      `;
-
-    }
-
-    else{
-
-      text.innerText =
-        "SANTA is BOSS MAYSI's personal AI assistant. " +
-        "Normal users can access the SANTA module, but direct SANTA account privileges require the SANTA identity.";
-
-    }
-
-  }
-
-  else{
-
-    text.innerText =
-      messages[module] ||
-      "MODULE INITIALIZED.";
-
-  }
-
-
-  document
-    .getElementById("modal")
-    .classList.remove("hidden");
-
-}
-
-
-/* ======================================
-   SANTA CHAT
-====================================== */
-
-function sendSantaMessage(){
-
-  const input =
-    document.getElementById("chatInput");
-
-  const chat =
-    document.getElementById("chatBox");
-
-
-  if(!input || !chat){
-
-    return;
-
-  }
-
-
-  const message =
-    input.value.trim();
-
-
-  if(!message){
-
-    return;
-
-  }
-
-
-  chat.innerHTML += `
-
-    <div class="chat-message chat-user">
-      YOU: ${escapeHTML(message)}
-    </div>
-
-  `;
-
-
-  let response =
-    "Command received. SANTA is ready for the next instruction.";
-
-
-  const lower =
-    message.toLowerCase();
-
-
-  if(
-    lower.includes("hello") ||
-    lower.includes("hi")
-  ){
-
-    response =
-      "SANTA: Hello. System is operating normally.";
-
-  }
-
-  else if(
-    lower.includes("status")
-  ){
-
-    response =
-      "SANTA: All primary systems currently report ONLINE.";
-
-  }
-
-  else if(
-    lower.includes("boss")
-  ){
-
-    response =
-      "SANTA: BOSS MAYSI has administrative authority over this system.";
-
-  }
-
-  else if(
-    lower.includes("who are you")
-  ){
-
-    response =
-      "SANTA: I am the personal assistant core assigned to BOSS MAYSI.";
-
-  }
-
-
-  setTimeout(() => {
-
-    chat.innerHTML += `
-
-      <div class="chat-message chat-santa">
-        ${escapeHTML(response)}
-      </div>
-
-    `;
-
-    chat.scrollTop =
-      chat.scrollHeight;
-
-  },300);
-
-
-  input.value="";
-
-}
-
-
-function escapeHTML(text){
-
-  const div =
-    document.createElement("div");
-
-  div.textContent = text;
-
-  return div.innerHTML;
-
-}
-
-
-/* ======================================
-   CLOSE MODULE
-====================================== */
-
-function closeModule(){
-
-  document
-    .getElementById("modal")
-    .classList.add("hidden");
-
-}
-
-
-/* ======================================
-   LOGOUT
-====================================== */
-
-function logout(){
-
-  sessionStorage.removeItem(
-    "bossSystemCurrentUser"
-  );
-
-
-  document
-    .getElementById("loginUser")
-    .value="";
-
-  document
-    .getElementById("loginPassword")
-    .value="";
-
-
-  hideAllScreens();
-
-  document
-    .getElementById("access")
-    .classList.remove("hidden");
-
-}
-
-
-/* ======================================
-   ENTER KEY SUPPORT
-====================================== */
-
-document.addEventListener(
-  "keydown",
-  function(event){
-
-    if(
-      event.key === "Escape"
-    ){
-
-      closeModule();
-
-    }
-
-  }
-);
-
+window.sendChat=async()=>{const text=$("chatInput").value.trim();if(!text)return;try{await addDoc(collection(db,"chatMessages"),{uid:auth.currentUser.uid,username:profile.username,nickname:profile.nickname,text,createdAt:serverTimestamp()});$("chatInput").value=""}catch(e){alert(nice(e))}};
+window.report=async(id,uid,name)=>{const reason=prompt("Reason for report?");if(!reason)return;try{await addDoc(collection(db,"reports"),{messageId:id,reportedUid:uid,reportedName:name,reporterUid:auth.currentUser.uid,reason:reason.slice(0,500),status:"open",createdAt:serverTimestamp()});alert("Report submitted.")}catch(e){alert(nice(e))}};
+
+window.showReports=async()=>{
+ const s=await getDocs(query(collection(db,"reports"),where("status","==","open"),limit(50)));
+ $("panel").innerHTML="<h2>OPEN REPORTS</h2>"+(s.docs.map(d=>{const r=d.data();return`<div class="panel"><b>${esc(r.reportedName||"Unknown")}</b><p>${esc(r.reason)}</p><button class="btn" onclick="review('${d.id}')">MARK REVIEWED</button></div>`}).join("")||"<p>No open reports.</p>");
+};
+window.review=async id=>{await updateDoc(doc(db,"reports",id),{status:"reviewed",reviewedBy:auth.currentUser.uid,reviewedAt:serverTimestamp()});showReports()};
+
+window.memoryGame=()=>{
+ const a=["🐱","🐱","🐶","🐶","🦊","🦊","🐼","🐼"].sort(()=>Math.random()-.5);
+ $("modalContent").innerHTML="<h2>CAT MEMORY ARENA</h2><div id='grid' style='display:grid;grid-template-columns:repeat(4,1fr);gap:8px'></div>";
+ $("modal").classList.remove("hidden");let first=null,lock=false,done=0;
+ a.forEach(x=>{const b=document.createElement("button");b.className="btn";b.style.height="70px";b.textContent="❓";b.onclick=()=>{if(lock||b.dataset.done)return;b.textContent=x;if(!first){first={b,x};return}if(first.x===x){first.b.dataset.done="1";b.dataset.done="1";first=null;done+=2;if(done===a.length)alert("You cleared the arena!")}else{lock=true;const old=first.b;first=null;setTimeout(()=>{old.textContent="❓";b.textContent="❓";lock=false},600)}};$("grid").appendChild(b)})
+};
+window.closeModal=()=>$("modal").classList.add("hidden");
+window.logout=async()=>{if(stopChat)stopChat();await signOut(auth)};
+function esc(s=""){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
 </script>
-
 </body>
 </html>
