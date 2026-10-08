@@ -44,7 +44,6 @@ header{padding:18px 24px;border-bottom:1px solid #400;display:flex;justify-conte
 </style>
 </head>
 <body>
-
 <div id="welcome" class="screen">
  <div class="card">
   <h1>BOSS SYSTEM</h1>
@@ -53,48 +52,37 @@ header{padding:18px 24px;border-bottom:1px solid #400;display:flex;justify-conte
   <button class="btn" onclick="showAuth('signup')">SIGN UP</button>
  </div>
 </div>
-
 <div id="auth" class="screen hidden">
  <div class="card">
   <h2 id="authTitle">LOGIN</h2>
-
   <div id="signupFields" class="hidden">
    <label>Choose Username</label>
    <input id="username" maxlength="20" autocomplete="username" placeholder="3–20 characters">
-
    <label>Choose Nickname</label>
    <input id="nickname" maxlength="40" placeholder="Your display name">
   </div>
-
   <label>Username</label>
   <input id="loginUsername" maxlength="20" autocomplete="username" placeholder="Username">
-
   <label>Password</label>
   <input id="password" type="password" autocomplete="current-password" placeholder="Password">
-
   <div id="confirmBox" class="hidden">
    <label>Confirm Password</label>
    <input id="confirmPassword" type="password" autocomplete="new-password">
   </div>
-
   <div id="authError" class="error"></div>
-
   <button class="btn" id="authBtn" onclick="submitAuth()">LOGIN</button>
   <button class="btn" onclick="showScreen('welcome')">BACK</button>
-
   <p class="small">
    Normal users choose their own username and password.
    BOSS MAYSI and SANTA are reserved system identities.
   </p>
  </div>
 </div>
-
 <div id="dashboard" class="hidden">
  <header>
   <div><b style="color:#e50914">BOSS SYSTEM</b> <span id="identity" class="small"></span></div>
   <div class="header-actions"><span id="roleBadge" class="role-badge">USER ACCESS</span><button class="btn" onclick="logout()">LOGOUT</button></div>
  </header>
-
  <main class="dashboard">
   <h2>CONTROL PANEL</h2>
   <div id="modules" class="modules"></div>
@@ -104,14 +92,12 @@ header{padding:18px 24px;border-bottom:1px solid #400;display:flex;justify-conte
   </div>
  </main>
 </div>
-
 <div id="modal" class="modal hidden">
  <div class="modalbox">
   <div id="modalContent"></div>
   <button class="btn" onclick="closeModal()">CLOSE</button>
  </div>
 </div>
-
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import{
@@ -123,7 +109,6 @@ import{
  collection,addDoc,getDocs,deleteDoc,query,orderBy,
  onSnapshot,limit,where,updateDoc
 }from"https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
-
 const firebaseConfig={
  apiKey:"AIzaSyC255XuKEt8JJKbWRjqLEqhxcOn1TXGC2U",
  authDomain:"boss-system-ddf6c.firebaseapp.com",
@@ -133,18 +118,14 @@ const firebaseConfig={
  appId:"1:67593000613:web:b03c162be0e1661b171f4c",
  measurementId:"G-E6NGWHFJXH"
 };
-
 const app=initializeApp(firebaseConfig);
 const auth=getAuth(app);
 const db=getFirestore(app);
-
 const INTERNAL_AUTH_DOMAIN="boss-system-ddf6c.firebaseapp.com";
 let mode="login";
 let profile=null;
 let stopChat=null;
-
 const $=id=>document.getElementById(id);
-
 /*
   IMPORTANT:
   Users do NOT need to enter an email.
@@ -155,24 +136,18 @@ const $=id=>document.getElementById(id);
 function internalEmail(username){
  return username.toLowerCase()+"@"+INTERNAL_AUTH_DOMAIN;
 }
-
 window.showScreen=id=>{
  ["welcome","auth"].forEach(x=>$(x).classList.add("hidden"));
  $(id).classList.remove("hidden");
 };
-
 window.showAuth=m=>{
  mode=m;
  showScreen("auth");
-
  $("authTitle").textContent=m==="login"?"LOGIN":"SIGN UP";
  $("authBtn").textContent=m==="login"?"LOGIN":"CREATE ACCOUNT";
-
  $("signupFields").classList.toggle("hidden",m!=="signup");
  $("confirmBox").classList.toggle("hidden",m!=="signup");
-
  $("loginUsername").classList.toggle("hidden",m==="signup");
-
  if(m==="signup"){
   $("loginUsername").value="";
   $("username").value="";
@@ -180,175 +155,128 @@ window.showAuth=m=>{
  }else{
   $("password").value="";
  }
-
  $("authError").textContent="";
 };
-
 window.submitAuth=async()=>{
  $("authError").textContent="";
-
  try{
   const password=$("password").value;
-
   if(!password)
    throw Error("Enter your password.");
-
   if(mode==="signup"){
-
    const username=$("username").value.trim();
    const nickname=$("nickname").value.trim();
    const confirm=$("confirmPassword").value;
    const lower=username.toLowerCase();
-
    if(!/^[A-Za-z0-9_]{3,20}$/.test(username))
     throw Error("Username must be 3–20 characters using letters, numbers or underscore.");
-
    if(!nickname||nickname.length>40)
     throw Error("Nickname must be 1–40 characters.");
-
    if(password.length<6)
     throw Error("Password must be at least 6 characters.");
-
    if(password!==confirm)
     throw Error("Passwords do not match.");
-
-   if(["maysi","santa"].includes(lower))
-    throw Error("That username is reserved for the system.");
-
+   // TEMPORARY: reserved names allowed so we can create BOSS & SANTA
+   // if(["maysi","santa"].includes(lower))
+   //  throw Error("That username is reserved for the system.");
    const reservation=doc(db,"usernames",lower);
    const existing=await getDoc(reservation);
-
    if(existing.exists())
     throw Error("That username is already taken.");
-
    const credential=await createUserWithEmailAndPassword(
     auth,
     internalEmail(username),
     password
    );
-
    try{
     const batch=writeBatch(db);
-
     batch.set(doc(db,"users",credential.user.uid),{
      uid:credential.user.uid,
      username:username,
      nickname:nickname,
      usernameLower:lower,
-     role:"USER",
+     role: lower === "maysi" ? "BOSS" : lower === "santa" ? "SANTA" : "USER",
      createdAt:serverTimestamp()
     });
-
     batch.set(reservation,{
      uid:credential.user.uid,
      username:username,
      usernameLower:lower,
      createdAt:serverTimestamp()
     });
-
     await batch.commit();
-
    }catch(e){
     try{await deleteUser(credential.user)}catch(_){}
     throw Error("Account setup failed. Please try again.");
    }
-
   }else{
-
    const username=$("loginUsername").value.trim();
    const lower=username.toLowerCase();
-
    if(!/^[A-Za-z0-9_]{3,20}$/.test(username))
     throw Error("Enter a valid username.");
-
    await signInWithEmailAndPassword(
     auth,
     internalEmail(lower),
     password
    );
   }
-
  }catch(e){
   $("authError").textContent=niceError(e);
  }
 };
-
 function niceError(e){
  const c=e?.code||"";
-
  if(c.includes("invalid-credential"))
   return"Invalid username or password.";
-
  if(c.includes("email-already-in-use"))
   return"That username is already registered.";
-
  if(c.includes("invalid-email"))
   return"Invalid username.";
-
  if(c.includes("weak-password"))
   return"Password is too weak.";
-
  if(c.includes("permission-denied"))
   return"Firebase permission denied. Check Firestore Rules.";
-
+ if(c.includes("too-many-requests"))
+  return"Too many attempts. Wait a few minutes and try again.";
  return e?.message||"Something went wrong.";
 }
-
 onAuthStateChanged(auth,async user=>{
-
  if(!user){
   profile=null;
-
   if(stopChat)stopChat();
-
   $("dashboard").classList.add("hidden");
   showScreen("welcome");
   return;
  }
-
  try{
-
   const snap=await getDoc(
    doc(db,"users",user.uid)
   );
-
   if(!snap.exists()){
    await signOut(auth);
    throw Error("Account profile not found.");
   }
-
   profile=snap.data();
-
   enterDashboard();
-
  }catch(e){
-
   $("authError").textContent=niceError(e);
-
   await signOut(auth);
  }
 });
-
 function enterDashboard(){
-
  $("welcome").classList.add("hidden");
  $("auth").classList.add("hidden");
  $("dashboard").classList.remove("hidden");
-
  $("identity").textContent=
   `${profile.nickname} · ${profile.role}`;
-
  const badge=$("roleBadge");
  badge.textContent=isAdmin()
   ? (profile.role==="BOSS" ? "◆ BOSS MAYSI — ADMIN" : "◆ SANTA — ADMIN")
   : "USER ACCESS";
  badge.classList.toggle("admin",isAdmin());
-
  renderModules();
 }
-
 function renderModules(){
-
  const modules=[
   ["Library","Personal Firebase notes.","library"],
   ["Storage","Local browser storage.","storage"],
@@ -359,11 +287,9 @@ function renderModules(){
   ["Chat","Shared chat.","chat"],
   ["SANTA","SANTA AI + admin console.","santa"]
  ];
-
  if(isAdmin()){
   modules.push(["ADMIN","Users, moderation & system controls.","admin"]);
  }
-
  $("modules").innerHTML=modules.map(x=>`
   <button class="module" onclick="openModule('${x[2]}')">
    <b>${x[0]}</b>
@@ -371,29 +297,21 @@ function renderModules(){
   </button>
  `).join("");
 }
-
 function isAdmin(){
  return !!profile && ["BOSS","SANTA"].includes(profile.role);
 }
-
 window.openModule=async key=>{
-
  const p=$("panel");
-
  if(key==="library"){
-
   p.innerHTML=`
    <h2>LIBRARY</h2>
    <input id="noteTitle" placeholder="Note title">
    <input id="noteBody" placeholder="Note body">
    <button class="btn" onclick="saveNote()">SAVE NOTE</button>
    <div id="notesList"></div>`;
-
   await loadNotes();
  }
-
  if(key==="storage"){
-
   p.innerHTML=`
    <h2>STORAGE</h2>
    <p>Small browser-local data only.</p>
@@ -401,34 +319,25 @@ window.openModule=async key=>{
    <button class="btn" onclick="alert(localStorage.getItem('boss_demo')||'Nothing saved')">READ TEST</button>
    <p class="small">Cloud file uploads are not enabled in this free setup.</p>`;
  }
-
  if(key==="games"){
-
   p.innerHTML=`
    <h2>GAMES</h2>
    <button class="btn" onclick="memoryGame()">CAT MEMORY ARENA</button>`;
  }
-
  if(key==="riddles")
   p.innerHTML="<h2>RIDDLES</h2><p>Riddle room ready for the next build.</p>";
-
  if(key==="quiz")
   p.innerHTML="<h2>QUIZ</h2><p>Quiz room ready for the next build.</p>";
-
  if(key==="links"){
-
   p.innerHTML=`
    <h2>LINKS</h2>
    <input id="linkLabel" placeholder="Label">
    <input id="linkUrl" placeholder="https://example.com">
    <button class="btn" onclick="saveLink()">SAVE LINK</button>
    <div id="linksList"></div>`;
-
   await loadLinks();
  }
-
  if(key==="chat"){
-
   p.innerHTML=`
    <h2>CHAT</h2>
    <div id="chatLog" class="chatlog">Loading...</div>
@@ -436,40 +345,31 @@ window.openModule=async key=>{
     <input id="chatInput" maxlength="1000" placeholder="Message">
     <button class="btn" onclick="sendChat()">SEND</button>
    </div>`;
-
   startChat();
  }
-
  if(key==="santa"){
   renderSantaCore();
  }
-
  if(key==="admin"){
   renderAdminPanel();
  }
 };
-
 function renderSantaCore(){
-
  const p=$("panel");
-
  if(!isAdmin()){
   p.innerHTML="<h2>SANTA</h2><p>Access denied.</p>";
   return;
  }
-
  p.innerHTML=`
   <h2>SANTA CORE</h2>
   <div class="admin-note">
    <b>Authority:</b> ${esc(profile.role)}<br>
    <span class="small">SANTA is the AI assistant core. BOSS MAYSI and SANTA both have administrator access.</span>
   </div>
-
   <div class="ai-shell">
    <div id="santaAiLog" class="ai-log">
     <div class="ai-msg santa"><b>SANTA:</b> Core online. Admin channel established. Awaiting command.</div>
    </div>
-
    <div class="ai-command-list">
     <button class="btn" onclick="santaQuick('/help')">/help</button>
     <button class="btn" onclick="santaQuick('/status')">/status</button>
@@ -478,34 +378,27 @@ function renderSantaCore(){
     <button class="btn" onclick="santaQuick('/reports')">/reports</button>
     <button class="btn" onclick="santaQuick('/birthday')">/birthday</button>
    </div>
-
    <div class="row">
     <input id="santaAiInput" maxlength="500" placeholder="Talk to SANTA or enter a command...">
     <button class="btn" onclick="sendSantaAI()">SEND</button>
    </div>
   </div>`;
 }
-
 window.santaQuick=cmd=>{
  const input=$("santaAiInput");
  if(input){ input.value=cmd; sendSantaAI(); }
 };
-
 window.sendSantaAI=async()=>{
  const input=$("santaAiInput");
  const log=$("santaAiLog");
  if(!input||!log||!isAdmin())return;
-
  const message=input.value.trim();
  if(!message)return;
-
  appendSantaMessage("user","YOU",message);
  input.value="";
-
  const response=await santaBrain(message);
  appendSantaMessage("santa","SANTA",response);
 };
-
 function appendSantaMessage(type,name,message){
  const log=$("santaAiLog");
  if(!log)return;
@@ -515,34 +408,26 @@ function appendSantaMessage(type,name,message){
  log.appendChild(row);
  log.scrollTop=log.scrollHeight;
 }
-
 async function santaBrain(message){
-
  const raw=message.trim();
  const lower=raw.toLowerCase();
-
  if(lower==="/help" || lower.includes("what can you do")){
   return "Commands: /help, /status, /whoami, /users, /reports, /birthday. I can also answer basic system questions and explain my role.";
  }
-
  if(lower==="/whoami" || lower.includes("who am i")){
   return profile.nickname+" is signed in with role "+profile.role+".";
  }
-
  if(lower==="/status" || lower.includes("system status")){
   return "BOSS SYSTEM ONLINE. Firebase authentication active. Firestore connected. Admin permissions enforced by security rules.";
  }
-
  if(lower==="/users" || lower.includes("list users")){
   const s=await getDocs(collection(db,"users"));
   return "There are currently "+s.size+" registered profile(s). Open ADMIN → USER DIRECTORY for details.";
  }
-
  if(lower==="/reports" || lower.includes("open reports")){
   const s=await getDocs(query(collection(db,"reports"),where("status","==","open"),limit(50)));
   return "There are "+s.size+" open report(s). Open ADMIN → REPORTS to review them.";
  }
-
  if(lower==="/birthday" || lower.includes("birthday")){
   const now=new Date();
   const reveal=now.getMonth()===10 && now.getDate()===17;
@@ -550,35 +435,26 @@ async function santaBrain(message){
    ? "Birthday protocol: ACTIVE. Today's date matches the November 17 reveal date."
    : "Birthday protocol is armed for November 17. It is not active today.";
  }
-
  if(lower.includes("hello") || lower.includes("hi ") || lower==="hi"){
   return "Hello. SANTA CORE is online and operating under the current admin role.";
  }
-
  if(lower.includes("boss")){
   return "BOSS MAYSI is the BOSS identity. BOSS MAYSI and SANTA are the two special admin identities; there is no separate BOSS account.";
  }
-
  if(lower.includes("permission") || lower.includes("admin")){
   return "Admin access is role-based. BOSS and SANTA receive the admin console; normal USER accounts cannot promote themselves because Firestore rules reject role changes.";
  }
-
  if(lower.includes("who are you") || lower.includes("what are you")){
   return "I am SANTA, the assistant core of BOSS SYSTEM. This build uses a safe local command/response engine; no secret AI API key is exposed in the browser.";
  }
-
  return "Command received. I can handle /help, /status, /whoami, /users, /reports and /birthday, plus basic BOSS SYSTEM questions.";
 }
-
 async function renderAdminPanel(){
-
  const p=$("panel");
-
  if(!isAdmin()){
   p.innerHTML="<h2>ADMIN</h2><p>Access denied.</p>";
   return;
  }
-
  p.innerHTML=`
   <h2>ADMIN CONTROL</h2>
   <div class="stat-grid" id="adminStats">
@@ -586,27 +462,20 @@ async function renderAdminPanel(){
    <div class="stat">ACCESS<strong>FULL</strong></div>
    <div class="stat">SECURITY<strong>RULES</strong></div>
   </div>
-
   <div class="panel admin-panel">
    <h3>USER DIRECTORY</h3>
    <div id="userDirectory">Loading...</div>
   </div>
-
   <div class="panel admin-panel">
    <h3>REPORTS</h3>
    <div id="adminReports">Loading...</div>
   </div>`;
-
  await Promise.all([loadUserDirectory(),loadAdminReports()]);
 }
-
 async function loadUserDirectory(){
-
  const box=$("userDirectory");
  if(!box)return;
-
  const s=await getDocs(collection(db,"users"));
-
  box.innerHTML=s.docs.map(d=>{
   const u=d.data();
   const admin=["BOSS","SANTA"].includes(u.role);
@@ -618,16 +487,12 @@ async function loadUserDirectory(){
    </div>`;
  }).join("") || "<p class='small'>No profiles found.</p>";
 }
-
 async function loadAdminReports(){
-
  const box=$("adminReports");
  if(!box)return;
-
  const s=await getDocs(
   query(collection(db,"reports"),where("status","==","open"),limit(50))
  );
-
  box.innerHTML=s.docs.map(d=>{
   const r=d.data();
   return`
@@ -639,17 +504,12 @@ async function loadAdminReports(){
    </div>`;
  }).join("") || "<p class='small'>No open reports.</p>";
 }
-
 window.saveNote=async()=>{
-
  try{
-
   const title=$("noteTitle").value.trim();
   const body=$("noteBody").value.trim();
-
   if(!title||!body)
    return alert("Enter title and body.");
-
   await addDoc(
    collection(db,"users",auth.currentUser.uid,"notes"),
    {
@@ -659,55 +519,39 @@ window.saveNote=async()=>{
     updatedAt:serverTimestamp()
    }
   );
-
   await loadNotes();
-
  }catch(e){
   alert(niceError(e));
  }
 };
-
 async function loadNotes(){
-
  const s=await getDocs(
   collection(db,"users",auth.currentUser.uid,"notes")
  );
-
  $("notesList").innerHTML=
   s.docs.map(d=>{
-
    const n=d.data();
-
    return`
     <div class="panel">
      <b>${esc(n.title)}</b>
      <p>${esc(n.body)}</p>
      <button class="btn" onclick="deleteNote('${d.id}')">DELETE</button>
     </div>`;
-
   }).join("")||
   "<p class='small'>No notes yet.</p>";
 }
-
 window.deleteNote=async id=>{
-
  await deleteDoc(
   doc(db,"users",auth.currentUser.uid,"notes",id)
  );
-
  await loadNotes();
 };
-
 window.saveLink=async()=>{
-
  try{
-
   const label=$("linkLabel").value.trim();
   const url=$("linkUrl").value.trim();
-
   if(!label||!/^https?:\/\//i.test(url))
    return alert("Enter a valid http/https URL.");
-
   await addDoc(
    collection(db,"users",auth.currentUser.uid,"links"),
    {
@@ -716,90 +560,65 @@ window.saveLink=async()=>{
     createdAt:serverTimestamp()
    }
   );
-
   await loadLinks();
-
  }catch(e){
   alert(niceError(e));
  }
 };
-
 async function loadLinks(){
-
  const s=await getDocs(
   collection(db,"users",auth.currentUser.uid,"links")
  );
-
  $("linksList").innerHTML=
   s.docs.map(d=>{
-
    const l=d.data();
-
    return`
     <div class="panel">
      <b>${esc(l.label)}</b><br>
      <a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.url)}</a><br>
      <button class="btn" onclick="deleteLink('${d.id}')">DELETE</button>
     </div>`;
-
   }).join("")||
   "<p class='small'>No links yet.</p>";
 }
-
 window.deleteLink=async id=>{
-
  await deleteDoc(
   doc(db,"users",auth.currentUser.uid,"links",id)
  );
-
  await loadLinks();
 };
-
 function startChat(){
-
  if(stopChat)stopChat();
-
  const q=query(
   collection(db,"chatMessages"),
   orderBy("createdAt","asc"),
   limit(100)
  );
-
  stopChat=onSnapshot(q,s=>{
-
   $("chatLog").innerHTML=
    s.docs.map(d=>{
-
     const m=d.data();
-
     return`
      <div class="msg">
       <b>${esc(m.nickname||m.username)}</b>:
       ${esc(m.text)}
       <span class="msg-actions">
        <button class="btn"
-        onclick="reportMessage('${d.id}','${esc(m.uid)}','${esc(m.nickname||m.username)}')">
+        onclick="reportMessage('${d.id}','${esc(m.uid)}','${esc((m.nickname||m.username||'').replace(/'/g,''))}')">
         REPORT
        </button>
        ${isAdmin()?`<button class="btn danger" onclick="deleteChatMessage('${d.id}')">DELETE</button>`:""}
       </span>
      </div>`;
-
    }).join("")||
    "No messages yet.";
-
   $("chatLog").scrollTop=$("chatLog").scrollHeight;
  });
 }
-
 window.sendChat=async()=>{
-
  const text=$("chatInput").value.trim();
-
  if(!text)return;
-
  try{
-
   await addDoc(
    collection(db,"chatMessages"),
    {
@@ -810,22 +629,15 @@ window.sendChat=async()=>{
     createdAt:serverTimestamp()
    }
   );
-
   $("chatInput").value="";
-
  }catch(e){
   alert(niceError(e));
  }
 };
-
 window.reportMessage=async(messageId,reportedUid,reportedName)=>{
-
  const reason=prompt("Reason for report?");
-
  if(!reason)return;
-
  try{
-
   await addDoc(
    collection(db,"reports"),
    {
@@ -838,32 +650,23 @@ window.reportMessage=async(messageId,reportedUid,reportedName)=>{
     createdAt:serverTimestamp()
    }
   );
-
   alert("Report submitted.");
-
  }catch(e){
   alert(niceError(e));
  }
 };
-
 window.deleteChatMessage=async id=>{
-
  if(!isAdmin())return;
-
  if(!confirm("Delete this chat message?"))return;
-
  try{
   await deleteDoc(doc(db,"chatMessages",id));
  }catch(e){
   alert(niceError(e));
  }
 };
-
 window.showReports=async()=>{
-
  if(!isAdmin())
   return;
-
  const s=await getDocs(
   query(
    collection(db,"reports"),
@@ -871,14 +674,11 @@ window.showReports=async()=>{
    limit(50)
   )
  );
-
  $("panel").innerHTML=
   "<h2>OPEN REPORTS</h2>"+
   (
    s.docs.map(d=>{
-
     const r=d.data();
-
     return`
      <div class="panel">
       <b>${esc(r.reportedName||"Unknown")}</b>
@@ -887,104 +687,74 @@ window.showReports=async()=>{
        MARK REVIEWED
       </button>
      </div>`;
-
    }).join("")||
    "<p>No open reports.</p>"
   );
 };
-
 window.reviewReport=async id=>{
-
- await updateDoc(
-  doc(db,"reports",id),
-  {
+ if(!isAdmin())return;
+ try{
+  await updateDoc(doc(db,"reports",id),{
    status:"reviewed",
    reviewedBy:auth.currentUser.uid,
    reviewedAt:serverTimestamp()
-  }
- );
-
- showReports();
+  });
+  await loadAdminReports();
+ }catch(e){
+  alert(niceError(e));
+ }
 };
-
 window.memoryGame=()=>{
-
  const cards=["🐱","🐱","🐶","🐶","🦊","🦊","🐼","🐼"]
   .sort(()=>Math.random()-.5);
-
  $("modalContent").innerHTML=`
   <h2>CAT MEMORY ARENA</h2>
   <div id="grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px"></div>`;
-
  $("modal").classList.remove("hidden");
-
  let first=null;
  let lock=false;
  let done=0;
-
  cards.forEach(emoji=>{
-
   const b=document.createElement("button");
-
   b.className="btn";
   b.style.height="70px";
   b.textContent="❓";
-
   b.onclick=()=>{
-
    if(lock||b.dataset.done)return;
-
    b.textContent=emoji;
-
    if(!first){
     first={b,emoji};
     return;
    }
-
    if(first.emoji===emoji){
-
     first.b.dataset.done="1";
     b.dataset.done="1";
     first=null;
     done+=2;
-
     if(done===cards.length)
      alert("You cleared CAT MEMORY ARENA!");
-
    }else{
-
     lock=true;
-
     const old=first.b;
     first=null;
-
     setTimeout(()=>{
-
      old.textContent="❓";
      b.textContent="❓";
      lock=false;
-
     },600);
    }
   };
-
   $("grid").appendChild(b);
  });
 };
-
 window.closeModal=()=>{
  $("modal").classList.add("hidden");
 };
-
 window.logout=async()=>{
-
  if(stopChat)stopChat();
-
  await signOut(auth);
 };
-
 function esc(s=""){
-
  return String(s).replace(
   /[&<>"']/g,
   c=>({
