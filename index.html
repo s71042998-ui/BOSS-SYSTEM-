@@ -1,46 +1,1068 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>BOSS SYSTEM</title>
+
 <style>
-*{box-sizing:border-box}body{margin:0;background:#050505;color:#eee;font-family:Arial,sans-serif;min-height:100vh}button,input{font:inherit}button{cursor:pointer}.hidden{display:none!important}.screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}.card{width:min(520px,100%);background:#0b0b0b;border:1px solid #700;box-shadow:0 0 30px #300;padding:28px}h1,h2{color:#e50914;margin-top:0}.small{color:#999;font-size:13px}input{width:100%;padding:12px;margin:6px 0 12px;background:#111;color:#fff;border:1px solid #333}.btn{border:1px solid #800;background:#180000;color:#fff;padding:10px 15px;margin:4px}.btn:hover{background:#600}.error{color:#ff6666;min-height:20px}header{padding:18px 24px;border-bottom:1px solid #400;display:flex;justify-content:space-between;align-items:center;gap:12px}.header-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.role-badge{padding:5px 9px;border:1px solid #333;color:#aaa;font-size:12px}.role-badge.admin{border-color:#900;color:#ff6666}.dashboard{max-width:1100px;margin:auto;padding:24px}.modules{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}.module{min-height:115px;background:#0b0b0b;border:1px solid #400;padding:20px;color:#fff;text-align:left}.module b{display:block;color:#e50914;margin-bottom:8px}.panel{margin-top:20px;padding:20px;background:#090909;border:1px solid #300}.chatlog{height:280px;overflow:auto;background:#050505;border:1px solid #222;padding:10px}.msg,.user-row,.report-row{padding:10px;border-bottom:1px solid #222;overflow-wrap:anywhere}.msg b{color:#e50914}.row{display:flex;gap:8px;margin-top:8px}.row input{margin:0}.ai-log{height:280px;overflow:auto;border:1px solid #222;padding:10px}.ai-msg{padding:9px;margin:7px 0;background:#0a0a0a}.modal{position:fixed;inset:0;background:#000d;display:flex;align-items:center;justify-content:center;padding:20px;z-index:5}.modalbox{width:min(700px,100%);max-height:85vh;overflow:auto;background:#0b0b0b;border:1px solid #900;padding:22px}a{color:#ff7777}@media(max-width:600px){header{flex-direction:column;align-items:stretch}.dashboard{padding:14px}.row{flex-direction:column}}
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+:root{
+  --red:#b30000;
+  --darkred:#650000;
+  --white:#eee;
+  --gray:#777;
+  --line:#292929;
+}
+
+body{
+  min-height:100vh;
+  background:#020202;
+  color:var(--white);
+  font-family:Arial,Helvetica,sans-serif;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow-x:hidden;
+}
+
+/* DEATH NOTE INSPIRED BACKGROUND */
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;
+}
+
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at 50% 45%,
+    rgba(120,0,0,.12),
+    transparent 45%);
+  pointer-events:none;
+}
+
+/* SCREEN */
+
+.screen{
+  width:92%;
+  max-width:800px;
+  border:1px solid #333;
+  background:rgba(5,5,5,.97);
+  padding:35px;
+  box-shadow:
+    0 0 80px rgba(0,0,0,.9),
+    0 0 25px rgba(150,0,0,.05);
+  position:relative;
+  z-index:2;
+}
+
+.hidden{
+  display:none!important;
+}
+
+/* OPENING */
+
+#opening{
+  text-align:center;
+  animation:fadeIn .8s ease;
+}
+
+.note-symbol{
+  font-family:Georgia,serif;
+  font-size:80px;
+  color:#eee;
+  text-shadow:
+    0 0 10px #fff,
+    0 0 30px rgba(255,255,255,.2);
+  margin-bottom:10px;
+}
+
+.opening-title{
+  font-family:Georgia,serif;
+  font-size:42px;
+  letter-spacing:9px;
+  margin-bottom:8px;
+}
+
+.opening-sub{
+  color:#777;
+  letter-spacing:5px;
+  font-size:10px;
+  margin-bottom:40px;
+}
+
+.loading{
+  width:100%;
+  height:2px;
+  background:#181818;
+  overflow:hidden;
+  margin-bottom:18px;
+}
+
+.loading-bar{
+  width:0%;
+  height:100%;
+  background:#aaa;
+  animation:load 3s forwards;
+}
+
+.boot-text{
+  font-family:monospace;
+  color:#777;
+  font-size:12px;
+  line-height:2;
+}
+
+.red{
+  color:#b30000;
+}
+
+.ok{
+  color:#8aff8a;
+}
+
+/* TITLE */
+
+.title{
+  font-family:Georgia,serif;
+  font-size:31px;
+  letter-spacing:7px;
+  margin-bottom:8px;
+}
+
+.subtitle{
+  color:#666;
+  font-size:10px;
+  letter-spacing:4px;
+  margin-bottom:35px;
+}
+
+/* BUTTONS */
+
+button{
+  width:100%;
+  padding:15px;
+  background:#080808;
+  color:#eee;
+  border:1px solid #444;
+  cursor:pointer;
+  letter-spacing:3px;
+  transition:.25s;
+  margin-top:8px;
+}
+
+button:hover{
+  background:#eee;
+  color:#000;
+  border-color:#eee;
+}
+
+.red-button{
+  border-color:#650000;
+}
+
+.red-button:hover{
+  background:#8d0000;
+  color:#fff;
+  border-color:#8d0000;
+}
+
+/* INPUTS */
+
+input{
+  width:100%;
+  padding:15px;
+  background:#101010;
+  border:1px solid #444;
+  color:white;
+  outline:none;
+  margin:10px 0 16px;
+}
+
+input:focus{
+  border-color:#aaa;
+  box-shadow:0 0 10px rgba(255,255,255,.04);
+}
+
+label{
+  display:block;
+  color:#777;
+  font-size:10px;
+  letter-spacing:2px;
+  margin-top:12px;
+}
+
+/* CHOICE */
+
+.choice{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.choice button{
+  min-height:90px;
+}
+
+.choice-icon{
+  display:block;
+  font-size:25px;
+  margin-bottom:8px;
+}
+
+/* WELCOME */
+
+.welcome{
+  color:#aaa;
+  font-family:monospace;
+  margin-bottom:25px;
+  padding:12px;
+  border-left:2px solid #650000;
+  background:#090909;
+}
+
+/* MODULES */
+
+.modules{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+
+.module{
+  min-height:105px;
+  padding:22px 10px;
+  border:1px solid #252525;
+  background:#0b0b0b;
+  color:#aaa;
+  text-align:center;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.module:hover{
+  border-color:#777;
+  color:#fff;
+  transform:translateY(-2px);
+  box-shadow:0 0 15px rgba(150,0,0,.08);
+}
+
+.icon{
+  display:block;
+  font-size:25px;
+  margin-bottom:10px;
+}
+
+/* SANTA */
+
+.santa{
+  margin-top:22px;
+  padding:18px;
+  border-left:2px solid #777;
+  background:#0b0b0b;
+}
+
+.santa strong{
+  font-family:monospace;
+  letter-spacing:2px;
+}
+
+.santa p{
+  margin-top:10px;
+  color:#aaa;
+  line-height:1.6;
+}
+
+/* ROLE BADGE */
+
+.role{
+  display:inline-block;
+  padding:6px 10px;
+  border:1px solid #444;
+  color:#aaa;
+  font-family:monospace;
+  font-size:10px;
+  letter-spacing:2px;
+  margin-bottom:20px;
+}
+
+.admin{
+  color:#ff5555;
+  border-color:#650000;
+}
+
+/* MODAL */
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.88);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:10;
+}
+
+.modal-box{
+  width:100%;
+  max-width:620px;
+  background:#090909;
+  border:1px solid #333;
+  padding:30px;
+  box-shadow:0 0 50px rgba(0,0,0,.9);
+  animation:modalIn .25s ease;
+}
+
+.modal-title{
+  font-family:Georgia,serif;
+  letter-spacing:4px;
+  margin-bottom:20px;
+}
+
+.modal-text{
+  color:#999;
+  line-height:1.7;
+  margin-bottom:25px;
+}
+
+/* CHAT */
+
+.chat-box{
+  height:240px;
+  overflow-y:auto;
+  background:#050505;
+  border:1px solid #222;
+  padding:15px;
+  margin-bottom:15px;
+  font-family:monospace;
+}
+
+.chat-message{
+  margin-bottom:12px;
+  line-height:1.5;
+}
+
+.chat-user{
+  color:#eee;
+}
+
+.chat-santa{
+  color:#aaa;
+}
+
+/* FOOTER */
+
+.footer{
+  margin-top:22px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:#444;
+  font-size:9px;
+  letter-spacing:2px;
+}
+
+.logout{
+  width:auto;
+  padding:8px 15px;
+  margin:0;
+  font-size:9px;
+}
+
+/* ANIMATIONS */
+
+@keyframes load{
+  from{width:0%}
+  to{width:100%}
+}
+
+@keyframes fadeIn{
+  from{
+    opacity:0;
+    transform:scale(.97);
+  }
+  to{
+    opacity:1;
+    transform:scale(1);
+  }
+}
+
+@keyframes modalIn{
+  from{
+    opacity:0;
+    transform:translateY(15px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+  .screen{
+    padding:25px 18px;
+  }
+
+  .opening-title{
+    font-size:28px;
+    letter-spacing:5px;
+  }
+
+  .title{
+    font-size:22px;
+    letter-spacing:4px;
+  }
+
+  .choice{
+    grid-template-columns:1fr;
+  }
+
+  .modules{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .module{
+    min-height:90px;
+  }
+}
+
+/* BOSS SYSTEM additions */
+.field-label{display:block;color:#888;font-size:10px;letter-spacing:2px;margin:12px 0 5px}
+textarea,select{width:100%;padding:12px;background:#101010;border:1px solid #444;color:#eee;margin:8px 0 12px;font:inherit;resize:vertical}
+textarea:focus,select:focus{outline:1px solid #aaa}
+.panel{border:1px solid #282828;background:#080808;padding:15px;margin:12px 0}
+.panel h3{font-size:13px;letter-spacing:2px;margin-bottom:10px;color:#eee}
+.row-actions{display:flex;gap:8px;flex-wrap:wrap}
+.row-actions button{width:auto;flex:1;min-width:120px;letter-spacing:1px;padding:10px}
+.item{border:1px solid #292929;padding:12px;margin:8px 0;background:#0d0d0d;overflow-wrap:anywhere}
+.item small{display:block;color:#777;margin-top:5px}
+.item button{letter-spacing:1px;padding:8px;margin-top:8px}
+.status-line{font-family:monospace;font-size:12px;color:#aaa;white-space:pre-wrap;line-height:1.6;margin:10px 0}
+.birthday-reveal{padding:15px;margin:0 0 18px;border:1px solid #9a2424;background:#180606;color:#ffb8b8;text-align:center;letter-spacing:1px}
+.progress{height:5px;background:#222;margin:10px 0}.progress span{display:block;height:100%;background:#b30000;width:0}
+.memory-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:12px 0}
+.memory-card{min-height:58px;padding:8px;background:#111;border:1px solid #444;font-size:22px;letter-spacing:0}
+.memory-card:disabled{opacity:1;color:#eee;background:#310909;border-color:#8d0000}
+@media(max-width:600px){.modal-box{padding:18px;max-height:90vh;overflow-y:auto}.row-actions{flex-direction:column}.row-actions button{width:100%}.memory-card{min-height:48px;padding:4px}}
+
 </style>
-</head><body>
-<div id="welcome" class="screen"><div class="card"><h1>BOSS SYSTEM</h1><p class="small">Firebase-powered control system.</p><button class="btn" onclick="showAuth('login')">LOGIN</button><button class="btn" onclick="showAuth('signup')">SIGN UP</button></div></div>
-<div id="auth" class="screen hidden"><div class="card"><h2 id="authTitle">LOGIN</h2><div id="signupFields" class="hidden"><label>Choose Username</label><input id="username" maxlength="20" placeholder="3–20 characters"><label>Choose Nickname</label><input id="nickname" maxlength="40" placeholder="Your display name"></div><label id="loginLabel">Username</label><input id="loginUsername" maxlength="20" placeholder="Username"><label>Password</label><input id="password" type="password" autocomplete="current-password"><div id="confirmBox" class="hidden"><label>Confirm Password</label><input id="confirmPassword" type="password" autocomplete="new-password"></div><div id="authError" class="error" role="alert"></div><button class="btn" id="authBtn" onclick="submitAuth()">LOGIN</button><button class="btn" onclick="showScreen('welcome')">BACK</button><p class="small">BOSS MAYSI and SANTA are reserved system identities.</p></div></div>
-<div id="dashboard" class="hidden"><header><div><b style="color:#e50914">BOSS SYSTEM</b> <span id="identity" class="small"></span></div><div class="header-actions"><span id="roleBadge" class="role-badge">USER ACCESS</span><button class="btn" onclick="logout()">LOGOUT</button></div></header><main class="dashboard"><h2>CONTROL PANEL</h2><div id="modules" class="modules"></div><div id="panel" class="panel"><h2>Welcome</h2><p>Select a module.</p></div></main></div>
-<div id="modal" class="modal hidden"><div class="modalbox"><div id="modalContent"></div><button class="btn" onclick="closeModal()">CLOSE</button></div></div>
+</head>
+
+<body>
+
+
+<!-- ======================================
+     OPENING ANIMATION
+====================================== -->
+
+<div class="screen" id="opening">
+
+  <div class="note-symbol">☠</div>
+
+  <div class="opening-title">
+    BOSS SYSTEM
+  </div>
+
+  <div class="opening-sub">
+    THE DIGITAL NOTEBOOK
+  </div>
+
+  <div class="loading">
+    <div class="loading-bar"></div>
+  </div>
+
+  <div class="boot-text" id="bootText">
+    INITIALIZING...
+  </div>
+
+</div>
+
+
+<!-- ======================================
+     LOGIN / SIGNUP CHOICE
+====================================== -->
+
+<div class="screen hidden" id="access">
+
+  <div class="title">
+    ACCESS
+  </div>
+
+  <div class="subtitle">
+    IDENTIFICATION REQUIRED
+  </div>
+
+  <div class="choice">
+
+    <button onclick="showLogin()">
+      <span class="choice-icon">◉</span>
+      LOG IN
+    </button>
+
+    <button onclick="showSignup()">
+      <span class="choice-icon">✎</span>
+      SIGN UP
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- ======================================
+     LOGIN
+====================================== -->
+
+<div class="screen hidden" id="login">
+
+  <div class="title">
+    LOG IN
+  </div>
+
+  <div class="subtitle">
+    EXISTING IDENTITY
+  </div>
+
+  <label>
+    EMAIL ADDRESS
+  </label>
+
+  <input
+    id="loginEmail"
+    type="email"
+    placeholder="Enter your email address"
+    autocomplete="email"
+  >
+
+  <label>
+    PASSWORD
+  </label>
+
+  <input
+    id="loginPassword"
+    type="password"
+    placeholder="Enter password"
+  >
+
+  <button onclick="login()">
+    ENTER SYSTEM
+  </button>
+
+  <button onclick="resetPassword()">
+    RESET PASSWORD BY EMAIL
+  </button>
+
+  <button onclick="backToAccess()">
+    BACK
+  </button>
+
+</div>
+
+
+<!-- ======================================
+     SIGN UP
+====================================== -->
+
+<div class="screen hidden" id="signup">
+
+  <div class="title">
+    SIGN UP
+  </div>
+
+  <div class="subtitle">
+    CREATE NEW IDENTITY
+  </div>
+
+  <label>
+    EMAIL ADDRESS
+  </label>
+
+  <input
+    id="signupEmail"
+    type="email"
+    placeholder="Enter your email address"
+    autocomplete="email"
+  >
+
+  <label>
+    USERNAME
+  </label>
+
+  <input
+    id="signupUsername"
+    type="text"
+    placeholder="Choose a username"
+    autocomplete="off"
+  >
+
+  <label>
+    NICKNAME
+  </label>
+
+  <input
+    id="signupNickname"
+    type="text"
+    placeholder="Choose a nickname"
+    autocomplete="off"
+  >
+
+  <label>
+    PASSWORD
+  </label>
+
+  <input
+    id="signupPassword"
+    type="password"
+    placeholder="Create a password"
+  >
+
+  <label>
+    CONFIRM PASSWORD
+  </label>
+
+  <input
+    id="signupConfirm"
+    type="password"
+    placeholder="Confirm password"
+  >
+
+  <button onclick="signup()">
+    CREATE ACCOUNT
+  </button>
+
+  <button onclick="backToAccess()">
+    BACK
+  </button>
+
+</div>
+
+
+<!-- ======================================
+     DASHBOARD
+====================================== -->
+
+<div class="screen hidden" id="dashboard">
+
+  <div class="title">
+    CONTROL PANEL
+  </div>
+
+  <div class="subtitle">
+    SYSTEM ONLINE
+  </div>
+
+  <div id="roleBadge" class="role">
+    USER ACCESS
+  </div>
+
+  <div class="welcome" id="welcomeText"></div>
+
+  <div id="birthdayReveal" class="birthday-reveal hidden">🎂 BOSS MAYSI PROTOCOL: BIRTHDAY MODE UNLOCKED</div>
+  <div class="modules">
+
+    <div class="module" onclick="openModule('LIBRARY')">
+      <span class="icon">📚</span>
+      LIBRARY
+    </div>
+
+    <div class="module" onclick="openModule('STORAGE')">
+      <span class="icon">💾</span>
+      STORAGE
+    </div>
+
+    <div class="module" onclick="openModule('GAMES')">
+      <span class="icon">🎮</span>
+      GAMES
+    </div>
+
+    <div class="module" onclick="openModule('RIDDLES')">
+      <span class="icon">🧠</span>
+      RIDDLES
+    </div>
+
+    <div class="module" onclick="openModule('QUIZ')">
+      <span class="icon">📝</span>
+      QUIZ
+    </div>
+
+    <div class="module" onclick="openModule('LINKS')">
+      <span class="icon">🔗</span>
+      LINKS
+    </div>
+
+    <div class="module" onclick="openModule('CHAT')">
+      <span class="icon">💬</span>
+      CHAT
+    </div>
+
+    <div class="module" onclick="openModule('SANTA')">
+      <span class="icon">🤖</span>
+      SANTA
+    </div>
+
+  </div>
+
+  <div class="santa">
+
+    <strong>
+      🤖 SANTA — ONLINE ●
+    </strong>
+
+    <p id="santaMessage"></p>
+
+  </div>
+
+  <div class="footer">
+
+    <span id="systemStatus">
+      SYSTEM STATUS: ONLINE
+    </span>
+
+    <button
+      class="logout"
+      onclick="logout()">
+      LOG OUT
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- ======================================
+     MODAL
+====================================== -->
+
+<div class="modal hidden" id="modal">
+
+  <div class="modal-box">
+
+    <div class="modal-title" id="modalTitle"></div>
+
+    <div class="modal-text" id="modalText"></div>
+
+    <div id="extraContent"></div>
+
+    <button
+      class="close"
+      onclick="closeModule()">
+      RETURN
+    </button>
+
+  </div>
+
+</div>
+
+
 <script type="module">
-import{initializeApp}from"https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-import{getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged,deleteUser}from"https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-import{getFirestore,doc,getDoc,writeBatch,serverTimestamp,collection,addDoc,getDocs,deleteDoc,query,orderBy,onSnapshot,limit,where,updateDoc}from"https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
-const firebaseConfig={apiKey:"AIzaSyC255XuKEt8JJKbWRjqLEqhxcOn1TXGC2U",authDomain:"boss-system-ddf6c.firebaseapp.com",projectId:"boss-system-ddf6c",storageBucket:"boss-system-ddf6c.firebasestorage.app",messagingSenderId:"67593000613",appId:"1:67593000613:web:b03c162be0e1661b171f4c",measurementId:"G-E6NGWHFJXH"};
-const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
-const AUTH_DOMAIN="boss-system-ddf6c.firebaseapp.com",BOSS_UID="uqhohIvaGCO6YlEjKKSrrVJbv533",SANTA_UID="nEQyREBsdwPSGYoUnqeD6DngECI3";
-const $=id=>document.getElementById(id);let mode="login",profile=null,stopChat=null,authVersion=0;
-const internalEmail=u=>u.toLowerCase()+"@"+AUTH_DOMAIN;
-window.showScreen=id=>{["welcome","auth","dashboard"].forEach(k=>$(k).classList.add("hidden"));$(id).classList.remove("hidden")};
-window.showAuth=m=>{mode=m;showScreen("auth");$("authTitle").textContent=m==="login"?"LOGIN":"SIGN UP";$("authBtn").textContent=m==="login"?"LOGIN":"CREATE ACCOUNT";$("signupFields").classList.toggle("hidden",m!=="signup");$("confirmBox").classList.toggle("hidden",m!=="signup");$("loginUsername").classList.toggle("hidden",m==="signup");$("loginLabel").classList.toggle("hidden",m==="signup");$("authError").textContent="";$("password").value="";$("confirmPassword").value="";$("loginUsername").value="";$("username").value="";$("nickname").value=""};
-function niceError(e){let c=e?.code||"";if(["invalid-credential","wrong-password","user-not-found"].some(x=>c.includes(x)))return"Invalid username or password.";if(c.includes("email-already-in-use"))return"That username is already registered.";if(c.includes("invalid-email"))return"Invalid username.";if(c.includes("weak-password"))return"Password is too weak.";if(c.includes("permission-denied"))return"Firebase permission denied. Check Firestore Rules.";if(c.includes("operation-not-allowed"))return"Enable Email/Password in Firebase Authentication.";return e?.message||"Something went wrong."}
-window.submitAuth=async()=>{const b=$("authBtn");b.disabled=true;$("authError").textContent="";try{let pass=$("password").value;if(!pass)throw Error("Enter your password.");if(mode==="signup"){let username=$("username").value.trim(),nickname=$("nickname").value.trim(),lower=username.toLowerCase();if(!/^[A-Za-z0-9_]{3,20}$/.test(username))throw Error("Username must be 3–20 characters using letters, numbers or underscore.");if(!nickname||nickname.length>40)throw Error("Nickname must be 1–40 characters.");if(pass.length<6)throw Error("Password must be at least 6 characters.");if(pass!==$("confirmPassword").value)throw Error("Passwords do not match.");if(["maysi","santa"].includes(lower))throw Error("That username is reserved.");let reservation=doc(db,"usernames",lower);if((await getDoc(reservation)).exists())throw Error("That username is already taken.");let cred=await createUserWithEmailAndPassword(auth,internalEmail(username),pass);try{let batch=writeBatch(db);batch.set(doc(db,"users",cred.user.uid),{uid:cred.user.uid,username,nickname,usernameLower:lower,role:"USER",createdAt:serverTimestamp()});batch.set(reservation,{uid:cred.user.uid,username,usernameLower:lower,createdAt:serverTimestamp()});await batch.commit()}catch(e){try{await deleteUser(cred.user)}catch(_){}throw Error("Account setup failed while saving Firestore data. Check Rules and Authentication → Users before retrying.")}}else{let username=$("loginUsername").value.trim().toLowerCase();if(!/^[A-Za-z0-9_]{3,20}$/.test(username))throw Error("Enter a valid username.");await signInWithEmailAndPassword(auth,internalEmail(username),pass)}}catch(e){$("authError").textContent=niceError(e)}finally{b.disabled=false}};
-function isAdmin(){return !!profile&&["BOSS","SANTA"].includes(profile.role)}
-onAuthStateChanged(auth,async user=>{let v=++authVersion;if(!user){profile=null;if(stopChat){stopChat();stopChat=null} $("dashboard").classList.add("hidden");if($("auth").classList.contains("hidden"))showScreen("welcome");return}try{let s=await getDoc(doc(db,"users",user.uid));if(v!==authVersion)return;if(!s.exists())throw Error("Login account exists but its users/{UID} Firestore document is missing.");profile=s.data();if(profile.uid!==user.uid)throw Error("Profile UID does not match this account.");if(user.uid===BOSS_UID&&profile.role!=="BOSS")throw Error("BOSS profile role is incorrect.");if(user.uid===SANTA_UID&&profile.role!=="SANTA")throw Error("SANTA profile role is incorrect.");enterDashboard()}catch(e){$("authError").textContent=niceError(e);try{await signOut(auth)}catch(_){}showScreen("auth")}});
-function enterDashboard(){$("welcome").classList.add("hidden");$("auth").classList.add("hidden");$("dashboard").classList.remove("hidden");$("identity").textContent=(profile.nickname||profile.username)+" · "+profile.role;$("roleBadge").textContent=isAdmin()?(profile.role==="BOSS"?"◆ BOSS MAYSI — ADMIN":"◆ SANTA — ADMIN"):"USER ACCESS";$("roleBadge").classList.toggle("admin",isAdmin());renderModules();$("panel").innerHTML="<h2>Welcome</h2><p>Select a module.</p>"}
-function renderModules(){let list=[["Library","Personal Firebase notes.","library"],["Storage","Browser-local demo storage.","storage"],["Games","Games room.","games"],["Riddles","Riddle room.","riddles"],["Quiz","Quiz room.","quiz"],["Links","Save useful links.","links"],["Chat","Shared chat.","chat"],["SANTA","SANTA command console.","santa"]];if(isAdmin())list.push(["ADMIN","Users and reports.","admin"]);$("modules").replaceChildren();list.forEach(([t,d,k])=>{let b=document.createElement("button");b.className="module";let title=document.createElement("b");title.textContent=t;let desc=document.createElement("span");desc.className="small";desc.textContent=d;b.append(title,desc);b.onclick=()=>openModule(k);$("modules").append(b)})}
-window.openModule=async k=>{let p=$("panel");if(stopChat){stopChat();stopChat=null}try{if(k==="library"){p.innerHTML='<h2>LIBRARY</h2><input id="noteTitle" maxlength="100" placeholder="Note title"><input id="noteBody" maxlength="2000" placeholder="Note body"><button class="btn" id="saveNote">SAVE NOTE</button><div id="notesList"></div>';$("saveNote").onclick=saveNote;await loadNotes()}else if(k==="storage"){p.innerHTML='<h2>STORAGE</h2><p>Small data stays in this browser; cloud uploads are disabled.</p><button class="btn" id="storeTest">SAVE TEST</button><button class="btn" id="readTest">READ TEST</button><p id="storageResult"></p>';$("storeTest").onclick=()=>{localStorage.setItem("boss_demo","Saved");$("storageResult").textContent="Saved in this browser."};$("readTest").onclick=()=>$("storageResult").textContent=localStorage.getItem("boss_demo")||"Nothing saved"}else if(k==="games"){p.innerHTML='<h2>GAMES</h2><button class="btn" id="memory">CAT MEMORY ARENA</button>';$("memory").onclick=memoryGame}else if(k==="riddles")p.innerHTML="<h2>RIDDLES</h2><p>Riddle room ready for the next build.</p>";else if(k==="quiz")p.innerHTML="<h2>QUIZ</h2><p>Quiz room ready for the next build.</p>";else if(k==="links"){p.innerHTML='<h2>LINKS</h2><input id="linkLabel" maxlength="100" placeholder="Label"><input id="linkUrl" maxlength="2000" placeholder="https://example.com"><button class="btn" id="saveLink">SAVE LINK</button><div id="linksList"></div>';$("saveLink").onclick=saveLink;await loadLinks()}else if(k==="chat"){p.innerHTML='<h2>CHAT</h2><div id="chatLog" class="chatlog">Loading...</div><div class="row"><input id="chatInput" maxlength="1000" placeholder="Message"><button class="btn" id="sendChat">SEND</button></div>';$("sendChat").onclick=sendChat;$("chatInput").onkeydown=e=>{if(e.key==="Enter")sendChat()};startChat()}else if(k==="santa")renderSanta();else if(k==="admin")await renderAdmin()}catch(e){p.innerHTML='<h2>MODULE ERROR</h2><p class="error">'+esc(niceError(e))+'</p>'}};
-async function saveNote(){try{let title=$("noteTitle").value.trim(),body=$("noteBody").value.trim();if(!title||!body)return alert("Enter title and body.");await addDoc(collection(db,"users",auth.currentUser.uid,"notes"),{title,body,createdAt:serverTimestamp(),updatedAt:serverTimestamp()});await loadNotes()}catch(e){alert(niceError(e))}}
-async function loadNotes(){let s=await getDocs(collection(db,"users",auth.currentUser.uid,"notes"));$("notesList").replaceChildren();if(s.empty){$("notesList").textContent="No notes yet.";return}s.forEach(d=>{let n=d.data(),box=document.createElement("div");box.className="panel";let title=document.createElement("b");title.textContent=n.title;let body=document.createElement("p");body.textContent=n.body;let del=document.createElement("button");del.className="btn";del.textContent="DELETE";del.onclick=async()=>{try{await deleteDoc(doc(db,"users",auth.currentUser.uid,"notes",d.id));await loadNotes()}catch(e){alert(niceError(e))}};box.append(title,body,del);$("notesList").append(box)})}
-async function saveLink(){try{let label=$("linkLabel").value.trim(),url=$("linkUrl").value.trim();if(!label||!/^https?:\/\//i.test(url))return alert("Enter a label and valid http/https URL.");await addDoc(collection(db,"users",auth.currentUser.uid,"links"),{label,url:new URL(url).href,createdAt:serverTimestamp()});await loadLinks()}catch(e){alert(niceError(e))}}
-async function loadLinks(){let s=await getDocs(collection(db,"users",auth.currentUser.uid,"links"));$("linksList").replaceChildren();if(s.empty){$("linksList").textContent="No links yet.";return}s.forEach(d=>{let x=d.data(),box=document.createElement("div");box.className="panel";let a=document.createElement("a");a.href=x.url;a.textContent=x.label+" — "+x.url;a.target="_blank";a.rel="noopener noreferrer";let del=document.createElement("button");del.className="btn";del.textContent="DELETE";del.onclick=async()=>{try{await deleteDoc(doc(db,"users",auth.currentUser.uid,"links",d.id));await loadLinks()}catch(e){alert(niceError(e))}};box.append(a,del);$("linksList").append(box)})}
-function startChat(){let q=query(collection(db,"chatMessages"),orderBy("createdAt","asc"),limit(100));stopChat=onSnapshot(q,s=>{let box=$("chatLog");if(!box)return;box.replaceChildren();if(s.empty){box.textContent="No messages yet.";return}s.forEach(d=>{let m=d.data(),row=document.createElement("div");row.className="msg";let name=document.createElement("b");name.textContent=m.nickname||m.username||"User";row.append(name,document.createTextNode(": "+(m.text||"")));let report=document.createElement("button");report.className="btn";report.textContent="REPORT";report.onclick=()=>reportMessage(d.id,m.uid,m.nickname||m.username||"User");row.append(report);if(isAdmin()){let del=document.createElement("button");del.className="btn";del.textContent="DELETE";del.onclick=()=>deleteChat(d.id);row.append(del)}box.append(row)});box.scrollTop=box.scrollHeight},e=>{$("chatLog").textContent=niceError(e)})}
-async function sendChat(){let text=$("chatInput").value.trim();if(!text)return;try{await addDoc(collection(db,"chatMessages"),{uid:auth.currentUser.uid,username:profile.username,nickname:profile.nickname,text:text.slice(0,1000),createdAt:serverTimestamp()});$("chatInput").value=""}catch(e){alert(niceError(e))}}
-async function reportMessage(messageId,reportedUid,reportedName){let reason=prompt("Reason for report?");if(!reason||!reason.trim())return;try{await addDoc(collection(db,"reports"),{messageId,reportedUid,reportedName,reporterUid:auth.currentUser.uid,reason:reason.trim().slice(0,500),status:"open",createdAt:serverTimestamp()});alert("Report submitted.")}catch(e){alert(niceError(e))}}
-async function deleteChat(id){if(!isAdmin()||!confirm("Delete this message?"))return;try{await deleteDoc(doc(db,"chatMessages",id))}catch(e){alert(niceError(e))}}
-function renderSanta(){if(!isAdmin())return $("panel").innerHTML="<h2>SANTA</h2><p>Access denied.</p>";$("panel").innerHTML='<h2>SANTA CORE</h2><p class="small">This is a local command-response engine, not a connected generative AI service.</p><div id="santaLog" class="ai-log">SANTA: Core online.</div><div class="row"><input id="santaInput" maxlength="500" placeholder="/help or ask a basic question"><button class="btn" id="santaSend">SEND</button></div><button class="btn" data-cmd="/help">/help</button><button class="btn" data-cmd="/status">/status</button><button class="btn" data-cmd="/whoami">/whoami</button><button class="btn" data-cmd="/users">/users</button><button class="btn" data-cmd="/reports">/reports</button><button class="btn" data-cmd="/birthday">/birthday</button>';$("santaSend").onclick=sendSanta;$("santaInput").onkeydown=e=>{if(e.key==="Enter")sendSanta()};document.querySelectorAll("[data-cmd]").forEach(b=>b.onclick=()=>{$("santaInput").value=b.dataset.cmd;sendSanta()})}
-async function sendSanta(){let m=$("santaInput").value.trim(),out=$("santaLog");if(!m||!isAdmin())return;$("santaInput").value="";let reply="Try /help, /status, /whoami, /users, /reports or /birthday.";try{let l=m.toLowerCase();if(l==="/help")reply="Commands: /help, /status, /whoami, /users, /reports, /birthday.";else if(l==="/status")reply="Signed in to Firebase. Access depends on deployed Firestore Rules.";else if(l==="/whoami")reply=profile.nickname+" · "+profile.role;else if(l==="/users")reply="Profile count: "+(await getDocs(collection(db,"users"))).size;else if(l==="/reports")reply="Open reports: "+(await getDocs(query(collection(db,"reports"),where("status","==","open"),limit(50)))).size;else if(l==="/birthday")reply="Birthday reveal target: November 17.";else if(l.includes("who are you"))reply="I am SANTA, the local assistant console. This version is not connected to an AI model."}catch(e){reply=niceError(e)}out.textContent+="\nYOU: "+m+"\nSANTA: "+reply}
-async function renderAdmin(){if(!isAdmin())return $("panel").innerHTML="<h2>ADMIN</h2><p>Access denied.</p>";$("panel").innerHTML='<h2>ADMIN CONTROL</h2><h3>USER DIRECTORY</h3><div id="directory">Loading...</div><h3>OPEN REPORTS</h3><div id="reports">Loading...</div>';let [users,reports]=await Promise.all([getDocs(collection(db,"users")),getDocs(query(collection(db,"reports"),where("status","==","open"),limit(50)))]);$("directory").replaceChildren();users.forEach(d=>{let u=d.data(),x=document.createElement("div");x.className="user-row";x.textContent=(u.nickname||u.username||"User")+" · @"+(u.username||"")+" · "+(u.role||"USER");$("directory").append(x)});$("reports").replaceChildren();if(reports.empty)$("reports").textContent="No open reports.";reports.forEach(d=>{let r=d.data(),x=document.createElement("div");x.className="report-row";let text=document.createElement("p");text.textContent=(r.reportedName||"Unknown")+": "+(r.reason||"");let b=document.createElement("button");b.className="btn";b.textContent="MARK REVIEWED";b.onclick=async()=>{try{await updateDoc(doc(db,"reports",d.id),{status:"reviewed",reviewedBy:auth.currentUser.uid,reviewedAt:serverTimestamp()});await renderAdmin()}catch(e){alert(niceError(e))}};x.append(text,b);$("reports").append(x)})}
-function memoryGame(){let cards=["🐱","🐱","🐶","🐶","🦊","🦊","🐼","🐼"].sort(()=>Math.random()-.5);$("modalContent").innerHTML='<h2>CAT MEMORY ARENA</h2><div id="grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px"></div>';$("modal").classList.remove("hidden");let first=null,lock=false,done=0;cards.forEach(emoji=>{let b=document.createElement("button");b.className="btn";b.style.height="70px";b.textContent="❓";b.onclick=()=>{if(lock||b.dataset.done)return;b.textContent=emoji;if(!first){first={b,emoji};return}if(first.emoji===emoji){first.b.dataset.done=b.dataset.done="1";first=null;done+=2;if(done===cards.length)alert("You cleared CAT MEMORY ARENA!")}else{lock=true;let old=first.b;first=null;setTimeout(()=>{old.textContent=b.textContent="❓";lock=false},600)}};$("grid").append(b)})}
-window.memoryGame=memoryGame;window.closeModal=()=>$("modal").classList.add("hidden");window.logout=async()=>{if(stopChat){stopChat();stopChat=null}await signOut(auth)};
-function esc(s=""){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
-</script></body></html>
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import {
+  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  sendPasswordResetEmail, signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs,
+  query, orderBy, limit, onSnapshot, serverTimestamp, runTransaction,
+  updateDoc, deleteDoc, where
+} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+/* Firebase Web App configuration for BOSS SYSTEM. */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyC255XuKEt8JJKbWRjqLEqhxcOn1TXGC2U",
+  authDomain: "boss-system-ddf6c.firebaseapp.com",
+  projectId: "boss-system-ddf6c",
+  storageBucket: "boss-system-ddf6c.firebasestorage.app",
+  messagingSenderId: "67593000613",
+  appId: "1:67593000613:web:b03c162be0e1661b171f4c",
+  measurementId: "G-E6NGWHFJXH"
+};
+
+const firebaseConfigured = !Object.values(FIREBASE_CONFIG).some(v => String(v).startsWith("YOUR_"));
+let app = null, auth = null, db = null, currentUser = null, currentProfile = null;
+let chatUnsubscribe = null, reportUnsubscribe = null, transferUnsubscribe = null;
+let activeTransfer = null, activePeer = null, activeChannel = null, receivedChunks = [], receiveMeta = null;
+let gameState = null, quizState = null;
+const $ = id => document.getElementById(id);
+const RESERVED_USERNAMES = new Set(["maysi", "santa", "bossmaysi", "boss_maysi", "boss-maysi"]);
+const MAX_TRANSFER_BYTES = 25 * 1024 * 1024;
+const CHUNK_SIZE = 16 * 1024;
+
+if (firebaseConfigured) {
+  app = initializeApp(FIREBASE_CONFIG);
+  auth = getAuth(app);
+  db = getFirestore(app);
+  onAuthStateChanged(auth, async user => {
+    currentUser = user;
+    if (!user) { currentProfile = null; return; }
+    try {
+      const snap = await getDoc(doc(db, "users", user.uid));
+      currentProfile = snap.exists() ? { uid:user.uid, ...snap.data() } : null;
+      if (currentProfile) enterDashboard(currentProfile);
+    } catch (err) { showError(err); }
+  });
+} else {
+  console.warn("Firebase is not configured. Fill FIREBASE_CONFIG in index.html first.");
+}
+
+const bootLines = ["CONNECTING TO PRIVATE NETWORK...","SCANNING ACCESS POINT...","LOADING DIGITAL NOTEBOOK...","CHECKING SECURITY...","SANTA CORE: ONLINE","BOSS PROTOCOL: READY","ACCESS TERMINAL: READY"];
+let bootIndex = 0;
+function bootAnimation(){
+  const target = $("bootText");
+  const interval = setInterval(() => {
+    if (bootIndex >= bootLines.length) {
+      clearInterval(interval);
+      setTimeout(() => { $("opening").classList.add("hidden"); $("access").classList.remove("hidden"); }, 350);
+      return;
+    }
+    target.textContent = bootLines[bootIndex++];
+  }, 300);
+}
+window.addEventListener("load", bootAnimation);
+function hideAllScreens(){document.querySelectorAll(".screen").forEach(el=>el.classList.add("hidden"));}
+function showLogin(){hideAllScreens();$("login").classList.remove("hidden");}
+function showSignup(){hideAllScreens();$("signup").classList.remove("hidden");}
+function backToAccess(){hideAllScreens();$("access").classList.remove("hidden");}
+window.showLogin=showLogin; window.showSignup=showSignup; window.backToAccess=backToAccess;
+
+function showError(err){
+  console.error(err);
+  const code = err?.code || "";
+  const messages = {
+    "auth/email-already-in-use":"That email is already registered.",
+    "auth/invalid-email":"Please enter a valid email address.",
+    "auth/weak-password":"Use a password with at least 6 characters.",
+    "auth/invalid-credential":"Email or password is incorrect.",
+    "auth/network-request-failed":"Network problem. Check your internet connection.",
+    "permission-denied":"Firebase blocked this action. Check Firestore rules and your setup."
+  };
+  alert(messages[code] || err?.message || "Something went wrong. Check the browser console for details.");
+}
+function requireFirebase(){if(!firebaseConfigured){alert("Firebase setup is not finished. Follow BOSS-SYSTEM-SETUP.md first.");return false;}return true;}
+function cleanUsername(value){return value.trim().toLowerCase();}
+function validUsername(value){return /^[a-zA-Z0-9_]{3,20}$/.test(value);}
+
+async function signup(){
+  if(!requireFirebase()) return;
+  const email=$("signupEmail").value.trim().toLowerCase();
+  const username=$("signupUsername").value.trim();
+  const usernameLower=cleanUsername(username);
+  const nickname=$("signupNickname").value.trim();
+  const password=$("signupPassword").value;
+  const confirm=$("signupConfirm").value;
+  if(!email||!username||!nickname||!password||!confirm){alert("All fields are required.");return;}
+  if(!validUsername(username)){alert("Username must be 3–20 characters and use only letters, numbers or underscores.");return;}
+  if(RESERVED_USERNAMES.has(usernameLower)||["boss maysi","santa"].includes(nickname.toLowerCase())){alert("That identity is reserved.");return;}
+  if(password.length<6){alert("Password must contain at least 6 characters.");return;}
+  if(password!==confirm){alert("Passwords do not match.");return;}
+  let credential=null;
+  try{
+    credential=await createUserWithEmailAndPassword(auth,email,password);
+    const uid=credential.user.uid;
+    await runTransaction(db,async tx=>{
+      const nameRef=doc(db,"usernames",usernameLower);
+      const nameSnap=await tx.get(nameRef);
+      if(nameSnap.exists()) throw new Error("That username is already taken. Choose another.");
+      tx.set(doc(db,"users",uid),{uid,username,nickname,usernameLower,role:"USER",createdAt:serverTimestamp()});
+      tx.set(nameRef,{uid,username,usernameLower,createdAt:serverTimestamp()});
+    });
+    const profileSnap=await getDoc(doc(db,"users",uid));
+    currentProfile={uid,...profileSnap.data()};
+    enterDashboard(currentProfile);
+    $("signupEmail").value=$("signupUsername").value=$("signupNickname").value=$("signupPassword").value=$("signupConfirm").value="";
+    alert("Account created! You're signed in now.");
+  }catch(err){
+    if(credential?.user){try{await credential.user.delete();}catch(_){}}
+    showError(err);
+  }
+}
+async function login(){
+  if(!requireFirebase()) return;
+  const email=$("loginEmail").value.trim().toLowerCase();
+  const password=$("loginPassword").value;
+  if(!email||!password){alert("Email and password are required.");return;}
+  try{await signInWithEmailAndPassword(auth,email,password);$("loginPassword").value="";}
+  catch(err){showError(err);}
+}
+async function resetPassword(){
+  if(!requireFirebase())return;
+  const email=($("loginEmail").value||"").trim().toLowerCase();
+  if(!email){alert("Enter your email address in the login box first.");return;}
+  try{await sendPasswordResetEmail(auth,email);alert("If the account exists, a password-reset email has been sent.");}
+  catch(err){showError(err);}
+}
+async function logout(){
+  if(chatUnsubscribe)chatUnsubscribe(); if(reportUnsubscribe)reportUnsubscribe(); if(transferUnsubscribe)transferUnsubscribe();
+  chatUnsubscribe=reportUnsubscribe=transferUnsubscribe=null;
+  if(activePeer)activePeer.close(); activePeer=null; activeChannel=null; activeTransfer=null;
+  if(auth)await signOut(auth);
+  hideAllScreens();$("access").classList.remove("hidden");
+}
+window.signup=signup;window.login=login;window.resetPassword=resetPassword;window.logout=logout;
+
+function enterDashboard(profile){
+  if(!profile)return;
+  currentProfile=profile;
+  hideAllScreens();$("dashboard").classList.remove("hidden");
+  $("welcomeText").textContent=`IDENTITY VERIFIED — WELCOME, ${(profile.nickname||profile.username||"USER").toUpperCase()}.`;
+  const badge=$("roleBadge");
+  const role=profile.role||"USER";
+  badge.textContent=role==="BOSS"?"◆ BOSS MAYSI — HIGHEST AUTHORITY":role==="SANTA"?"◆ SANTA — SYSTEM CONTROLLER":"USER ACCESS";
+  badge.classList.toggle("admin",role==="BOSS"||role==="SANTA");
+  $("santaMessage").textContent=role==="BOSS"?"BOSS MAYSI recognized. Highest authority verified. SANTA Core is standing by.":role==="SANTA"?"SANTA Core online. Use /help to view available commands.":`Welcome, ${profile.nickname||profile.username}. Keep it clever, not chaotic. 🤖`;
+  const now=new Date();
+  $("birthdayReveal").classList.toggle("hidden",!(now.getMonth()===10&&now.getDate()===17));
+  listenForTransfers();
+}
+
+function el(tag,attrs={},text=""){
+  const node=document.createElement(tag);
+  for(const [key,value] of Object.entries(attrs)){if(key==="class")node.className=value;else if(key.startsWith("on")&&typeof value==="function")node.addEventListener(key.slice(2),value);else if(value!==undefined&&value!==null)node.setAttribute(key,String(value));}
+  if(text!=="")node.textContent=text;
+  return node;
+}
+function clearExtra(){const extra=$("extraContent");extra.replaceChildren();return extra;}
+function panel(parent,title){const p=el("section",{class:"panel"});p.append(el("h3",{},title));parent.append(p);return p;}
+function field(parent,labelText,tag="input",attrs={}){const wrap=el("div");wrap.append(el("label",{class:"field-label"},labelText));const input=el(tag,attrs);wrap.append(input);parent.append(wrap);return input;}
+function action(parent,label,fn,cls=""){const b=el("button",{type:"button",class:cls},label);b.addEventListener("click",fn);parent.append(b);return b;}
+function item(parent,title,detail=""){const box=el("div",{class:"item"});box.append(el("strong",{},title));if(detail)box.append(el("small",{},detail));parent.append(box);return box;}
+function fmtDate(value){try{return value?.toDate?value.toDate().toLocaleString():new Date(value).toLocaleString();}catch(_){return "";}}
+
+async function openModule(module){
+  if(!currentUser||!currentProfile){alert("Please log in first.");return;}
+  if(!firebaseConfigured){alert("Finish Firebase setup first.");return;}
+  $("modalTitle").textContent=module;
+  $("modalText").textContent="Loading module…";
+  const extra=clearExtra();$("modal").classList.remove("hidden");
+  try{
+    if(module==="LIBRARY")await renderLibrary(extra);
+    else if(module==="STORAGE")await renderStorage(extra);
+    else if(module==="GAMES")renderGames(extra);
+    else if(module==="RIDDLES")renderRiddles(extra);
+    else if(module==="QUIZ")renderQuiz(extra);
+    else if(module==="LINKS")await renderLinks(extra);
+    else if(module==="CHAT")renderChat(extra);
+    else if(module==="SANTA")renderSanta(extra);
+  }catch(err){$("modalText").textContent="Module error: "+(err.message||"unknown error");showError(err);}
+}
+window.openModule=openModule;
+
+async function renderLibrary(root){
+  $("modalText").textContent="Your notes are saved to your signed-in account in Firestore. File attachments stay local unless you transfer them.";
+  const form=panel(root,"CREATE NOTE");const title=field(form,"NOTE TITLE","input",{type:"text",placeholder:"Note title",maxlength:"100"});const body=field(form,"NOTE CONTENT","textarea",{rows:"4",placeholder:"Write your note…",maxlength:"10000"});
+  action(form,"SAVE NOTE",async()=>{if(!title.value.trim()||!body.value.trim()){alert("Enter a title and note.");return;}await addDoc(collection(db,"users",currentUser.uid,"notes"),{title:title.value.trim(),body:body.value.trim(),createdAt:serverTimestamp(),updatedAt:serverTimestamp()});title.value=body.value="";await renderLibrary(root);},"red-button");
+  const list=panel(root,"SAVED NOTES");const snap=await getDocs(query(collection(db,"users",currentUser.uid,"notes"),orderBy("createdAt","desc"),limit(50)));
+  if(snap.empty)list.append(el("p",{class:"status-line"},"No notes yet."));
+  snap.forEach(d=>{const n=d.data();const box=item(list,n.title||"Untitled",fmtDate(n.createdAt));box.append(el("p",{},n.body||""));action(box,"DELETE",async()=>{if(confirm("Delete this note?")){await deleteDoc(d.ref);await renderLibrary(root);}},"red-button");});
+}
+
+const DB_NAME="bossSystemLocalFilesV1";
+function openLocalDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open(DB_NAME,1);req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains("files"))d.createObjectStore("files",{keyPath:"id"});};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});}
+async function fileDB(method,value){const d=await openLocalDB();return new Promise((resolve,reject)=>{const tx=d.transaction("files",method==="getAll"?"readonly":"readwrite");const store=tx.objectStore("files");let req;if(method==="put")req=store.put(value);else if(method==="delete")req=store.delete(value);else req=store.getAll();req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);tx.oncomplete=()=>d.close();tx.onerror=()=>reject(tx.error);});}
+async function renderStorage(root){
+  $("modalText").textContent="Files stay on this browser/device using IndexedDB. They do not sync automatically and can be lost if site data is cleared. Direct transfer is limited to 25 MB and requires both users online.";
+  const form=panel(root,"SAVE FILE ON THIS DEVICE");const picker=field(form,"CHOOSE A FILE","input",{type:"file"});action(form,"SAVE LOCALLY",async()=>{const f=picker.files?.[0];if(!f){alert("Choose a file first.");return;}try{await fileDB("put",{id:crypto.randomUUID(),name:f.name,type:f.type,size:f.size,lastModified:f.lastModified,blob:f,createdAt:Date.now()});picker.value="";await renderStorage(root);}catch(e){alert("Browser storage failed or is full: "+e.message);}},"red-button");
+  const sendPanel=panel(root,"DIRECT SEND — NO CLOUD FILE UPLOAD");const recipient=field(sendPanel,"RECIPIENT USERNAME","input",{type:"text",placeholder:"Enter exact username"});const sendPicker=field(sendPanel,"FILE TO SEND","input",{type:"file"});action(sendPanel,"START TRANSFER",()=>startTransfer(recipient.value.trim().toLowerCase(),sendPicker.files?.[0]),"red-button");const transferStatus=el("div",{id:"transferStatus",class:"status-line"},"Transfer status: ready");sendPanel.append(transferStatus);
+  const inbox=panel(root,"INCOMING TRANSFERS");const inboxList=el("div",{id:"transferInbox"});inbox.append(inboxList);loadIncomingTransfers(inboxList);
+  const list=panel(root,"FILES SAVED ON THIS DEVICE");const files=await fileDB("getAll");if(!files.length)list.append(el("p",{class:"status-line"},"No local files saved yet."));
+  for(const f of files.sort((a,b)=>b.createdAt-a.createdAt)){const box=item(list,f.name,`${(f.size/1024/1024).toFixed(2)} MB • ${fmtDate(f.createdAt)}`);const actions=el("div",{class:"row-actions"});action(actions,"DOWNLOAD",()=>downloadBlob(f.blob,f.name));action(actions,"DELETE",async()=>{if(confirm("Delete this local file?")){await fileDB("delete",f.id);await renderStorage(root);}},"red-button");box.append(actions);}
+}
+function downloadBlob(blob,name){const url=URL.createObjectURL(blob);const a=el("a",{href:url,download:name});document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+function setTransferStatus(text){const n=$("transferStatus");if(n)n.textContent=text;}
+async function waitIceComplete(pc){if(pc.iceGatheringState==="complete")return;await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error("Connection setup timed out. Try again on a different network.")),12000);pc.addEventListener("icegatheringstatechange",()=>{if(pc.iceGatheringState==="complete"){clearTimeout(timer);resolve();}});});}
+function createPeer(){return new RTCPeerConnection({iceServers:[{urls:"stun:stun.l.google.com:19302"}]});}
+async function findRecipient(username){const snap=await getDocs(query(collection(db,"usernames"),where("usernameLower","==",username),limit(1)));if(snap.empty)return null;return snap.docs[0].data().uid;}
+async function startTransfer(username,file){
+  if(!username||!file){alert("Enter the recipient username and choose a file.");return;}
+  if(file.size>MAX_TRANSFER_BYTES){alert("This prototype supports files up to 25 MB.");return;}
+  if(username===currentProfile.usernameLower){alert("You cannot send a file to yourself.");return;}
+  try{
+    const recipientUid=await findRecipient(username);if(!recipientUid){alert("Username not found. They must have a BOSS SYSTEM account.");return;}
+    activePeer=createPeer();activeTransfer={file,recipientUid,role:"sender"};activeChannel=activePeer.createDataChannel("boss-file",{ordered:true});
+    activeChannel.binaryType="arraybuffer";
+    activeChannel.onopen=async()=>{setTransferStatus("Connected. Sending file…");activeChannel.send(JSON.stringify({type:"meta",name:file.name,size:file.size,mime:file.type||"application/octet-stream"}));const buf=await file.arrayBuffer();for(let offset=0;offset<buf.byteLength;offset+=CHUNK_SIZE){if(!activeChannel||activeChannel.readyState!=="open")throw new Error("Transfer connection closed.");while(activeChannel.bufferedAmount>1024*1024)await new Promise(r=>setTimeout(r,80));activeChannel.send(buf.slice(offset,Math.min(offset+CHUNK_SIZE,buf.byteLength)));setTransferStatus(`Sending… ${Math.min(100,Math.round((offset+CHUNK_SIZE)/buf.byteLength*100))}%`);}activeChannel.send(JSON.stringify({type:"done"}));setTransferStatus("File sent. Wait for receiver confirmation.");};
+    activeChannel.onerror=()=>setTransferStatus("Transfer channel error.");
+    const offer=await activePeer.createOffer();await activePeer.setLocalDescription(offer);await waitIceComplete(activePeer);
+    const ref=await addDoc(collection(db,"transfers"),{senderUid:currentUser.uid,senderName:currentProfile.nickname||currentProfile.username,recipientUid,status:"offered",offer:activePeer.localDescription.sdp,fileName:file.name,fileSize:file.size,createdAt:serverTimestamp()});activeTransfer.docId=ref.id;setTransferStatus("Offer sent. Ask recipient to open STORAGE and accept the transfer.");
+    const unsub=onSnapshot(ref,async snap=>{const data=snap.data();if(!data)return;if(data.status==="accepted"&&data.answer&&activePeer?.signalingState==="have-local-offer"){try{await activePeer.setRemoteDescription({type:"answer",sdp:data.answer});}catch(e){setTransferStatus("Could not establish connection: "+e.message);}}if(data.status==="rejected"||data.status==="cancelled"){setTransferStatus("Transfer was rejected or cancelled.");unsub();}});
+  }catch(err){setTransferStatus("Transfer failed: "+err.message);showError(err);}
+}
+async function loadIncomingTransfers(root){
+  root.replaceChildren();try{const snap=await getDocs(query(collection(db,"transfers"),where("recipientUid","==",currentUser.uid),limit(20)));const docs=snap.docs.filter(d=>d.data().status==="offered");if(!docs.length){root.append(el("p",{class:"status-line"},"No pending transfers."));return;}for(const d of docs){const t=d.data();const box=item(root,t.fileName||"Incoming file",`${t.senderName||"A user"} • ${((t.fileSize||0)/1024/1024).toFixed(2)} MB`);action(box,"ACCEPT",()=>acceptTransfer(d.ref,t),"red-button");action(box,"REJECT",()=>updateDoc(d.ref,{status:"rejected"}));}}catch(err){root.append(el("p",{class:"status-line"},"Could not load transfers: "+err.message));}
+}
+async function listenForTransfers(){if(transferUnsubscribe)transferUnsubscribe();if(!db||!currentUser)return;transferUnsubscribe=onSnapshot(query(collection(db,"transfers"),where("recipientUid","==",currentUser.uid),limit(20)),snap=>{const pending=snap.docs.filter(d=>d.data().status==="offered");if(pending.length&&$("modalTitle").textContent==="STORAGE"){const root=$("transferInbox");if(root)loadIncomingTransfers(root);} });}
+async function acceptTransfer(ref,t){
+  try{
+    activePeer=createPeer();activeTransfer={role:"receiver",ref,fileName:t.fileName,fileSize:t.fileSize};receivedChunks=[];receiveMeta=null;
+    activePeer.ondatachannel=event=>{activeChannel=event.channel;activeChannel.binaryType="arraybuffer";activeChannel.onmessage=async ev=>{if(typeof ev.data==="string"){let m;try{m=JSON.parse(ev.data);}catch(_){return;}if(m.type==="meta"){receiveMeta=m;receivedChunks=[];setTransferStatus(`Receiving ${m.name}…`);}else if(m.type==="done"){const blob=new Blob(receivedChunks,{type:receiveMeta?.mime||"application/octet-stream"});downloadBlob(blob,receiveMeta?.name||t.fileName||"received-file");setTransferStatus("Transfer complete. Check your downloads; save it to My Storage if you want to keep it in the browser.");receivedChunks=[];}}else{receivedChunks.push(ev.data);const total=receivedChunks.reduce((n,c)=>n+(c.byteLength||c.size||0),0);setTransferStatus(`Receiving… ${Math.min(100,Math.round(total/Math.max(1,t.fileSize)*100))}%`);}};};
+    await activePeer.setRemoteDescription({type:"offer",sdp:t.offer});const answer=await activePeer.createAnswer();await activePeer.setLocalDescription(answer);await waitIceComplete(activePeer);await updateDoc(ref,{answer:activePeer.localDescription.sdp,status:"accepted"});setTransferStatus("Accepted. Connecting to sender…");closeModule();openModule("STORAGE");
+  }catch(err){alert("Could not accept transfer: "+err.message);}
+}
+
+async function renderLinks(root){
+  $("modalText").textContent="Save useful URLs to your account. Only the URL and label are stored in Firestore.";
+  const form=panel(root,"SAVE A LINK");const label=field(form,"LINK NAME","input",{type:"text",placeholder:"YouTube, Instagram, study site…",maxlength:"100"});const url=field(form,"URL","input",{type:"url",placeholder:"https://example.com"});action(form,"SAVE LINK",async()=>{let parsed;try{parsed=new URL(url.value.trim());}catch(_){alert("Enter a valid full URL.");return;}if(!["https:","http:"].includes(parsed.protocol)){alert("Only http and https links are allowed.");return;}await addDoc(collection(db,"users",currentUser.uid,"links"),{label:label.value.trim()||parsed.hostname,url:parsed.href,createdAt:serverTimestamp()});label.value=url.value="";await renderLinks(root);},"red-button");
+  const list=panel(root,"YOUR LINKS");const snap=await getDocs(query(collection(db,"users",currentUser.uid,"links"),orderBy("createdAt","desc"),limit(100)));if(snap.empty)list.append(el("p",{class:"status-line"},"No links saved."));snap.forEach(d=>{const v=d.data();const box=item(list,v.label||v.url,v.url);const a=el("a",{href:v.url,target:"_blank",rel:"noopener noreferrer"},"OPEN LINK");a.style.color="#ff9999";box.append(a);action(box,"DELETE",async()=>{if(confirm("Delete this link?")){await deleteDoc(d.ref);await renderLinks(root);}},"red-button");});
+}
+
+function renderGames(root){
+  $("modalText").textContent="CAT MEMORY ARENA — match every pair. This version runs locally; it does not upload game data unless a score is saved.";
+  const game=panel(root,"CAT MEMORY ARENA");const stats=el("p",{class:"status-line",id:"memoryStats"},"Moves: 0 • Pairs: 0");game.append(stats);const grid=el("div",{class:"memory-grid",id:"memoryGrid"});game.append(grid);const emojis=["🐈","🌙","🖤","⭐","🍓","🦇","🎮","🌌"];let deck=[...emojis,...emojis].sort(()=>Math.random()-.5);gameState={moves:0,pairs:0,first:null,locked:false,deck,matched:new Set()};deck.forEach((emoji,i)=>{const b=el("button",{class:"memory-card",type:"button"},"?");b.addEventListener("click",()=>{if(gameState.locked||gameState.matched.has(i)||b.textContent!=="?")return;b.textContent=emoji;if(gameState.first===null){gameState.first=i;}else{gameState.moves++;const first=gameState.first;gameState.first=null;if(deck[first]===emoji){gameState.matched.add(first);gameState.matched.add(i);grid.children[first].disabled=true;b.disabled=true;gameState.pairs++;}else{gameState.locked=true;setTimeout(()=>{grid.children[first].textContent="?";b.textContent="?";gameState.locked=false;},650);}stats.textContent=`Moves: ${gameState.moves} • Pairs: ${gameState.pairs}/8`;if(gameState.pairs===8){stats.textContent+=` • Complete! Score: ${Math.max(10,1000-gameState.moves*25)}`;saveScore("CAT MEMORY ARENA",Math.max(10,1000-gameState.moves*25));}}});grid.append(b);});action(game,"RESTART GAME",()=>renderGames(root));
+}
+async function saveScore(game,score){try{await addDoc(collection(db,"scores"),{uid:currentUser.uid,username:currentProfile.username,nickname:currentProfile.nickname,game,score,createdAt:serverTimestamp()});}catch(e){console.warn("Score not saved",e);}}
+
+const riddles=[
+  {q:"I have keys but no locks, space but no room. What am I?",a:"A keyboard",hint:"You use me to type."},
+  {q:"The more you take, the more you leave behind. What are they?",a:"Footsteps",hint:"Think about walking."},
+  {q:"What has a face and two hands but no arms or legs?",a:"A clock",hint:"It helps you know the time."},
+  {q:"What gets wetter the more it dries?",a:"A towel",hint:"You use it after washing."},
+  {q:"What has many teeth but cannot bite?",a:"A comb",hint:"It helps with hair."}
+];
+function renderRiddles(root){$("modalText").textContent="A little challenge from SANTA. Ask for a hint when you need one.";const p=panel(root,"RIDDLE CHAMBER");let r=riddles[Math.floor(Math.random()*riddles.length)];p.append(el("p",{},r.q));const out=el("p",{class:"status-line"});p.append(out);action(p,"HINT",()=>out.textContent="Hint: "+r.hint);action(p,"REVEAL ANSWER",()=>out.textContent="Answer: "+r.a,"red-button");action(p,"NEXT RIDDLE",()=>renderRiddles(root));}
+const quizzes={
+  Anime:[{q:"In Naruto, what village is Naruto from?",o:["Hidden Leaf","Hidden Sand","Hidden Mist"],a:0},{q:"Which anime features the Survey Corps?",o:["One Piece","Attack on Titan","Bleach"],a:1}],
+  Study:[{q:"What is 7 × 8?",o:["54","56","64"],a:1},{q:"What is the chemical symbol for oxygen?",o:["O","Ox","Og"],a:0}],
+  Gaming:[{q:"Which company makes the PlayStation?",o:["Nintendo","Sony","Valve"],a:1},{q:"In Minecraft, which tool is commonly used to mine stone?",o:["Pickaxe","Fishing rod","Hoe"],a:0}]
+};
+function renderQuiz(root){$("modalText").textContent="Choose a category. This starter quiz contains sample questions that can be expanded later.";const p=panel(root,"QUIZ ARENA");const select=field(p,"CATEGORY","select");["Anime","Study","Gaming"].forEach(x=>select.append(el("option",{value:x},x)));const area=el("div");p.append(area);action(p,"START QUIZ",()=>startQuiz(select.value,area));}
+function startQuiz(category,area){area.replaceChildren();const questions=quizzes[category];quizState={i:0,score:0,category,questions};showQuizQuestion(area);}
+function showQuizQuestion(area){area.replaceChildren();if(quizState.i>=quizState.questions.length){area.append(el("p",{class:"status-line"},`Quiz complete! Score: ${quizState.score}/${quizState.questions.length}`));saveScore("QUIZ: "+quizState.category,quizState.score*100);return;}const q=quizState.questions[quizState.i];area.append(el("p",{},`${quizState.i+1}. ${q.q}`));q.o.forEach((opt,i)=>action(area,opt,()=>{if(i===q.a)quizState.score++;quizState.i++;showQuizQuestion(area); }));}
+
+function renderChat(root){
+  $("modalText").textContent="Shared chat lobby. Messages are visible to signed-in users. Users can report messages; moderators can review reports. Do not post private information.";
+  const form=panel(root,"SYSTEM CHAT");const list=el("div",{class:"chat-box",id:"fireChatBox"});form.append(list);const input=field(form,"MESSAGE","input",{type:"text",placeholder:"Write a message…",maxlength:"1000"});action(form,"SEND MESSAGE",async()=>{const message=input.value.trim();if(!message)return;try{await addDoc(collection(db,"chatMessages"),{uid:currentUser.uid,username:currentProfile.username,nickname:currentProfile.nickname,text:message,createdAt:serverTimestamp()});input.value="";}catch(e){showError(e);}},"red-button");
+  if(chatUnsubscribe)chatUnsubscribe();chatUnsubscribe=onSnapshot(query(collection(db,"chatMessages"),orderBy("createdAt","desc"),limit(60)),snap=>{list.replaceChildren();snap.docs.reverse().forEach(d=>{const m=d.data();const line=el("div",{class:"chat-message"});line.append(el("strong",{},(m.nickname||m.username||"USER")+": "),el("span",{},m.text||""));line.append(el("small",{},fmtDate(m.createdAt)));if(m.uid!==currentUser.uid){action(line,"REPORT",async()=>{const reason=prompt("Why are you reporting this message? (Please be specific)");if(reason===null)return;await addDoc(collection(db,"reports"),{messageId:d.id,reportedUid:m.uid,reportedName:m.nickname||m.username,reporterUid:currentUser.uid,reason:reason.slice(0,500),status:"open",createdAt:serverTimestamp()});alert("Report submitted.");});}if(["BOSS","SANTA"].includes(currentProfile.role))action(line,"REMOVE MESSAGE",async()=>{if(confirm("Remove this message?"))await deleteDoc(d.ref);},"red-button");list.append(line);});list.scrollTop=list.scrollHeight;});
+  if(["BOSS","SANTA"].includes(currentProfile.role)){const mod=panel(root,"MODERATION REPORTS");const reports=el("div");mod.append(reports);if(reportUnsubscribe)reportUnsubscribe();reportUnsubscribe=onSnapshot(query(collection(db,"reports"),where("status","==","open"),limit(30)),snap=>{reports.replaceChildren();if(snap.empty)reports.append(el("p",{class:"status-line"},"No open reports."));snap.forEach(d=>{const r=d.data();const box=item(reports,"Report: "+(r.reportedName||"user"),r.reason||"No reason provided");action(box,"MARK REVIEWED",async()=>{await updateDoc(d.ref,{status:"reviewed",reviewedBy:currentUser.uid,reviewedAt:serverTimestamp()});});});});}
+}
+
+function renderSanta(root){
+  $("modalText").textContent="SANTA is a rule-based helper in this build, not a full AI. Admin commands are checked against the role stored in Firestore.";
+  const p=panel(root,"SANTA CORE");const log=el("div",{class:"chat-box",id:"santaLog"});log.append(el("p",{class:"chat-message chat-santa"},"SANTA: Core online. Type /help for commands."));p.append(log);const input=field(p,"COMMAND","input",{type:"text",placeholder:"/help"});action(p,"EXECUTE",()=>runSanta(input.value,log),"red-button");input.addEventListener("keydown",e=>{if(e.key==="Enter")runSanta(input.value,log);});
+}
+async function runSanta(value,log){const cmd=value.trim();if(!cmd)return;log.append(el("p",{class:"chat-message chat-user"},"YOU: "+cmd));const lower=cmd.toLowerCase();let response="Command not recognized. Type /help.";if(lower==="/help")response="Commands: /help, /status, /whoami, /birthday. Admin only: /reports.";else if(lower==="/status")response="Frontend online. Firebase: "+(firebaseConfigured?"configured":"not configured")+". Signed in: yes.";else if(lower==="/whoami")response=`${currentProfile.nickname} (@${currentProfile.username}) — role ${currentProfile.role}.`;else if(lower==="/birthday")response="BOSS MAYSI birthday protocol is scheduled for November 17 (browser local date).";else if(lower==="/reports"){if(!["BOSS","SANTA"].includes(currentProfile.role))response="ACCESS DENIED. Moderator role required.";else{try{const snap=await getDocs(query(collection(db,"reports"),where("status","==","open"),limit(20)));response=`${snap.size} open report(s). Open CHAT to review reports and message context.`;}catch(e){response="Could not load reports: "+e.message;}}}log.append(el("p",{class:"chat-message chat-santa"},"SANTA: "+response));log.scrollTop=log.scrollHeight;}
+
+function closeModule(){if(chatUnsubscribe)chatUnsubscribe();if(reportUnsubscribe)reportUnsubscribe();chatUnsubscribe=reportUnsubscribe=null;$("modal").classList.add("hidden");}
+window.closeModule=closeModule;
+document.addEventListener("keydown",event=>{if(event.key==="Escape")closeModule();});
+</script>
+
+</body>
+</html>
