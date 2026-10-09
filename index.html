@@ -7,463 +7,85 @@
 <title>BOSS SYSTEM</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
-
-:root{
-  --red:#b30000;
-  --darkred:#650000;
-  --white:#eee;
-  --gray:#777;
-  --line:#292929;
-}
-
-body{
-  min-height:100vh;
-  background:#020202;
-  color:var(--white);
-  font-family:Arial,Helvetica,sans-serif;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow-x:hidden;
-}
-
-/* DEATH NOTE INSPIRED BACKGROUND */
-
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:
-    linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
-  background-size:40px 40px;
-  pointer-events:none;
-}
-
-body::after{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:
-    radial-gradient(circle at 50% 45%,
-    rgba(120,0,0,.12),
-    transparent 45%);
-  pointer-events:none;
-}
-
-/* SCREEN */
-
-.screen{
-  width:92%;
-  max-width:800px;
-  border:1px solid #333;
-  background:rgba(5,5,5,.97);
-  padding:35px;
-  box-shadow:
-    0 0 80px rgba(0,0,0,.9),
-    0 0 25px rgba(150,0,0,.05);
-  position:relative;
-  z-index:2;
-}
-
-.hidden{
-  display:none!important;
-}
-
-/* OPENING */
-
-#opening{
-  text-align:center;
-  animation:fadeIn .8s ease;
-}
-
-.note-symbol{
-  font-family:Georgia,serif;
-  font-size:80px;
-  color:#eee;
-  text-shadow:
-    0 0 10px #fff,
-    0 0 30px rgba(255,255,255,.2);
-  margin-bottom:10px;
-}
-
-.opening-title{
-  font-family:Georgia,serif;
-  font-size:42px;
-  letter-spacing:9px;
-  margin-bottom:8px;
-}
-
-.opening-sub{
-  color:#777;
-  letter-spacing:5px;
-  font-size:10px;
-  margin-bottom:40px;
-}
-
-.loading{
-  width:100%;
-  height:2px;
-  background:#181818;
-  overflow:hidden;
-  margin-bottom:18px;
-}
-
-.loading-bar{
-  width:0%;
-  height:100%;
-  background:#aaa;
-  animation:load 3s forwards;
-}
-
-.boot-text{
-  font-family:monospace;
-  color:#777;
-  font-size:12px;
-  line-height:2;
-}
-
-.red{
-  color:#b30000;
-}
-
-.ok{
-  color:#8aff8a;
-}
-
-/* TITLE */
-
-.title{
-  font-family:Georgia,serif;
-  font-size:31px;
-  letter-spacing:7px;
-  margin-bottom:8px;
-}
-
-.subtitle{
-  color:#666;
-  font-size:10px;
-  letter-spacing:4px;
-  margin-bottom:35px;
-}
-
-/* BUTTONS */
-
-button{
-  width:100%;
-  padding:15px;
-  background:#080808;
-  color:#eee;
-  border:1px solid #444;
-  cursor:pointer;
-  letter-spacing:3px;
-  transition:.25s;
-  margin-top:8px;
-}
-
-button:hover{
-  background:#eee;
-  color:#000;
-  border-color:#eee;
-}
-
-.red-button{
-  border-color:#650000;
-}
-
-.red-button:hover{
-  background:#8d0000;
-  color:#fff;
-  border-color:#8d0000;
-}
-
-/* INPUTS */
-
-input{
-  width:100%;
-  padding:15px;
-  background:#101010;
-  border:1px solid #444;
-  color:white;
-  outline:none;
-  margin:10px 0 16px;
-}
-
-input:focus{
-  border-color:#aaa;
-  box-shadow:0 0 10px rgba(255,255,255,.04);
-}
-
-label{
-  display:block;
-  color:#777;
-  font-size:10px;
-  letter-spacing:2px;
-  margin-top:12px;
-}
-
-/* CHOICE */
-
-.choice{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-
-.choice button{
-  min-height:90px;
-}
-
-.choice-icon{
-  display:block;
-  font-size:25px;
-  margin-bottom:8px;
-}
-
-/* WELCOME */
-
-.welcome{
-  color:#aaa;
-  font-family:monospace;
-  margin-bottom:25px;
-  padding:12px;
-  border-left:2px solid #650000;
-  background:#090909;
-}
-
-/* MODULES */
-
-.modules{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
-}
-
-.module{
-  min-height:105px;
-  padding:22px 10px;
-  border:1px solid #252525;
-  background:#0b0b0b;
-  color:#aaa;
-  text-align:center;
-  cursor:pointer;
-  transition:.2s;
-}
-
-.module:hover{
-  border-color:#777;
-  color:#fff;
-  transform:translateY(-2px);
-  box-shadow:0 0 15px rgba(150,0,0,.08);
-}
-
-.icon{
-  display:block;
-  font-size:25px;
-  margin-bottom:10px;
-}
-
-/* SANTA */
-
-.santa{
-  margin-top:22px;
-  padding:18px;
-  border-left:2px solid #777;
-  background:#0b0b0b;
-}
-
-.santa strong{
-  font-family:monospace;
-  letter-spacing:2px;
-}
-
-.santa p{
-  margin-top:10px;
-  color:#aaa;
-  line-height:1.6;
-}
-
-/* ROLE BADGE */
-
-.role{
-  display:inline-block;
-  padding:6px 10px;
-  border:1px solid #444;
-  color:#aaa;
-  font-family:monospace;
-  font-size:10px;
-  letter-spacing:2px;
-  margin-bottom:20px;
-}
-
-.admin{
-  color:#ff5555;
-  border-color:#650000;
-}
-
-/* MODAL */
-
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.88);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  z-index:10;
-}
-
-.modal-box{
-  width:100%;
-  max-width:620px;
-  background:#090909;
-  border:1px solid #333;
-  padding:30px;
-  box-shadow:0 0 50px rgba(0,0,0,.9);
-  animation:modalIn .25s ease;
-}
-
-.modal-title{
-  font-family:Georgia,serif;
-  letter-spacing:4px;
-  margin-bottom:20px;
-}
-
-.modal-text{
-  color:#999;
-  line-height:1.7;
-  margin-bottom:25px;
-}
-
-/* CHAT */
-
-.chat-box{
-  height:240px;
-  overflow-y:auto;
-  background:#050505;
-  border:1px solid #222;
-  padding:15px;
-  margin-bottom:15px;
-  font-family:monospace;
-}
-
-.chat-message{
-  margin-bottom:12px;
-  line-height:1.5;
-}
-
-.chat-user{
-  color:#eee;
-}
-
-.chat-santa{
-  color:#aaa;
-}
-
-/* FOOTER */
-
-.footer{
-  margin-top:22px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  color:#444;
-  font-size:9px;
-  letter-spacing:2px;
-}
-
-.logout{
-  width:auto;
-  padding:8px 15px;
-  margin:0;
-  font-size:9px;
-}
-
-/* ANIMATIONS */
-
-@keyframes load{
-  from{width:0%}
-  to{width:100%}
-}
-
-@keyframes fadeIn{
-  from{
-    opacity:0;
-    transform:scale(.97);
-  }
-  to{
-    opacity:1;
-    transform:scale(1);
-  }
-}
-
-@keyframes modalIn{
-  from{
-    opacity:0;
-    transform:translateY(15px);
-  }
-  to{
-    opacity:1;
-    transform:translateY(0);
-  }
-}
-
-/* MOBILE */
-
-@media(max-width:600px){
-
-  .screen{
-    padding:25px 18px;
-  }
-
-  .opening-title{
-    font-size:28px;
-    letter-spacing:5px;
-  }
-
-  .title{
-    font-size:22px;
-    letter-spacing:4px;
-  }
-
-  .choice{
-    grid-template-columns:1fr;
-  }
-
-  .modules{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .module{
-    min-height:90px;
-  }
-}
-
-/* BOSS SYSTEM additions */
-.field-label{display:block;color:#888;font-size:10px;letter-spacing:2px;margin:12px 0 5px}
-textarea,select{width:100%;padding:12px;background:#101010;border:1px solid #444;color:#eee;margin:8px 0 12px;font:inherit;resize:vertical}
-textarea:focus,select:focus{outline:1px solid #aaa}
-.panel{border:1px solid #282828;background:#080808;padding:15px;margin:12px 0}
-.panel h3{font-size:13px;letter-spacing:2px;margin-bottom:10px;color:#eee}
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Share+Tech+Mono&display=swap');
+:root{color-scheme:dark;--blood:#b20d22;--blood2:#6f0715;--redglow:rgba(178,13,34,.28);--ink:#08070a;--panel:rgba(15,13,17,.94);--panel2:#141116;--line:rgba(211,193,198,.15);--text:#f2edf0;--muted:#a49aa1;--gold:#c8a6a9;--green:#8fe0a6}
+*{box-sizing:border-box;margin:0;padding:0}
+html{min-height:100%;background:#050406}
+body{min-height:100vh;background:radial-gradient(ellipse at 50% 0%,#2b090f 0%,#10080d 35%,#050406 72%);color:var(--text);font-family:Inter,Arial,sans-serif;display:flex;align-items:center;justify-content:center;overflow-x:hidden;padding:26px 14px}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 0 35%,rgba(126,7,24,.08) 35.1% 35.4%,transparent 35.5%),linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:auto,38px 38px,38px 38px;mask-image:linear-gradient(to bottom,black,transparent 95%)}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;box-shadow:inset 0 0 160px #000;opacity:.9}
+.screen{width:min(100%,900px);border:1px solid rgba(204,45,65,.32);background:linear-gradient(145deg,rgba(19,15,20,.97),rgba(7,6,9,.98));padding:clamp(22px,4vw,42px);box-shadow:0 24px 90px #000b,0 0 40px rgba(117,5,22,.12),inset 0 1px rgba(255,255,255,.04);position:relative;z-index:2;animation:fadeIn .45s ease;isolation:isolate}
+.screen:before{content:"";position:absolute;top:0;left:0;width:90px;height:2px;background:var(--blood);box-shadow:0 0 18px var(--blood);z-index:-1}
+.hidden{display:none!important}
+#opening{text-align:center;min-height:420px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.note-symbol{font-family:Georgia,serif;font-size:clamp(65px,9vw,92px);color:#f3e9ec;text-shadow:0 0 8px #fff8,0 0 35px #a50a23,0 0 75px #6b0617;margin-bottom:8px;animation:omen 3s ease-in-out infinite}
+.opening-title,.title,.modal-title{font-family:Cinzel,Georgia,serif;font-weight:700}
+.opening-title{font-size:clamp(28px,5vw,48px);letter-spacing:clamp(4px,1vw,11px);margin-bottom:10px;text-shadow:0 0 24px #7d091b88}
+.opening-sub,.subtitle{color:#a18d96;letter-spacing:clamp(2px,.55vw,5px);font-family:"Share Tech Mono",monospace;font-size:11px}
+.opening-sub{margin-bottom:42px}
+.loading{width:min(100%,440px);height:3px;background:#25151b;overflow:hidden;margin-bottom:18px}
+.loading-bar{height:100%;background:linear-gradient(90deg,#530513,#ef334f,#f5c3ca);box-shadow:0 0 14px #d01939;animation:load 3s forwards}
+.boot-text{font-family:"Share Tech Mono",monospace;color:#a18d96;font-size:12px;line-height:2}
+.red{color:#ff5368}.ok{color:var(--green)}
+.title{font-size:clamp(25px,4vw,36px);letter-spacing:clamp(3px,.7vw,8px);margin-bottom:8px;text-shadow:0 0 22px #8e102633}
+.subtitle{margin-bottom:28px}
+button{width:100%;padding:14px 16px;background:linear-gradient(135deg,#171116,#0b090c);color:#f5edf0;border:1px solid #4b3039;cursor:pointer;letter-spacing:1.5px;font-family:Inter,sans-serif;font-size:12px;font-weight:700;transition:transform .18s,border-color .18s,background .18s,box-shadow .18s;margin-top:8px;border-radius:4px}
+button:hover{border-color:#d12b46;background:linear-gradient(135deg,#35101a,#160b10);box-shadow:0 0 22px rgba(178,13,34,.18);transform:translateY(-1px)}
+button:active{transform:translateY(0)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid #e33c55;outline-offset:2px}
+.red-button{border-color:#922034;background:linear-gradient(135deg,#5c0b1b,#260911)}
+.red-button:hover{background:linear-gradient(135deg,#97152b,#450a17);border-color:#ed5269;color:#fff}
+input,textarea,select{width:100%;padding:14px;background:#0b090d;border:1px solid #3d3037;color:#f5edf0;outline:none;margin:9px 0 15px;border-radius:4px;font:inherit;font-size:13px}
+input:focus,textarea:focus,select:focus{border-color:#b91e38;box-shadow:0 0 0 3px rgba(178,13,34,.12)}
+label,.field-label{display:block;color:#b3a2aa;font-family:"Share Tech Mono",monospace;font-size:11px;letter-spacing:1.5px;margin-top:12px}
+.choice{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.choice button{min-height:112px;font-family:Cinzel,Georgia,serif;font-size:14px;letter-spacing:2px;border-color:#5a2935}
+.choice-icon{display:block;font-size:29px;margin-bottom:12px;color:#e43a54;text-shadow:0 0 20px #b20d2266}
+.welcome{color:#d4c7cc;font-family:"Share Tech Mono",monospace;margin:18px 0 26px;padding:16px 18px;border-left:3px solid var(--blood);background:linear-gradient(90deg,#390b16a8,#110b10);line-height:1.7;font-size:12px}
+.modules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.module{position:relative;min-height:126px;padding:22px 12px;border:1px solid #38242c;background:linear-gradient(145deg,#171117,#0b090c);color:#d8cbd1;text-align:center;cursor:pointer;transition:.22s;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px;font-family:Cinzel,Georgia,serif;font-size:12px;letter-spacing:1.8px;overflow:hidden}
+.module:before{content:"";position:absolute;left:0;top:0;width:2px;height:0;background:#e32643;transition:height .22s}
+.module:after{content:"";position:absolute;inset:auto -25% -55% -25%;height:80%;background:radial-gradient(ellipse,#9b102322,transparent 65%);pointer-events:none}
+.module:hover{border-color:#a7273b;color:#fff;transform:translateY(-3px);box-shadow:0 10px 26px #0008,0 0 20px #8b0b201f}
+.module:hover:before{height:100%}
+.icon{display:block;font-size:29px;filter:drop-shadow(0 0 8px #bb1b3540)}
+.santa{margin-top:25px;padding:20px;border:1px solid #4b252f;border-left:3px solid #b20d22;background:linear-gradient(120deg,#1b0d14,#0b090c)}
+.santa strong{font-family:"Share Tech Mono",monospace;letter-spacing:1.5px;color:#f3dce2}
+.santa p{margin-top:10px;color:#b8aab1;line-height:1.7;font-size:13px}
+.role{display:inline-flex;align-items:center;padding:7px 11px;border:1px solid #51323c;color:#d2b9c2;font-family:"Share Tech Mono",monospace;font-size:11px;letter-spacing:1px;margin-bottom:4px;border-radius:3px;background:#170d12}
+.admin{color:#ff9aa8;border-color:#a72138;background:#310b15}
+.modal{position:fixed;inset:0;background:rgba(2,1,3,.88);backdrop-filter:blur(9px);display:flex;align-items:center;justify-content:center;padding:clamp(10px,3vw,26px);z-index:10;overflow-y:auto}
+.modal-box{width:100%;max-width:760px;max-height:min(90vh,900px);overflow-y:auto;overscroll-behavior:contain;background:linear-gradient(145deg,#171118,#09080b);border:1px solid #763040;padding:clamp(18px,3vw,30px);box-shadow:0 25px 100px #000,0 0 40px #8e0c201e;animation:modalIn .22s ease;position:relative}
+.modal-title{font-size:clamp(21px,3vw,28px);letter-spacing:2px;margin-bottom:15px;color:#f6e7eb}
+.modal-text{color:#b7a8af;line-height:1.7;font-size:13px;margin-bottom:20px}
+.modal-box>.close{position:sticky;bottom:0;margin-top:20px;background:#250b12;border-color:#742234;box-shadow:0 -12px 18px #09080b}
+.chat-box{height:330px;max-height:45vh;overflow-y:auto;background:#08070a;border:1px solid #34232b;padding:14px;margin-bottom:15px;font-family:Inter,sans-serif;border-radius:4px}
+.chat-message{margin-bottom:12px;line-height:1.55;padding:10px 12px;border:1px solid #2d2228;background:#120e13;border-radius:5px;overflow-wrap:anywhere}
+.chat-message strong{color:#f1d8df}.chat-message small{display:block;color:#76656d;font-size:10px;margin-top:5px}
+.chat-user{color:#f4e7ec;border-color:#612435;background:#241019;margin-left:10%}
+.chat-santa{color:#ded1e8;border-color:#453451;background:#17111f;margin-right:10%}
+.footer{margin-top:25px;display:flex;justify-content:space-between;align-items:center;gap:12px;color:#8b7b83;font-family:"Share Tech Mono",monospace;font-size:10px;letter-spacing:1px}
+.logout{width:auto;padding:9px 15px;margin:0;font-size:10px;border-color:#6c2636}
+.panel{border:1px solid #3a2730;background:linear-gradient(145deg,#130f14,#0b090c);padding:16px;margin:13px 0;border-radius:5px}
+.panel h3{font-size:13px;letter-spacing:1.5px;margin-bottom:10px;color:#f0dfe4;font-family:Cinzel,Georgia,serif}
 .row-actions{display:flex;gap:8px;flex-wrap:wrap}
 .row-actions button{width:auto;flex:1;min-width:120px;letter-spacing:1px;padding:10px}
-.item{border:1px solid #292929;padding:12px;margin:8px 0;background:#0d0d0d;overflow-wrap:anywhere}
-.item small{display:block;color:#777;margin-top:5px}
+.item{border:1px solid #35242b;padding:13px;margin:8px 0;background:#100d11;overflow-wrap:anywhere;border-radius:4px}
+.item small{display:block;color:#8b7b83;margin-top:5px}
 .item button{letter-spacing:1px;padding:8px;margin-top:8px}
-.status-line{font-family:monospace;font-size:12px;color:#aaa;white-space:pre-wrap;line-height:1.6;margin:10px 0}
-.birthday-reveal{padding:15px;margin:0 0 18px;border:1px solid #9a2424;background:#180606;color:#ffb8b8;text-align:center;letter-spacing:1px}
-.progress{height:5px;background:#222;margin:10px 0}.progress span{display:block;height:100%;background:#b30000;width:0}
-.memory-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:12px 0}
-.memory-card{min-height:58px;padding:8px;background:#111;border:1px solid #444;font-size:22px;letter-spacing:0}
-.memory-card:disabled{opacity:1;color:#eee;background:#310909;border-color:#8d0000}
-@media(max-width:600px){.modal-box{padding:18px;max-height:90vh;overflow-y:auto}.row-actions{flex-direction:column}.row-actions button{width:100%}.memory-card{min-height:48px;padding:4px}}
-
+.status-line{font-family:"Share Tech Mono",monospace;font-size:12px;color:#b6a6ad;white-space:pre-wrap;line-height:1.7;margin:10px 0}
+.birthday-reveal{padding:16px;margin:0 0 18px;border:1px solid #a62a42;background:linear-gradient(135deg,#330b16,#17080d);color:#ffc4ce;text-align:center;letter-spacing:1px}
+.progress{height:5px;background:#302027;margin:10px 0}.progress span{display:block;height:100%;background:linear-gradient(90deg,#69091a,#ee304e);width:0}
+.memory-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:14px 0}
+.memory-card{min-height:74px;padding:8px;background:linear-gradient(145deg,#20151c,#0d0a0e);border:1px solid #56303b;font-size:25px;letter-spacing:0;border-radius:5px}
+.memory-card:disabled{opacity:1;color:#fff;background:#3b101c;border-color:#b72a45}
+@keyframes load{from{width:0}to{width:100%}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@keyframes modalIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes omen{0%,100%{filter:drop-shadow(0 0 3px #b20d2244);transform:translateY(0)}50%{filter:drop-shadow(0 0 18px #b20d2288);transform:translateY(-2px)}}
+@media(min-width:760px){.modules{grid-template-columns:repeat(4,minmax(0,1fr))}.screen:has(.modules){max-width:1040px}}
+@media(max-width:600px){body{padding:10px 8px;align-items:flex-start}.screen{padding:24px 17px;margin:8px 0}.choice{grid-template-columns:1fr 1fr;gap:9px}.choice button{min-height:95px;padding:10px 6px;font-size:11px}.modules{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.module{min-height:100px;padding:14px 6px;font-size:10px;letter-spacing:1px}.icon{font-size:24px}.modal{padding:8px;align-items:center}.modal-box{max-height:94vh;padding:17px 13px}.chat-box{height:280px;max-height:42vh}.row-actions{flex-direction:column}.row-actions button{width:100%}.memory-card{min-height:55px;padding:4px}.footer{align-items:flex-start;flex-direction:column}.logout{width:100%}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition:none!important}}
 </style>
 </head>
 
@@ -561,6 +183,8 @@ textarea:focus,select:focus{outline:1px solid #aaa}
     id="loginPassword"
     type="password"
     placeholder="Enter password"
+    autocomplete="current-password"
+    onkeydown="if(event.key==='Enter')login()"
   >
 
   <button onclick="login()">
@@ -633,6 +257,7 @@ textarea:focus,select:focus{outline:1px solid #aaa}
     id="signupPassword"
     type="password"
     placeholder="Create a password"
+    autocomplete="new-password"
   >
 
   <label>
@@ -643,6 +268,8 @@ textarea:focus,select:focus{outline:1px solid #aaa}
     id="signupConfirm"
     type="password"
     placeholder="Confirm password"
+    autocomplete="new-password"
+    onkeydown="if(event.key==='Enter')signup()"
   >
 
   <button onclick="signup()">
@@ -752,7 +379,7 @@ textarea:focus,select:focus{outline:1px solid #aaa}
      MODAL
 ====================================== -->
 
-<div class="modal hidden" id="modal">
+<div class="modal hidden" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" onclick="if(event.target===this)closeModule()">
 
   <div class="modal-box">
 
@@ -815,9 +442,17 @@ if (firebaseConfigured) {
     if (!user) { currentProfile = null; return; }
     try {
       const snap = await getDoc(doc(db, "users", user.uid));
-      currentProfile = snap.exists() ? { uid:user.uid, ...snap.data() } : null;
-      if (currentProfile) enterDashboard(currentProfile);
-    } catch (err) { showError(err); }
+      if (!snap.exists()) {
+        currentProfile = null;
+        alert("Firebase login succeeded, but this account has no /users/" + user.uid + " profile document. Check Firestore setup.");
+        return;
+      }
+      currentProfile = { uid:user.uid, ...snap.data() };
+      enterDashboard(currentProfile);
+    } catch (err) {
+      currentProfile = null;
+      showError(err);
+    }
   });
 } else {
   console.warn("Firebase is not configured. Fill FIREBASE_CONFIG in index.html first.");
@@ -899,8 +534,15 @@ async function login(){
   const email=$("loginEmail").value.trim().toLowerCase();
   const password=$("loginPassword").value;
   if(!email||!password){alert("Email and password are required.");return;}
-  try{await signInWithEmailAndPassword(auth,email,password);$("loginPassword").value="";}
-  catch(err){showError(err);}
+  const btn=$("login").querySelector('button[onclick="login()"]');
+  const original=btn?.textContent;
+  if(btn){btn.disabled=true;btn.textContent="VERIFYING ACCESS…";}
+  try{
+    await signInWithEmailAndPassword(auth,email,password);
+    $("loginPassword").value="";
+    // onAuthStateChanged loads the profile and enters the dashboard.
+  }catch(err){showError(err);}
+  finally{if(btn){btn.disabled=false;btn.textContent=original||"ENTER SYSTEM";}}
 }
 async function resetPassword(){
   if(!requireFirebase())return;
@@ -1054,14 +696,21 @@ function renderChat(root){
 }
 
 function renderSanta(root){
-  $("modalText").textContent="SANTA is a rule-based helper in this build, not a full AI. Admin commands are checked against the role stored in Firestore.";
+  $("modalText").textContent="SANTA CORE // COMMAND CONSOLE. This build runs verified local commands; it is not yet connected to a conversational AI model. Admin commands are checked against the role stored in Firestore.";
   const p=panel(root,"SANTA CORE");const log=el("div",{class:"chat-box",id:"santaLog"});log.append(el("p",{class:"chat-message chat-santa"},"SANTA: Core online. Type /help for commands."));p.append(log);const input=field(p,"COMMAND","input",{type:"text",placeholder:"/help"});action(p,"EXECUTE",()=>runSanta(input.value,log),"red-button");input.addEventListener("keydown",e=>{if(e.key==="Enter")runSanta(input.value,log);});
 }
 async function runSanta(value,log){const cmd=value.trim();if(!cmd)return;log.append(el("p",{class:"chat-message chat-user"},"YOU: "+cmd));const lower=cmd.toLowerCase();let response="Command not recognized. Type /help.";if(lower==="/help")response="Commands: /help, /status, /whoami, /birthday. Admin only: /reports.";else if(lower==="/status")response="Frontend online. Firebase: "+(firebaseConfigured?"configured":"not configured")+". Signed in: yes.";else if(lower==="/whoami")response=`${currentProfile.nickname} (@${currentProfile.username}) — role ${currentProfile.role}.`;else if(lower==="/birthday")response="BOSS MAYSI birthday protocol is scheduled for November 17 (browser local date).";else if(lower==="/reports"){if(!["BOSS","SANTA"].includes(currentProfile.role))response="ACCESS DENIED. Moderator role required.";else{try{const snap=await getDocs(query(collection(db,"reports"),where("status","==","open"),limit(20)));response=`${snap.size} open report(s). Open CHAT to review reports and message context.`;}catch(e){response="Could not load reports: "+e.message;}}}log.append(el("p",{class:"chat-message chat-santa"},"SANTA: "+response));log.scrollTop=log.scrollHeight;}
 
-function closeModule(){if(chatUnsubscribe)chatUnsubscribe();if(reportUnsubscribe)reportUnsubscribe();chatUnsubscribe=reportUnsubscribe=null;$("modal").classList.add("hidden");}
+function closeModule(){
+  if(chatUnsubscribe)chatUnsubscribe();
+  if(reportUnsubscribe)reportUnsubscribe();
+  chatUnsubscribe=reportUnsubscribe=null;
+  $("modal").classList.add("hidden");
+  $("extraContent").replaceChildren();
+  document.body.style.overflow="";
+}
 window.closeModule=closeModule;
-document.addEventListener("keydown",event=>{if(event.key==="Escape")closeModule();});
+document.addEventListener("keydown",event=>{if(event.key==="Escape"&&!$("modal").classList.contains("hidden"))closeModule();});
 </script>
 
 </body>
