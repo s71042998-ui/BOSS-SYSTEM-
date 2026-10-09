@@ -16,7 +16,11 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;background:lin
 body:after{content:"";position:fixed;inset:0;pointer-events:none;box-shadow:inset 0 0 160px #000;opacity:.9}
 .screen{width:min(100%,900px);border:1px solid rgba(204,45,65,.32);background:linear-gradient(145deg,rgba(19,15,20,.97),rgba(7,6,9,.98));padding:clamp(22px,4vw,42px);box-shadow:0 24px 90px #000b,0 0 40px rgba(117,5,22,.12),inset 0 1px rgba(255,255,255,.04);position:relative;z-index:2;animation:fadeIn .45s ease;isolation:isolate}
 .screen:before{content:"";position:absolute;top:0;left:0;width:90px;height:2px;background:var(--blood);box-shadow:0 0 18px var(--blood);z-index:-1}
-.hidden{display:none!important}
+.hidden,[hidden]{display:none!important}
+.screen:not(.hidden){display:block}
+body>.screen{width:min(100% - 28px,900px);margin:auto}
+#authNotice{border:1px solid #78303c;background:#1b0a10;padding:12px;margin:12px 0 16px;color:#ffd0d7;white-space:pre-wrap;overflow-wrap:anywhere}
+#authNotice:empty{display:none}
 #opening{text-align:center;min-height:420px;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .note-symbol{font-family:Georgia,serif;font-size:clamp(65px,9vw,92px);color:#f3e9ec;text-shadow:0 0 8px #fff8,0 0 35px #a50a23,0 0 75px #6b0617;margin-bottom:8px;animation:omen 3s ease-in-out infinite}
 .opening-title,.title,.modal-title{font-family:Cinzel,Georgia,serif;font-weight:700}
@@ -163,6 +167,8 @@ label,.field-label{display:block;color:#b3a2aa;font-family:"Share Tech Mono",mon
   <div class="subtitle">
     EXISTING IDENTITY
   </div>
+
+  <div id="authNotice" class="status-line" role="status" aria-live="polite" hidden></div>
 
   <label>
     EMAIL ADDRESS
@@ -433,25 +439,43 @@ const RESERVED_USERNAMES = new Set(["maysi", "santa", "bossmaysi", "boss_maysi",
 const MAX_TRANSFER_BYTES = 25 * 1024 * 1024;
 const CHUNK_SIZE = 16 * 1024;
 
+let authObserverBusy = false;
 if (firebaseConfigured) {
   app = initializeApp(FIREBASE_CONFIG);
   auth = getAuth(app);
   db = getFirestore(app);
   onAuthStateChanged(auth, async user => {
     currentUser = user;
-    if (!user) { currentProfile = null; return; }
+    if (!user) {
+      currentProfile = null;
+      authObserverBusy = false;
+      return;
+    }
+    if (authObserverBusy) return;
+    authObserverBusy = true;
     try {
       const snap = await getDoc(doc(db, "users", user.uid));
       if (!snap.exists()) {
         currentProfile = null;
-        alert("Firebase login succeeded, but this account has no /users/" + user.uid + " profile document. Check Firestore setup.");
+        hideAllScreens();
+        $("login").classList.remove("hidden");
+        setAuthNotice("Firebase accepted the email/password, but this account has no users/" + user.uid + " profile document. Do not create another account. In Firestore, open the users collection and make sure the document ID is this exact UID; it needs uid, username, nickname, usernameLower and role fields. BOSS/SANTA roles must be assigned only by you in Firebase Console.");
         return;
       }
-      currentProfile = { uid:user.uid, ...snap.data() };
+      const data = snap.data();
+      if (data.uid && data.uid !== user.uid) throw new Error("Profile UID does not match the signed-in account. Check the users document ID in Firestore.");
+      if (!["BOSS", "SANTA", "USER"].includes(data.role)) throw new Error("This account has an invalid role value. Use BOSS, SANTA, or USER in the Firestore profile.");
+      currentProfile = { uid:user.uid, ...data };
       enterDashboard(currentProfile);
+      setAuthNotice("");
     } catch (err) {
       currentProfile = null;
-      showError(err);
+      hideAllScreens();
+      $("login").classList.remove("hidden");
+      setAuthNotice("Signed-in profile could not be loaded. " + (err?.code || err?.message || "Check Firestore rules and the users/{UID} document."));
+      console.error("BOSS SYSTEM auth/profile error", err);
+    } finally {
+      authObserverBusy = false;
     }
   });
 } else {
@@ -473,13 +497,20 @@ function bootAnimation(){
 }
 window.addEventListener("load", bootAnimation);
 function hideAllScreens(){document.querySelectorAll(".screen").forEach(el=>el.classList.add("hidden"));}
-function showLogin(){hideAllScreens();$("login").classList.remove("hidden");}
-function showSignup(){hideAllScreens();$("signup").classList.remove("hidden");}
-function backToAccess(){hideAllScreens();$("access").classList.remove("hidden");}
+function showLogin(){hideAllScreens();$("login").classList.remove("hidden");setAuthNotice("");}
+function showSignup(){hideAllScreens();$("signup").classList.remove("hidden");setAuthNotice("");}
+function backToAccess(){hideAllScreens();$("access").classList.remove("hidden");setAuthNotice("");}
 window.showLogin=showLogin; window.showSignup=showSignup; window.backToAccess=backToAccess;
 
+function setAuthNotice(message){
+  const box=$("authNotice");
+  if(!box)return;
+  box.textContent=message||"";
+  box.hidden=!message;
+}
 function showError(err){
   console.error(err);
+  setAuthNotice(err?.code ? (err.code + ": " + (err.message||"Request failed.")) : (err?.message||"Request failed."));
   const code = err?.code || "";
   const messages = {
     "auth/email-already-in-use":"That email is already registered.",
@@ -497,6 +528,7 @@ function validUsername(value){return /^[a-zA-Z0-9_]{3,20}$/.test(value);}
 
 async function signup(){
   if(!requireFirebase()) return;
+  setAuthNotice("");
   const email=$("signupEmail").value.trim().toLowerCase();
   const username=$("signupUsername").value.trim();
   const usernameLower=cleanUsername(username);
@@ -511,6 +543,7 @@ async function signup(){
   let credential=null;
   try{
     credential=await createUserWithEmailAndPassword(auth,email,password);
+    currentUser=credential.user;
     const uid=credential.user.uid;
     await runTransaction(db,async tx=>{
       const nameRef=doc(db,"usernames",usernameLower);
@@ -533,16 +566,44 @@ async function login(){
   if(!requireFirebase()) return;
   const email=$("loginEmail").value.trim().toLowerCase();
   const password=$("loginPassword").value;
-  if(!email||!password){alert("Email and password are required.");return;}
+  if(!email||!password){setAuthNotice("Enter both your email address and password.");return;}
   const btn=$("login").querySelector('button[onclick="login()"]');
   const original=btn?.textContent;
   if(btn){btn.disabled=true;btn.textContent="VERIFYING ACCESS…";}
+  setAuthNotice("Checking Firebase credentials…");
   try{
-    await signInWithEmailAndPassword(auth,email,password);
+    const credential=await signInWithEmailAndPassword(auth,email,password);
+    currentUser=credential.user;
+    const profileSnap=await getDoc(doc(db,"users",credential.user.uid));
+    if(!profileSnap.exists()){
+      setAuthNotice("Email/password accepted, but the matching Firestore profile is missing. UID: "+credential.user.uid+". Do not create another account. Fix the users document ID in Firestore; the exact UID must be the document ID.");
+      return;
+    }
+    const profile=profileSnap.data();
+    if(profile.uid && profile.uid!==credential.user.uid){
+      setAuthNotice("Profile UID mismatch. The users document ID and its uid field must match the UID shown in Firebase Authentication.");
+      return;
+    }
+    if(!["BOSS","SANTA","USER"].includes(profile.role)){
+      setAuthNotice("Invalid profile role. Set role to BOSS, SANTA, or USER in Firebase Console.");
+      return;
+    }
+    currentProfile={uid:credential.user.uid,...profile};
+    enterDashboard(currentProfile);
     $("loginPassword").value="";
-    // onAuthStateChanged loads the profile and enters the dashboard.
-  }catch(err){showError(err);}
-  finally{if(btn){btn.disabled=false;btn.textContent=original||"ENTER SYSTEM";}}
+    setAuthNotice("");
+  }catch(err){
+    const messages={
+      "auth/invalid-credential":"Email or password is incorrect. Use the existing account email and password, or use Reset Password by Email.",
+      "auth/invalid-email":"That email address is not valid.",
+      "auth/too-many-requests":"Firebase temporarily blocked sign-in attempts. Wait a while, then try again.",
+      "auth/network-request-failed":"Network error. Check internet and try again.",
+      "permission-denied":"Firestore denied the profile read. The Firestore rules or users/{UID} document need checking."
+    };
+    setAuthNotice(messages[err?.code] || ((err?.code?err.code+": ":"")+(err?.message||"Login failed.")));
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent=original||"ENTER SYSTEM";}
+  }
 }
 async function resetPassword(){
   if(!requireFirebase())return;
@@ -561,7 +622,7 @@ async function logout(){
 window.signup=signup;window.login=login;window.resetPassword=resetPassword;window.logout=logout;
 
 function enterDashboard(profile){
-  if(!profile)return;
+  if(!profile || !currentUser || profile.uid!==currentUser.uid){setAuthNotice("Dashboard blocked: signed-in Firebase user and profile UID do not match.");return;}
   currentProfile=profile;
   hideAllScreens();$("dashboard").classList.remove("hidden");
   $("welcomeText").textContent=`IDENTITY VERIFIED — WELCOME, ${(profile.nickname||profile.username||"USER").toUpperCase()}.`;
