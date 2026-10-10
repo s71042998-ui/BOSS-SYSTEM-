@@ -25,11 +25,10 @@
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
 html, body { width: 100vw; height: 100vh; background: #0b0c10; color: var(--text-main); overflow: hidden; }
 
-/* Global App Shell */
 #appShell { display: flex; width: 100vw; height: 100vh; background: var(--bg-dark); }
 .hidden { display: none !important; }
 
-/* Far Left Icon Bar (Servers / Hubs) */
+/* Far Left Icon Bar */
 .server-bar {
   width: 72px; background: #0e0f15; border-right: 1px solid var(--border);
   display: flex; flex-direction: column; align-items: center; padding: 16px 0; gap: 12px;
@@ -50,7 +49,7 @@ html, body { width: 100vw; height: 100vh; background: #0b0c10; color: var(--text
 }
 .server-divider { width: 32px; height: 2px; background: var(--border); margin: 4px 0; }
 
-/* Sub-Sidebar (DMs / Channels) */
+/* Sub-Sidebar (Channels / DMs) */
 .channel-sidebar {
   width: 260px; background: var(--bg-sidebar); border-right: 1px solid var(--border);
   display: flex; flex-direction: column; padding: 16px;
@@ -81,13 +80,13 @@ html, body { width: 100vw; height: 100vh; background: #0b0c10; color: var(--text
 .view-header h2 { font-size: 18px; font-weight: 600; }
 .view-body { flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
 
-/* Right Panel (Members / Storage / Meta) */
+/* Right Panel */
 .right-sidebar {
   width: 280px; background: var(--bg-sidebar); border-left: 1px solid var(--border);
   padding: 20px; display: flex; flex-direction: column; gap: 20px; overflow-y: auto;
 }
 
-/* Premium Card Components */
+/* Card & Buttons */
 .card {
   background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px;
 }
@@ -100,19 +99,20 @@ html, body { width: 100vw; height: 100vh; background: #0b0c10; color: var(--text
 .button-secondary { background: var(--bg-input); border: 1px solid var(--border); color: var(--text-main); }
 .button-secondary:hover { background: var(--bg-hover); }
 
-/* Instagram-style Profile UI */
-.profile-banner { height: 120px; background: linear-gradient(135deg, #4f46e5, #9333ea); border-radius: 12px 12px 0 0; position: relative; }
+/* Instagram-style Profile View */
+.profile-banner { height: 130px; background: linear-gradient(135deg, #4f46e5, #9333ea); border-radius: 12px 12px 0 0; position: relative; }
 .profile-avatar-large {
   width: 90px; height: 90px; border-radius: 50%; background: #2d3142; border: 4px solid var(--bg-panel);
   position: absolute; bottom: -30px; left: 24px; display: flex; align-items: center; justify-content: center;
-  font-size: 32px; font-weight: 700;
+  font-size: 32px; font-weight: 700; overflow: hidden;
 }
+.profile-avatar-large img { width: 100%; height: 100%; object-fit: cover; }
 .profile-meta { padding: 40px 24px 24px; background: var(--bg-panel); border-radius: 0 0 12px 12px; border: 1px solid var(--border); border-top: none; }
 .profile-meta h2 { font-size: 22px; font-weight: 700; }
 .profile-meta .tag { color: var(--text-muted); font-size: 13px; margin-top: 2px; }
 .profile-meta .bio { font-size: 14px; margin-top: 12px; color: var(--text-main); line-height: 1.5; }
 
-/* Real Chat Message Pane */
+/* Chat Pane */
 .chat-container { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
 .message-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; padding-right: 8px; }
 .message-item { display: flex; gap: 12px; }
@@ -122,21 +122,13 @@ html, body { width: 100vw; height: 100vh; background: #0b0c10; color: var(--text
 .message-time { font-size: 11px; color: var(--text-muted); }
 .message-text { font-size: 13.5px; color: #e5e7eb; line-height: 1.5; background: var(--bg-panel); padding: 10px 14px; border-radius: 0 12px 12px 12px; border: 1px solid var(--border); width: fit-content; max-width: 600px; }
 
-/* Input Bar */
 .chat-input-bar {
   background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px;
   padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-top: 16px;
 }
 .chat-input-bar input { background: transparent; border: none; outline: none; color: #fff; width: 100%; font-size: 14px; }
 
-/* Automated Birthday Highlight Banner */
-.bday-highlight-card {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.15));
-  border: 1px solid rgba(168, 85, 247, 0.4); border-radius: 12px; padding: 20px;
-  display: flex; align-items: center; justify-content: space-between;
-}
-
-/* Authentication Overlay */
+/* Auth Screen */
 .auth-overlay {
   position: fixed; inset: 0; background: rgba(11, 12, 16, 0.95); backdrop-filter: blur(10px);
   display: flex; align-items: center; justify-content: center; z-index: 100;
@@ -148,11 +140,11 @@ html, body { width: 100vw; height: 100vh; background: #0b0c10; color: var(--text
 </head>
 <body>
 
-<!-- AUTHENTICATION SCREEN -->
+<!-- AUTHENTICATION OVERLAY -->
 <div id="authScreen" class="auth-overlay">
   <div class="auth-card">
-    <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 6px;">Welcome Back</h2>
-    <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;">Enter your credentials to access BOSS SYSTEM</p>
+    <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 6px;">BOSS SYSTEM</h2>
+    <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;">Sign in or create your secure account</p>
     <div id="authNotice" style="color: var(--accent-red); font-size: 12px; margin-bottom: 12px;"></div>
 
     <label style="font-size: 12px; font-weight: 600; color: var(--text-muted);">EMAIL ADDRESS</label>
@@ -166,26 +158,26 @@ html, body { width: 100vw; height: 100vh; background: #0b0c10; color: var(--text
       <input id="authNickname" class="input-field" type="text" placeholder="Display Name">
       
       <label style="font-size: 12px; font-weight: 600; color: var(--text-muted);">BIRTHDATE (MM-DD-YYYY)</label>
-      <input id="authBirthday" class="input-field" type="text" placeholder="11-17-2009">
+      <input id="authBirthday" class="input-field" type="text" placeholder="11-17-2009" value="11-17-2009">
     </div>
 
     <label style="font-size: 12px; font-weight: 600; color: var(--text-muted);">PASSWORD</label>
-    <input id="authPassword" class="input-field" type="password" placeholder="••••••••">
+    <input id="authPassword" class="input-field" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')handleAuthSubmit()">
 
     <button class="button" style="width: 100%; margin-top: 8px;" onclick="handleAuthSubmit()">Continue</button>
     
     <div style="text-align: center; margin-top: 16px;">
-      <a href="#" style="color: var(--accent); font-size: 13px; text-decoration: none;" onclick="toggleAuthMode()">Need an account? Sign Up</a>
+      <a href="#" style="color: var(--accent); font-size: 13px; text-decoration: none;" onclick="toggleAuthMode()">Toggle Login / Sign Up</a>
     </div>
   </div>
 </div>
 
-<!-- MAIN DISCORD / INSTAGRAM HYBRID APP SHELL -->
+<!-- APP SHELL -->
 <div id="appShell">
 
-  <!-- FAR LEFT: SERVER & NAVIGATION BAR -->
+  <!-- FAR LEFT ICON BAR -->
   <div class="server-bar">
-    <div class="server-icon active" title="Dashboard / DMs" onclick="switchMainTab('dms')">💬</div>
+    <div class="server-icon active" title="Direct Messages" onclick="switchMainTab('dms')">💬</div>
     <div class="server-divider"></div>
     <div class="server-icon" title="Servers" onclick="switchMainTab('servers')">🌐</div>
     <div class="server-icon" title="Profile" onclick="switchMainTab('profile')">👤</div>
@@ -195,54 +187,46 @@ html, body { width: 100vw; height: 100vh; background: #0b0c10; color: var(--text
     <div class="server-icon" style="color: var(--accent-red);" title="Log Out" onclick="logout()">🚪</div>
   </div>
 
-  <!-- SECONDARY SIDEBAR (CHANNELS / DM FRIENDS LIST) -->
+  <!-- SECONDARY CHANNEL / DM SIDEBAR -->
   <div class="channel-sidebar">
-    <input class="search-box" type="text" placeholder="Search conversations...">
+    <input class="search-box" type="text" placeholder="Find or start a chat...">
     
     <div class="sidebar-section-label">Direct Messages</div>
     <div id="dmList">
-      <div class="nav-item active" onclick="loadChat('Global Community Chat')">
+      <div class="nav-item active" onclick="loadChatChannel('Global Chat')">
         <div class="avatar">#<div class="status-dot"></div></div>
         <span>Global Chat</span>
       </div>
+      <div class="nav-item" onclick="loadChatChannel('SANTA AI Bot')">
+        <div class="avatar">🤖<div class="status-dot"></div></div>
+        <span>SANTA AI</span>
+      </div>
     </div>
 
-    <div class="sidebar-section-label" style="margin-top: 20px;">Servers</div>
+    <div class="sidebar-section-label" style="margin-top: 20px;">Servers & Groups</div>
     <div id="serverNavList">
-      <div class="nav-item" onclick="loadChat('Syndicate Core')">
+      <div class="nav-item" onclick="loadChatChannel('Syndicate Core')">
         <div class="avatar">S</div>
         <span>Syndicate Core</span>
       </div>
     </div>
   </div>
 
-  <!-- MAIN CENTRAL CONTENT AREA -->
+  <!-- MAIN CENTRAL VIEW -->
   <div class="main-view">
-    
-    <!-- HEADER BAR -->
     <div class="view-header">
       <div style="display: flex; align-items: center; gap: 12px;">
         <h2 id="currentViewTitle">Global Chat</h2>
         <span id="currentUserRoleTag" style="font-size: 11px; background: rgba(99, 102, 241, 0.2); color: var(--accent); padding: 4px 8px; border-radius: 4px; font-weight: 600;">USER</span>
       </div>
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <button class="button button-secondary" onclick="switchMainTab('profile')">My Profile</button>
+      <div>
+        <button class="button button-secondary" onclick="switchMainTab('profile')">Insta Profile</button>
       </div>
     </div>
 
-    <!-- VIEW BODY (DYNAMIC CONTENT) -->
     <div class="view-body" id="mainViewBody">
       
-      <!-- AUTOMATED BIRTHDAY SURPRISE BANNER (ACTIVE ON NOV 17 / MATCHING BDAY) -->
-      <div id="birthdaySurpriseCard" class="bday-highlight-card hidden">
-        <div>
-          <h3 style="font-size: 18px; font-weight: 700; color: #fff;">🎉 Happy Birthday!</h3>
-          <p id="birthdayWishText" style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Wishing you an incredible birthday! SANTA AI and the network celebrate you today.</p>
-        </div>
-        <button class="button">Send Wishes 🎂</button>
-      </div>
-
-      <!-- MAIN CHAT PANE -->
+      <!-- CHAT VIEW PANE -->
       <div id="chatPane" class="chat-container">
         <div class="message-list" id="messageList">
           <div class="message-item">
@@ -250,9 +234,9 @@ html, body { width: 100vw; height: 100vh; background: #0b0c10; color: var(--text
             <div class="message-content">
               <div class="message-header">
                 <span class="message-author">SANTA AI</span>
-                <span class="message-time">Today at 10:00 PM</span>
+                <span class="message-time">System Core</span>
               </div>
-              <div class="message-text">Welcome to BOSS SYSTEM. Network online and secure. Type /help or chat freely.</div>
+              <div class="message-text">System initialized and secure. Ready for commands or messaging.</div>
             </div>
           </div>
         </div>
@@ -263,16 +247,16 @@ html, body { width: 100vw; height: 100vh; background: #0b0c10; color: var(--text
         </div>
       </div>
 
-      <!-- INSTAGRAM STYLE PROFILE VIEW (HIDDEN BY DEFAULT) -->
+      <!-- INSTAGRAM STYLE PROFILE VIEW -->
       <div id="profilePane" class="hidden">
         <div class="card" style="padding: 0; overflow: hidden;">
           <div class="profile-banner">
-            <div class="profile-avatar-large" id="pfpAvatarIcon">👑</div>
+            <div class="profile-avatar-large" id="profileAvatarDisplay">👑</div>
           </div>
           <div class="profile-meta">
             <h2 id="profDisplayName">User</h2>
             <div class="tag" id="profHandle">@user</div>
-            <div class="bio" id="profBioText">No bio set yet. Click Edit Profile to customize your space.</div>
+            <div class="bio" id="profBioText">No bio specified.</div>
             
             <div style="display: flex; gap: 24px; margin-top: 16px; font-size: 13px; color: var(--text-muted);">
               <div>🎂 Birthdate: <strong id="profBdayText" style="color: #fff;">11-17-2009</strong></div>
@@ -282,7 +266,7 @@ html, body { width: 100vw; height: 100vh; background: #0b0c10; color: var(--text
         </div>
 
         <div class="card" style="margin-top: 20px;">
-          <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">Customize Profile</h3>
+          <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">Edit Profile</h3>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
             <div>
               <label style="font-size: 11px; font-weight: 600; color: var(--text-muted);">NICKNAME</label>
@@ -293,6 +277,8 @@ html, body { width: 100vw; height: 100vh; background: #0b0c10; color: var(--text
               <input id="editBdayInput" class="input-field" type="text">
             </div>
           </div>
+          <label style="font-size: 11px; font-weight: 600; color: var(--text-muted);">PROFILE PICTURE URL</label>
+          <input id="editPfpInput" class="input-field" type="text" placeholder="https://image.url/photo.jpg">
           <label style="font-size: 11px; font-weight: 600; color: var(--text-muted);">BIO</label>
           <textarea id="editBioInput" class="input-field" rows="3"></textarea>
           <button class="button" onclick="saveProfileData()">Save Profile Changes</button>
@@ -302,23 +288,17 @@ html, body { width: 100vw; height: 100vh; background: #0b0c10; color: var(--text
     </div>
   </div>
 
-  <!-- RIGHT SIDEBAR (MEMBERS & MEDIA GALLERY) -->
+  <!-- RIGHT SIDEBAR (ONLINE MEMBERS) -->
   <div class="right-sidebar">
-    <div style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted);">Online Members</div>
-    
+    <div style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted);">Members Online</div>
     <div id="memberList">
       <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
         <div class="avatar" style="width: 32px; height: 32px; font-size: 12px;">S<div class="status-dot"></div></div>
         <div>
           <div style="font-size: 13px; font-weight: 600;">SANTA AI</div>
-          <div style="font-size: 10px; color: var(--text-muted);">System Bot</div>
+          <div style="font-size: 10px; color: var(--text-muted);">Assistant Bot</div>
         </div>
       </div>
-    </div>
-
-    <div style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-top: 20px;">Shared Files</div>
-    <div class="card" style="padding: 12px; font-size: 12px; color: var(--text-muted); text-align: center;">
-      No shared files in this channel.
     </div>
   </div>
 
@@ -353,7 +333,7 @@ onAuthStateChanged(auth, async user => {
     if (snap.exists()) {
       currentProfile = snap.data();
     } else {
-      currentProfile = { uid: user.uid, username: "user", nickname: "User", birthday: "11-17-2009", bio: "", role: "USER" };
+      currentProfile = { uid: user.uid, username: "user", nickname: "User", birthday: "11-17-2009", bio: "", pfp: "", role: "USER" };
     }
     initDashboard();
   } else {
@@ -380,7 +360,7 @@ window.handleAuthSubmit = async () => {
 
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       currentProfile = {
-        uid: cred.user.uid, username, nickname, birthday, bio: "Digital space in BOSS SYSTEM.",
+        uid: cred.user.uid, username, nickname, birthday, bio: "Secure digital node.", pfp: "",
         role: username === "boss_maysi" ? "BOSS" : "USER"
       };
       await setDoc(doc(db, "users", cred.user.uid), currentProfile);
@@ -395,12 +375,6 @@ function initDashboard() {
   document.getElementById("currentUserRoleTag").textContent = currentProfile.role || "USER";
   updateProfileView();
   listenToGlobalChat();
-
-  // Automatic Birthday Check (Triggers for Nov 17 or matching birthday)
-  if (currentProfile.birthday && currentProfile.birthday.includes("11-17")) {
-    document.getElementById("birthdaySurpriseCard").classList.remove("hidden");
-    document.getElementById("birthdayWishText").textContent = `Wishing a wonderful 17th Birthday to ${currentProfile.nickname}! May your day on November 17 be filled with happiness and joy! 🎉✨`;
-  }
 }
 
 function updateProfileView() {
@@ -412,6 +386,14 @@ function updateProfileView() {
   document.getElementById("editNickInput").value = currentProfile.nickname || "";
   document.getElementById("editBdayInput").value = currentProfile.birthday || "11-17-2009";
   document.getElementById("editBioInput").value = currentProfile.bio || "";
+  document.getElementById("editPfpInput").value = currentProfile.pfp || "";
+
+  const pfpDiv = document.getElementById("profileAvatarDisplay");
+  if(currentProfile.pfp) {
+    pfpDiv.innerHTML = `<img src="${currentProfile.pfp}" alt="PFP">`;
+  } else {
+    pfpDiv.innerHTML = "👑";
+  }
 }
 
 window.saveProfileData = async () => {
@@ -419,14 +401,16 @@ window.saveProfileData = async () => {
   currentProfile.nickname = document.getElementById("editNickInput").value;
   currentProfile.birthday = document.getElementById("editBdayInput").value;
   currentProfile.bio = document.getElementById("editBioInput").value;
+  currentProfile.pfp = document.getElementById("editPfpInput").value;
 
   await updateDoc(doc(db, "users", auth.currentUser.uid), {
     nickname: currentProfile.nickname,
     birthday: currentProfile.birthday,
-    bio: currentProfile.bio
+    bio: currentProfile.bio,
+    pfp: currentProfile.pfp
   });
   updateProfileView();
-  alert("Profile changes saved to Firestore database!");
+  alert("Profile updated successfully!");
 };
 
 function listenToGlobalChat() {
@@ -479,6 +463,13 @@ window.switchMainTab = (tab) => {
     document.getElementById("chatPane").classList.remove("hidden");
     document.getElementById("currentViewTitle").textContent = tab === 'santa' ? "SANTA AI Assistant" : "Global Chat";
   }
+};
+
+window.loadChatChannel = (name) => {
+  document.querySelectorAll(".nav-item").forEach(el => el.classList.remove("active"));
+  event.currentTarget.classList.add("active");
+  document.getElementById("currentViewTitle").textContent = name;
+  document.getElementById("chatInput").placeholder = `Message #${name}...`;
 };
 
 window.logout = async () => {
