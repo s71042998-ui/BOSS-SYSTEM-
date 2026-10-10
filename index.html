@@ -259,7 +259,6 @@ function enterDashboard(profile){
   badge.textContent = `◆ ${profile.role} ACCESS`;
   badge.classList.toggle("admin", profile.role === "BOSS" || profile.role === "SANTA");
   
-  // Check Birthday Intelligence (Boss Maysi protocol or standard users)
   const today = new Date();
   const formattedToday = `${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
   if(profile.birthday === formattedToday || (profile.username.toLowerCase() === "maysi" && formattedToday === "11-17")) {
@@ -272,7 +271,7 @@ function panel(parent, title){ const p = document.createElement("section"); p.cl
 
 async function openModule(module){
   $("modalTitle").textContent = module;
-  $("modalText").textContent = "Loading module data...";
+  $("modalText").textContent = "Loading module interface...";
   const extra = clearExtra(); $("modal").classList.remove("hidden");
   try {
     if(module === "SERVERS") await renderServers(extra);
@@ -288,15 +287,16 @@ async function openModule(module){
 window.openModule = openModule;
 
 async function renderServers(root){
-  $("modalText").textContent = "Join public servers or create private invite-only servers with full member controls.";
-  const p = panel(root, "SERVER DIRECTORY");
-  const createBox = panel(root, "CREATE A SERVER");
-  const sName = document.createElement("input"); sName.placeholder = "Server Name"; createBox.append(sName);
-  const sPublic = document.createElement("select"); sPublic.innerHTML = `<option value="true">Public Server</option><option value="false">Private Server (Invite Only)</option>`; createBox.append(sPublic);
+  $("modalText").textContent = "Manage or join community nodes and private encrypted channels.";
+  const createBox = panel(root, "CREATE A SERVER NODE");
+  const sName = document.createElement("input"); sName.placeholder = "Server Name (e.g. Syndicate Core)"; createBox.append(sName);
+  const sPublic = document.createElement("select"); 
+  sPublic.innerHTML = `<option value="true">Public Node (Open to all)</option><option value="false">Private Node (Invite / Key Required)</option>`; 
+  createBox.append(sPublic);
   
-  const b = document.createElement("button"); b.textContent = "CREATE SERVER"; b.className = "red-button";
+  const b = document.createElement("button"); b.textContent = "INITIALIZE SERVER"; b.className = "red-button";
   b.onclick = async () => {
-    if(!sName.value.trim()) return;
+    if(!sName.value.trim()) { alert("Enter a server name."); return; }
     const ref = await addDoc(collection(db, "servers"), {
       name: sName.value.trim(),
       isPublic: sPublic.value === "true",
@@ -304,25 +304,26 @@ async function renderServers(root){
       createdAt: serverTimestamp()
     });
     await setDoc(doc(db, "servers", ref.id, "members", currentUser.uid), { uid: currentUser.uid, username: currentProfile.username, role: "owner", joinedAt: serverTimestamp() });
-    alert("Server created successfully!");
+    alert("Server successfully created!");
     renderServers(root);
   };
   createBox.append(b);
 
-  const list = panel(root, "DISCOVER SERVERS");
+  const list = panel(root, "ACTIVE SERVERS DIRECTORY");
   const snap = await getDocs(query(collection(db, "servers"), limit(20)));
+  if(snap.empty) { list.append(document.createElement("p")).textContent = "No servers found in registry."; }
   snap.forEach(docSnap => {
     const s = docSnap.data();
     const item = document.createElement("div"); item.className = "item";
-    item.innerHTML = `<strong>${s.name}</strong> <small>${s.isPublic ? "Public" : "Private Server"}</small>`;
-    const joinBtn = document.createElement("button"); joinBtn.textContent = "JOIN / OPEN";
+    item.innerHTML = `<strong>${s.name}</strong> <small>Type: ${s.isPublic ? "Public" : "Private Secure"}</small>`;
+    const joinBtn = document.createElement("button"); joinBtn.textContent = "JOIN NODE";
     joinBtn.onclick = async () => {
       if(!s.isPublic) {
-        const code = prompt("Enter server invite code or approval key:");
-        if(code !== "boss-secret") { alert("Invalid private server key."); return; }
+        const code = prompt("Enter private access key for this node:");
+        if(code !== "boss-secret") { alert("Access denied: Invalid key."); return; }
       }
       await setDoc(doc(db, "servers", docSnap.id, "members", currentUser.uid), { uid: currentUser.uid, username: currentProfile.username, role: "member", joinedAt: serverTimestamp() });
-      alert("Joined server!");
+      alert("Successfully joined server node!");
     };
     item.append(joinBtn);
     list.append(item);
@@ -330,20 +331,20 @@ async function renderServers(root){
 }
 
 async function renderProfiles(root){
-  $("modalText").textContent = "Member directory, presence status, and privacy-conscious birthday configurations.";
-  const p = panel(root, "MEMBER DIRECTORY");
+  $("modalText").textContent = "Inspect network presence, account status, and birthday registers.";
+  const p = panel(root, "USER DIRECTORY & PRESENCE");
   const snap = await getDocs(query(collection(db, "users"), limit(25)));
   snap.forEach(docSnap => {
     const u = docSnap.data();
     const item = document.createElement("div"); item.className = "item";
-    item.innerHTML = `<strong>${u.nickname} (@${u.username})</strong> <small>Role: ${u.role} • Birthday: ${u.birthdayPublic ? (u.birthday || "Not set") : "Private"}</small>`;
+    item.innerHTML = `<strong>${u.nickname} (@${u.username})</strong> <small>Role: ${u.role} • Birthday: ${u.birthdayPublic !== false ? (u.birthday || "Not specified") : "Restricted (Private)"}</small>`;
     p.append(item);
   });
 }
 
 async function renderLibrary(root){
   $("modalText").textContent = "Encrypted digital notebook saved directly to your Firestore profile.";
-  const p = panel(root, "YOUR NOTES");
+  const p = panel(root, "SECURE NOTES");
   const noteInput = document.createElement("textarea"); noteInput.placeholder = "Write a secure note..."; p.append(noteInput);
   const saveBtn = document.createElement("button"); saveBtn.textContent = "SAVE NOTE"; saveBtn.className = "red-button";
   saveBtn.onclick = async () => {
@@ -398,9 +399,9 @@ function renderSantaAI(root){
     if(!input.value.trim()) return;
     const txt = input.value.trim();
     chatLog.innerHTML += `<div class="chat-message"><strong>YOU:</strong> ${txt}</div>`;
-    let reply = "SANTA: Interesting question. Try asking about servers, birthdays, or games!";
+    let reply = "SANTA: Interesting query. Try asking about servers, birthdays, or games!";
     const low = txt.toLowerCase();
-    if(low.includes("roast")) reply = "SANTA: You want a roast? Your code works on the first try — which means you haven't tested it hard enough yet.";
+    if(low.includes("roast")) reply = "SANTA: You want a roast? Your code runs smoothly on the first try—which simply means you haven't tested it hard enough yet.";
     else if(low.includes("help")) reply = "SANTA: Commands available: /status, /servers, /birthday, /roast.";
     else if(low.includes("birthday")) reply = "SANTA: Birthday intelligence active! Automated English wishes and reminder notifications are online.";
     chatLog.innerHTML += `<div class="chat-message"><strong>SANTA:</strong> ${reply}</div>`;
