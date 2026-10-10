@@ -3,564 +3,868 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DEATH NOTE // SUPREME SYSTEM</title>
+
+<title>BOSS SYSTEM</title>
+
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
-
-:root {
-  --bg-dark: #080709;
-  --bg-sidebar: #0f0d12;
-  --bg-panel: #16131a;
-  --bg-input: #1e1a24;
-  --bg-hover: rgba(186, 24, 27, 0.15);
-  --accent-red: #ba181b;
-  --accent-crimson: #e63946;
-  --glow-red: rgba(230, 57, 70, 0.4);
-  --text-main: #f1faee;
-  --text-muted: #a09abc;
-  --text-gold: #d4af37;
-  --border: rgba(255, 255, 255, 0.08);
-  --online: #2a9d8f;
-}
-
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-html, body { width: 100vw; height: 100vh; background: var(--bg-dark); color: var(--text-main); overflow: hidden; }
-
-/* Death Note Vignette Ambient Light */
-body:before {
-  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 99;
-  background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(0,0,0,0.85) 100%);
-  box-shadow: inset 0 0 100px #000;
-}
-
-#appShell { display: flex; width: 100vw; height: 100vh; background: var(--bg-dark); }
-.hidden { display: none !important; }
-
-/* Far Left Icon Bar (Death Note Aesthetic) */
-.server-bar {
-  width: 76px; background: #050406; border-right: 1px solid var(--border);
-  display: flex; flex-direction: column; align-items: center; padding: 18px 0; gap: 14px; z-index: 10;
-}
-.server-icon {
-  width: 48px; height: 48px; border-radius: 14px; background: var(--bg-panel);
-  display: flex; align-items: center; justify-content: center; font-size: 20px;
-  cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid var(--border); color: var(--text-main);
-  position: relative;
-}
-.server-icon:hover, .server-icon.active {
-  border-radius: 12px; background: var(--accent-red); color: #fff;
-  box-shadow: 0 0 20px var(--glow-red); border-color: var(--accent-crimson);
-}
-.server-icon.active::before {
-  content: ""; position: absolute; left: -14px; top: 10px; bottom: 10px;
-  width: 4px; background: var(--accent-crimson); border-radius: 0 4px 4px 0;
-  box-shadow: 0 0 12px var(--accent-crimson);
-}
-.server-divider { width: 32px; height: 1px; background: var(--border); margin: 4px 0; }
-
-/* Secondary Sidebar */
-.channel-sidebar {
-  width: 260px; background: var(--bg-sidebar); border-right: 1px solid var(--border);
-  display: flex; flex-direction: column; padding: 18px; z-index: 5;
-}
-.search-box {
-  background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px;
-  padding: 10px 14px; color: var(--text-main); font-size: 13px; outline: none; width: 100%; margin-bottom: 16px;
-  transition: 0.2s;
-}
-.search-box:focus { border-color: var(--accent-crimson); box-shadow: 0 0 10px var(--glow-red); }
-.sidebar-section-label {
-  font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
-  color: var(--text-muted); margin: 14px 0 8px 4px;
-}
-.nav-item {
-  display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px;
-  cursor: pointer; color: var(--text-muted); font-size: 13px; font-weight: 500; transition: 0.15s;
-}
-.nav-item:hover, .nav-item.active { background: var(--bg-hover); color: var(--text-main); }
-.nav-item.active { background: rgba(186, 24, 27, 0.25); color: #fff; border-left: 3px solid var(--accent-crimson); font-weight: 600; }
-.avatar { width: 36px; height: 36px; border-radius: 50%; background: #1a1622; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; position: relative; flex-shrink: 0; }
-.status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--online); position: absolute; bottom: 0; right: 0; border: 2px solid var(--bg-sidebar); }
-
-/* Main Content Area */
-.main-view { flex: 1; display: flex; flex-direction: column; background: var(--bg-dark); overflow: hidden; }
-.view-header {
-  height: 64px; border-bottom: 1px solid var(--border); display: flex; align-items: center;
-  justify-content: space-between; padding: 0 24px; background: var(--bg-sidebar);
-}
-.view-header h2 { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255,255,255,0.1); }
-.view-body { flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
-
-/* Right Panel */
-.right-sidebar {
-  width: 280px; background: var(--bg-sidebar); border-left: 1px solid var(--border);
-  padding: 20px; display: flex; flex-direction: column; gap: 20px; overflow-y: auto;
-}
-
-/* Card & Button Styles */
-.card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
-.button {
-  background: linear-gradient(135deg, #ba181b, #660708); color: #fff; border: 1px solid var(--accent-crimson); border-radius: 8px;
-  padding: 10px 18px; font-weight: 600; font-size: 13px; cursor: pointer; transition: 0.25s;
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px; letter-spacing: 0.5px;
-}
-.button:hover { background: linear-gradient(135deg, #e63946, #800f2f); box-shadow: 0 0 20px var(--glow-red); }
-.button-secondary { background: var(--bg-input); border: 1px solid var(--border); color: var(--text-main); }
-.button-secondary:hover { background: var(--bg-hover); }
-
-/* Profile Page Styling */
-.profile-banner { height: 140px; background: linear-gradient(135deg, #2b0b10, #080709); border-radius: 12px 12px 0 0; position: relative; border-bottom: 1px solid var(--border); }
-.profile-avatar-large {
-  width: 90px; height: 90px; border-radius: 50%; background: #16131a; border: 3px solid var(--accent-red);
-  position: absolute; bottom: -30px; left: 24px; display: flex; align-items: center; justify-content: center;
-  font-size: 32px; font-weight: 700; overflow: hidden; box-shadow: 0 0 25px var(--glow-red);
-}
-.profile-avatar-large img { width: 100%; height: 100%; object-fit: cover; }
-.profile-meta { padding: 40px 24px 24px; background: var(--bg-panel); border-radius: 0 0 12px 12px; border: 1px solid var(--border); border-top: none; }
-.profile-meta h2 { font-family: 'Cinzel', serif; font-size: 22px; font-weight: 700; letter-spacing: 1px; }
-.profile-meta .tag { color: var(--text-muted); font-size: 13px; margin-top: 2px; }
-.profile-meta .bio { font-size: 14px; margin-top: 12px; color: var(--text-main); line-height: 1.5; }
-
-/* Chat Pane */
-.chat-container { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
-.message-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; padding-right: 8px; }
-.message-item { display: flex; gap: 12px; }
-.message-content { display: flex; flex-direction: column; gap: 4px; }
-.message-header { display: flex; align-items: center; gap: 8px; }
-.message-author { font-weight: 600; font-size: 14px; color: #f1faee; }
-.message-time { font-size: 11px; color: var(--text-muted); }
-.message-text { font-size: 13.5px; color: #e0e1dd; line-height: 1.5; background: var(--bg-panel); padding: 10px 14px; border-radius: 0 12px 12px 12px; border: 1px solid var(--border); width: fit-content; max-width: 600px; }
-
-.chat-input-bar {
-  background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px;
-  padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-top: 16px;
-}
-.chat-input-bar input { background: transparent; border: none; outline: none; color: #fff; width: 100%; font-size: 14px; }
-
-/* Friends Search Result Item */
-.friend-result-card {
-  display: flex; align-items: center; justify-content: space-between; background: var(--bg-panel);
-  border: 1px solid var(--border); padding: 14px; border-radius: 10px; margin-bottom: 10px;
-}
-
-/* Auth Overlay */
-.auth-overlay {
-  position: fixed; inset: 0; background: rgba(5, 4, 6, 0.96); backdrop-filter: blur(16px);
-  display: flex; align-items: center; justify-content: center; z-index: 1000;
-}
-.auth-card { width: 100%; max-width: 420px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 16px; padding: 32px; box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 40px var(--glow-red); }
-.input-field { width: 100%; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 12px; color: #fff; outline: none; margin: 8px 0 16px; }
-.input-field:focus { border-color: var(--accent-crimson); box-shadow: 0 0 12px var(--glow-red); }
-
-/* Premium responsive polish */
-button, input, textarea { font: inherit; }
-button:disabled { opacity:.55; cursor:not-allowed; }
-.view-body { min-width:0; }
-.card { backdrop-filter: blur(10px); transition: border-color .2s, transform .2s, box-shadow .2s; }
-.card:hover { border-color: rgba(230,57,70,.25); }
-.status-dot.offline { background:#777; }
-#toastStack { position:fixed; right:20px; bottom:20px; z-index:2000; display:grid; gap:8px; max-width:min(380px,calc(100vw - 32px)); }
-.toast { background:#17121a; border:1px solid rgba(230,57,70,.45); border-radius:10px; padding:12px 15px; box-shadow:0 12px 35px #0009; color:#fff; font-size:13px; animation:toastIn .2s ease-out; }
-@keyframes toastIn { from {opacity:0;transform:translateY(8px)} to {opacity:1;transform:translateY(0)} }
-.form-row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-.form-row .input-field { flex:1; min-width:160px; }
-.pill { display:inline-flex; padding:4px 8px; border:1px solid var(--border); border-radius:999px; color:var(--text-muted); font-size:11px; }
-.game-choice { text-align:left; width:100%; margin-top:8px; }
-@media(max-width:1000px) { .right-sidebar { display:none; } .channel-sidebar { width:220px; } }
-@media(max-width:700px) {
- html,body { width:100%; height:100%; overflow:auto; }
- #appShell { min-height:100vh; height:auto; }
- .server-bar { width:58px; padding:10px 0; gap:9px; }
- .server-icon { width:40px; height:40px; font-size:17px; }
- .channel-sidebar { width:0; display:none; }
- .main-view { min-height:100vh; min-width:0; }
- .view-header { padding:0 12px; }
- .view-header h2 { font-size:14px; letter-spacing:1px; }
- .view-body { padding:12px; }
- .auth-card { width:calc(100% - 28px); padding:22px; }
- .profile-meta > div[style*="display: flex"] { flex-wrap:wrap; gap:10px !important; }
-}
-
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Share+Tech+Mono&display=swap');
+:root{color-scheme:dark;--blood:#b20d22;--blood2:#6f0715;--redglow:rgba(178,13,34,.28);--ink:#08070a;--panel:rgba(15,13,17,.94);--panel2:#141116;--line:rgba(211,193,198,.15);--text:#f2edf0;--muted:#a49aa1;--gold:#c8a6a9;--green:#8fe0a6}
+*{box-sizing:border-box;margin:0;padding:0}
+html{min-height:100%;background:#050406}
+body{min-height:100vh;background:radial-gradient(ellipse at 50% 0%,#2b090f 0%,#10080d 35%,#050406 72%);color:var(--text);font-family:Inter,Arial,sans-serif;display:flex;align-items:center;justify-content:center;overflow-x:hidden;padding:26px 14px}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 0 35%,rgba(126,7,24,.08) 35.1% 35.4%,transparent 35.5%),linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:auto,38px 38px,38px 38px;mask-image:linear-gradient(to bottom,black,transparent 95%)}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;box-shadow:inset 0 0 160px #000;opacity:.9}
+.screen{width:min(100%,900px);border:1px solid rgba(204,45,65,.32);background:linear-gradient(145deg,rgba(19,15,20,.97),rgba(7,6,9,.98));padding:clamp(22px,4vw,42px);box-shadow:0 24px 90px #000b,0 0 40px rgba(117,5,22,.12),inset 0 1px rgba(255,255,255,.04);position:relative;z-index:2;animation:fadeIn .45s ease;isolation:isolate}
+.screen:before{content:"";position:absolute;top:0;left:0;width:90px;height:2px;background:var(--blood);box-shadow:0 0 18px var(--blood);z-index:-1}
+.hidden,[hidden]{display:none!important}
+.screen:not(.hidden){display:block}
+body>.screen{width:min(100% - 28px,900px);margin:auto}
+#authNotice{border:1px solid #78303c;background:#1b0a10;padding:12px;margin:12px 0 16px;color:#ffd0d7;white-space:pre-wrap;overflow-wrap:anywhere}
+#authNotice:empty{display:none}
+#opening{text-align:center;min-height:420px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.note-symbol{font-family:Georgia,serif;font-size:clamp(65px,9vw,92px);color:#f3e9ec;text-shadow:0 0 8px #fff8,0 0 35px #a50a23,0 0 75px #6b0617;margin-bottom:8px;animation:omen 3s ease-in-out infinite}
+.opening-title,.title,.modal-title{font-family:Cinzel,Georgia,serif;font-weight:700}
+.opening-title{font-size:clamp(28px,5vw,48px);letter-spacing:clamp(4px,1vw,11px);margin-bottom:10px;text-shadow:0 0 24px #7d091b88}
+.opening-sub,.subtitle{color:#a18d96;letter-spacing:clamp(2px,.55vw,5px);font-family:"Share Tech Mono",monospace;font-size:11px}
+.opening-sub{margin-bottom:42px}
+.loading{width:min(100%,440px);height:3px;background:#25151b;overflow:hidden;margin-bottom:18px}
+.loading-bar{height:100%;background:linear-gradient(90deg,#530513,#ef334f,#f5c3ca);box-shadow:0 0 14px #d01939;animation:load 3s forwards}
+.boot-text{font-family:"Share Tech Mono",monospace;color:#a18d96;font-size:12px;line-height:2}
+.red{color:#ff5368}.ok{color:var(--green)}
+.title{font-size:clamp(25px,4vw,36px);letter-spacing:clamp(3px,.7vw,8px);margin-bottom:8px;text-shadow:0 0 22px #8e102633}
+.subtitle{margin-bottom:28px}
+button{width:100%;padding:14px 16px;background:linear-gradient(135deg,#171116,#0b090c);color:#f5edf0;border:1px solid #4b3039;cursor:pointer;letter-spacing:1.5px;font-family:Inter,sans-serif;font-size:12px;font-weight:700;transition:transform .18s,border-color .18s,background .18s,box-shadow .18s;margin-top:8px;border-radius:4px}
+button:hover{border-color:#d12b46;background:linear-gradient(135deg,#35101a,#160b10);box-shadow:0 0 22px rgba(178,13,34,.18);transform:translateY(-1px)}
+button:active{transform:translateY(0)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid #e33c55;outline-offset:2px}
+.red-button{border-color:#922034;background:linear-gradient(135deg,#5c0b1b,#260911)}
+.red-button:hover{background:linear-gradient(135deg,#97152b,#450a17);border-color:#ed5269;color:#fff}
+input,textarea,select{width:100%;padding:14px;background:#0b090d;border:1px solid #3d3037;color:#f5edf0;outline:none;margin:9px 0 15px;border-radius:4px;font:inherit;font-size:13px}
+input:focus,textarea:focus,select:focus{border-color:#b91e38;box-shadow:0 0 0 3px rgba(178,13,34,.12)}
+label,.field-label{display:block;color:#b3a2aa;font-family:"Share Tech Mono",monospace;font-size:11px;letter-spacing:1.5px;margin-top:12px}
+.choice{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.choice button{min-height:112px;font-family:Cinzel,Georgia,serif;font-size:14px;letter-spacing:2px;border-color:#5a2935}
+.choice-icon{display:block;font-size:29px;margin-bottom:12px;color:#e43a54;text-shadow:0 0 20px #b20d2266}
+.welcome{color:#d4c7cc;font-family:"Share Tech Mono",monospace;margin:18px 0 26px;padding:16px 18px;border-left:3px solid var(--blood);background:linear-gradient(90deg,#390b16a8,#110b10);line-height:1.7;font-size:12px}
+.modules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.module{position:relative;min-height:126px;padding:22px 12px;border:1px solid #38242c;background:linear-gradient(145deg,#171117,#0b090c);color:#d8cbd1;text-align:center;cursor:pointer;transition:.22s;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px;font-family:Cinzel,Georgia,serif;font-size:12px;letter-spacing:1.8px;overflow:hidden}
+.module:before{content:"";position:absolute;left:0;top:0;width:2px;height:0;background:#e32643;transition:height .22s}
+.module:after{content:"";position:absolute;inset:auto -25% -55% -25%;height:80%;background:radial-gradient(ellipse,#9b102322,transparent 65%);pointer-events:none}
+.module:hover{border-color:#a7273b;color:#fff;transform:translateY(-3px);box-shadow:0 10px 26px #0008,0 0 20px #8b0b201f}
+.module:hover:before{height:100%}
+.icon{display:block;font-size:29px;filter:drop-shadow(0 0 8px #bb1b3540)}
+.santa{margin-top:25px;padding:20px;border:1px solid #4b252f;border-left:3px solid #b20d22;background:linear-gradient(120deg,#1b0d14,#0b090c)}
+.santa strong{font-family:"Share Tech Mono",monospace;letter-spacing:1.5px;color:#f3dce2}
+.santa p{margin-top:10px;color:#b8aab1;line-height:1.7;font-size:13px}
+.role{display:inline-flex;align-items:center;padding:7px 11px;border:1px solid #51323c;color:#d2b9c2;font-family:"Share Tech Mono",monospace;font-size:11px;letter-spacing:1px;margin-bottom:4px;border-radius:3px;background:#170d12}
+.admin{color:#ff9aa8;border-color:#a72138;background:#310b15}
+.modal{position:fixed;inset:0;background:rgba(2,1,3,.88);backdrop-filter:blur(9px);display:flex;align-items:center;justify-content:center;padding:clamp(10px,3vw,26px);z-index:10;overflow-y:auto}
+.modal-box{width:100%;max-width:760px;max-height:min(90vh,900px);overflow-y:auto;overscroll-behavior:contain;background:linear-gradient(145deg,#171118,#09080b);border:1px solid #763040;padding:clamp(18px,3vw,30px);box-shadow:0 25px 100px #000,0 0 40px #8e0c201e;animation:modalIn .22s ease;position:relative}
+.modal-title{font-size:clamp(21px,3vw,28px);letter-spacing:2px;margin-bottom:15px;color:#f6e7eb}
+.modal-text{color:#b7a8af;line-height:1.7;font-size:13px;margin-bottom:20px}
+.modal-box>.close{position:sticky;bottom:0;margin-top:20px;background:#250b12;border-color:#742234;box-shadow:0 -12px 18px #09080b}
+.chat-box{height:330px;max-height:45vh;overflow-y:auto;background:#08070a;border:1px solid #34232b;padding:14px;margin-bottom:15px;font-family:Inter,sans-serif;border-radius:4px}
+.chat-message{margin-bottom:12px;line-height:1.55;padding:10px 12px;border:1px solid #2d2228;background:#120e13;border-radius:5px;overflow-wrap:anywhere}
+.chat-message strong{color:#f1d8df}.chat-message small{display:block;color:#76656d;font-size:10px;margin-top:5px}
+.chat-user{color:#f4e7ec;border-color:#612435;background:#241019;margin-left:10%}
+.chat-santa{color:#ded1e8;border-color:#453451;background:#17111f;margin-right:10%}
+.footer{margin-top:25px;display:flex;justify-content:space-between;align-items:center;gap:12px;color:#8b7b83;font-family:"Share Tech Mono",monospace;font-size:10px;letter-spacing:1px}
+.logout{width:auto;padding:9px 15px;margin:0;font-size:10px;border-color:#6c2636}
+.panel{border:1px solid #3a2730;background:linear-gradient(145deg,#130f14,#0b090c);padding:16px;margin:13px 0;border-radius:5px}
+.panel h3{font-size:13px;letter-spacing:1.5px;margin-bottom:10px;color:#f0dfe4;font-family:Cinzel,Georgia,serif}
+.row-actions{display:flex;gap:8px;flex-wrap:wrap}
+.row-actions button{width:auto;flex:1;min-width:120px;letter-spacing:1px;padding:10px}
+.item{border:1px solid #35242b;padding:13px;margin:8px 0;background:#100d11;overflow-wrap:anywhere;border-radius:4px}
+.item small{display:block;color:#8b7b83;margin-top:5px}
+.item button{letter-spacing:1px;padding:8px;margin-top:8px}
+.status-line{font-family:"Share Tech Mono",monospace;font-size:12px;color:#b6a6ad;white-space:pre-wrap;line-height:1.7;margin:10px 0}
+.birthday-reveal{padding:16px;margin:0 0 18px;border:1px solid #a62a42;background:linear-gradient(135deg,#330b16,#17080d);color:#ffc4ce;text-align:center;letter-spacing:1px}
+.progress{height:5px;background:#302027;margin:10px 0}.progress span{display:block;height:100%;background:linear-gradient(90deg,#69091a,#ee304e);width:0}
+.memory-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:14px 0}
+.memory-card{min-height:74px;padding:8px;background:linear-gradient(145deg,#20151c,#0d0a0e);border:1px solid #56303b;font-size:25px;letter-spacing:0;border-radius:5px}
+.memory-card:disabled{opacity:1;color:#fff;background:#3b101c;border-color:#b72a45}
+.profile-line{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.presence-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#777;box-shadow:0 0 8px #7775}.presence-dot.online{background:#8fe0a6;box-shadow:0 0 10px #8fe0a688}.server-tag{display:inline-block;padding:4px 7px;border:1px solid #56303b;border-radius:3px;color:#e5c6cf;font:10px "Share Tech Mono",monospace;letter-spacing:1px;margin-left:6px}.muted-copy{color:#9c8b93;font-size:12px;line-height:1.6;margin:8px 0}
+@keyframes load{from{width:0}to{width:100%}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@keyframes modalIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes omen{0%,100%{filter:drop-shadow(0 0 3px #b20d2244);transform:translateY(0)}50%{filter:drop-shadow(0 0 18px #b20d2288);transform:translateY(-2px)}}
+@media(min-width:760px){.modules{grid-template-columns:repeat(4,minmax(0,1fr))}.screen:has(.modules){max-width:1040px}}
+@media(max-width:600px){body{padding:10px 8px;align-items:flex-start}.screen{padding:24px 17px;margin:8px 0}.choice{grid-template-columns:1fr 1fr;gap:9px}.choice button{min-height:95px;padding:10px 6px;font-size:11px}.modules{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.module{min-height:100px;padding:14px 6px;font-size:10px;letter-spacing:1px}.icon{font-size:24px}.modal{padding:8px;align-items:center}.modal-box{max-height:94vh;padding:17px 13px}.chat-box{height:280px;max-height:42vh}.row-actions{flex-direction:column}.row-actions button{width:100%}.memory-card{min-height:55px;padding:4px}.footer{align-items:flex-start;flex-direction:column}.logout{width:100%}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition:none!important}}
 </style>
 </head>
+
 <body>
 
-<!-- AUTHENTICATION OVERLAY -->
-<div id="authScreen" class="auth-overlay">
-  <div class="auth-card">
-    <h2 style="font-family: 'Cinzel', serif; font-size: 26px; font-weight: 800; margin-bottom: 6px; letter-spacing: 2px;">DEATH NOTE</h2>
-    <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;">System Verification Gate</p>
-    <div id="authNotice" style="color: var(--accent-crimson); font-size: 12px; margin-bottom: 12px;"></div>
 
-    <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">EMAIL ADDRESS</label>
-    <input id="authEmail" class="input-field" type="email" placeholder="user@domain.com">
+<!-- ======================================
+     OPENING ANIMATION
+====================================== -->
 
-    <div id="signupFields" class="hidden">
-      <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">USERNAME</label>
-      <input id="authUsername" class="input-field" type="text" placeholder="username">
-      
-      <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">NICKNAME</label>
-      <input id="authNickname" class="input-field" type="text" placeholder="Display Name">
-      
-      <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">BIRTHDATE (MM-DD-YYYY)</label>
-      <input id="authBirthday" class="input-field" type="text" placeholder="MM-DD-YYYY" value="">
-    </div>
+<div class="screen" id="opening">
 
-    <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">PASSWORD</label>
-    <input id="authPassword" class="input-field" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')handleAuthSubmit()">
+  <div class="note-symbol">☠</div>
 
-    <button class="button" style="width: 100%; margin-top: 8px;" onclick="handleAuthSubmit()">Authenticate</button>
-    
-    <div style="text-align: center; margin-top: 16px;">
-      <a href="#" style="color: var(--accent-crimson); font-size: 12px; text-decoration: none;" onclick="toggleAuthMode()">Switch Login / Sign Up</a>
-    </div>
-  </div>
-</div>
-
-<!-- APP SHELL -->
-<div id="appShell" class="hidden">
-
-  <!-- FAR LEFT ICON BAR -->
-  <div class="server-bar">
-    <div class="server-icon active" title="DMs & Direct Chats" onclick="switchPage('chat', this)">💬</div>
-    <div class="server-icon" title="Add Friends" onclick="switchPage('friends', this)">👥</div>
-    <div class="server-divider"></div>
-    <div class="server-icon" title="Servers" onclick="switchPage('servers', this)">🌐</div>
-    <div class="server-icon" title="Instagram Profile" onclick="switchPage('profile', this)">👤</div>
-    <div class="server-icon" title="Library Notes" onclick="switchPage('library', this)">📖</div>
-    <div class="server-icon" title="Storage" onclick="switchPage('storage', this)">💾</div>
-    <div class="server-icon" title="Games & Riddles" onclick="switchPage('games', this)">🎮</div>
-    <div class="server-icon" title="SANTA AI Assistant" onclick="switchPage('santa', this)">🤖</div>
-    <div class="server-divider" style="margin-top: auto;"></div>
-    <div class="server-icon" style="color: var(--accent-crimson);" title="Log Out" onclick="logout()">🚪</div>
+  <div class="opening-title">
+    BOSS SYSTEM
   </div>
 
-  <!-- SECONDARY SIDEBAR -->
-  <div class="channel-sidebar" id="subSidebar">
-    <input class="search-box" type="text" placeholder="Quick search...">
-    <div class="sidebar-section-label" id="subSidebarLabel">Conversations</div>
-    <div id="subSidebarList">
-      <div class="nav-item active" onclick="selectChannel('Global Chat')">
-        <div class="avatar">#<div class="status-dot"></div></div>
-        <span>Global Chat</span>
-      </div>
-      <div class="nav-item" onclick="selectChannel('Direct Messages')">
-        <div class="avatar">💬<div class="status-dot"></div></div>
-        <span>Direct Messages</span>
-      </div>
-    </div>
+  <div class="opening-sub">
+    THE DIGITAL NOTEBOOK
   </div>
 
-  <!-- MAIN CENTRAL CONTENT VIEW -->
-  <div class="main-view">
-    <div class="view-header">
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <h2 id="currentViewTitle">Global Chat</h2>
-        <span id="currentUserRoleTag" style="font-size: 11px; background: rgba(186, 24, 27, 0.25); color: #ffb3c1; border: 1px solid var(--border); padding: 4px 8px; border-radius: 4px; font-weight: 600;">USER</span>
-      </div>
-      <div>
-        <button class="button button-secondary" onclick="switchPage('profile', document.querySelectorAll('.server-icon')[3])">Insta Profile</button>
-      </div>
-    </div>
-
-    <div class="view-body" id="mainViewBody">
-      
-      <!-- PAGE 1: CHAT PANE -->
-      <div id="page-chat" class="chat-container">
-        <div class="message-list" id="messageList">
-          <div class="message-item">
-            <div class="avatar">L</div>
-            <div class="message-content">
-              <div class="message-header">
-                <span class="message-author">SANTA AI</span>
-                <span class="message-time">System Core</span>
-              </div>
-              <div class="message-text">Death Note system active. Secure channels online.</div>
-            </div>
-          </div>
-        </div>
-        <div class="chat-input-bar">
-          <input id="chatInput" type="text" placeholder="Message channel..." onkeydown="if(event.key==='Enter')sendMessage()">
-          <button class="button" onclick="sendMessage()">Send</button>
-        </div>
-      </div>
-
-      <!-- PAGE 2: ADD FRIENDS TAB (SEARCH BY USERNAME) -->
-      <div id="page-friends" class="hidden">
-        <div class="card">
-          <h3 style="font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700; margin-bottom: 10px;">Find & Add Friends</h3>
-          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Search by exact username to connect directly on the network.</p>
-          <div style="display: flex; gap: 10px;">
-            <input id="friendSearchInput" class="input-field" type="text" placeholder="Enter username (e.g. boss_maysi)..." style="margin: 0;">
-            <button class="button" style="width: 120px;" onclick="searchFriendByUsername()">Search</button>
-          </div>
-        </div>
-
-        <div id="friendSearchResults" style="margin-top: 20px;"></div>
-      </div>
-
-      <!-- PAGE 3: SERVERS HUB -->
-      <div id="page-servers" class="hidden">
-        <div class="card">
-          <h3 style="font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; margin-bottom: 12px;">Server Networks</h3>
-          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Create private custom server spaces or join existing ones.</p>
-          <input id="newServerName" class="input-field" type="text" placeholder="Server Name...">
-          <button class="button" onclick="alert('Server node created successfully!')">Create Server</button>
-        </div>
-      </div>
-
-      <!-- PAGE 4: INSTAGRAM PROFILE -->
-      <div id="page-profile" class="hidden">
-        <div class="card" style="padding: 0; overflow: hidden;">
-          <div class="profile-banner">
-            <div class="profile-avatar-large" id="profileAvatarDisplay">🍎</div>
-          </div>
-          <div class="profile-meta">
-            <h2 id="profDisplayName">User</h2>
-            <div class="tag" id="profHandle">@user</div>
-            <div class="bio" id="profBioText">No bio specified.</div>
-            <div style="display: flex; gap: 24px; margin-top: 16px; font-size: 13px; color: var(--text-muted);">
-              <div>🎂 Birthdate: <strong id="profBdayText" style="color: #fff;">11-17-2009</strong></div>
-              <div>✨ Status: <strong style="color: var(--online);">Online</strong></div>
-            </div>
-          </div>
-        </div>
-        <div class="card" style="margin-top: 20px;">
-          <h3 style="font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; margin-bottom: 16px;">Edit Profile</h3>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-            <div>
-              <label style="font-size: 11px; font-weight: 600; color: var(--text-muted);">NICKNAME</label>
-              <input id="editNickInput" class="input-field" type="text">
-            </div>
-            <div>
-              <label style="font-size: 11px; font-weight: 600; color: var(--text-muted);">BIRTHDATE</label>
-              <input id="editBdayInput" class="input-field" type="text">
-            </div>
-          </div>
-          <label style="font-size: 11px; font-weight: 600; color: var(--text-muted);">PROFILE PICTURE URL</label>
-          <input id="editPfpInput" class="input-field" type="text" placeholder="https://image.url/photo.jpg">
-          <label style="font-size: 11px; font-weight: 600; color: var(--text-muted);">BIO</label>
-          <textarea id="editBioInput" class="input-field" rows="3"></textarea>
-          <button class="button" onclick="saveProfileData()">Save Profile Changes</button>
-        </div>
-      </div>
-
-      <!-- PAGE 5: LIBRARY NOTES -->
-      <div id="page-library" class="hidden">
-        <div class="card">
-          <h3 style="font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; margin-bottom: 12px;">Notebook / Library</h3>
-          <input id="noteTitle" class="input-field" type="text" placeholder="Title...">
-          <textarea id="noteBody" class="input-field" rows="4" placeholder="Write confidential notes..."></textarea>
-          <button class="button" onclick="alert('Note saved to encrypted database!')">Save Note</button>
-        </div>
-      </div>
-
-      <!-- PAGE 6: LOCAL STORAGE -->
-      <div id="page-storage" class="hidden">
-        <div class="card">
-          <h3 style="font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; margin-bottom: 12px;">Storage Vault</h3>
-          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Local encrypted file storage up to 25MB.</p>
-          <input type="file" class="input-field">
-          <button class="button">Upload File</button>
-        </div>
-      </div>
-
-      <!-- PAGE 7: GAMES, RIDDLES, QUIZZES & LEADERBOARDS -->
-      <div id="page-games" class="hidden">
-        <div class="card" style="margin-bottom: 20px; background: linear-gradient(135deg, #1f080c, #080709);">
-          <h3 style="font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700; margin-bottom: 6px;">🎮 Arcade & Intelligence Arena</h3>
-          <p style="font-size: 13px; color: var(--text-muted);">Solve SANTA riddles, complete timed quizzes, play memory challenges, and view leaderboards.</p>
-        </div>
-        
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
-          <div class="card">
-            <h4 style="font-family:'Cinzel'; margin-bottom:6px;">Cat Memory Arena 🐈</h4>
-            <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Match cards under time pressure for XP rewards.</p>
-            <button class="button" onclick="alert('Launching Cat Memory Arena...')">Play Game</button>
-          </div>
-          <div class="card">
-            <h4 style="font-family:'Cinzel'; margin-bottom:6px;">Riddle Chamber 🍎</h4>
-            <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Cryptic riddles generated by SANTA AI.</p>
-            <button class="button" onclick="alert('Riddle Chamber: What gets wetter as it dries?')">Solve Riddle</button>
-          </div>
-          <div class="card">
-            <h4 style="font-family:'Cinzel'; margin-bottom:6px;">System Quiz 📝</h4>
-            <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Anime, gaming, and logic trivia quizzes.</p>
-            <button class="button" onclick="alert('Quiz initialized.')">Start Quiz</button>
-          </div>
-          <div class="card">
-            <h4 style="font-family:'Cinzel'; margin-bottom:6px;">Global Rankings 🏆</h4>
-            <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Check top XP ranks and activity streaks.</p>
-            <button class="button button-secondary" onclick="alert('Rankings: 1. BOSS MAYSI | 2. SANTA AI')">View Leaderboard</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- PAGE 8: SANTA AI ASSISTANT -->
-      <div id="page-santa" class="hidden">
-        <div class="card">
-          <h3 style="font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; margin-bottom: 12px;">SANTA AI Intelligence Command</h3>
-          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Ask questions, request roasts, or check system diagnostics.</p>
-          <div class="message-list" style="height: 200px; background: var(--bg-input); padding: 12px; border-radius: 8px; margin-bottom: 12px;" id="santaLog">
-            <div class="message-text">SANTA AI: Death Note system core online. Type /help or /roast.</div>
-          </div>
-          <div class="chat-input-bar" style="margin: 0;">
-            <input id="santaInput" type="text" placeholder="Type a command or query..." onkeydown="if(event.key==='Enter')sendSantaAI()">
-            <button class="button" onclick="sendSantaAI()">Execute</button>
-          </div>
-        </div>
-      </div>
-
-    </div>
+  <div class="loading">
+    <div class="loading-bar"></div>
   </div>
 
-  <!-- RIGHT SIDEBAR -->
-  <div class="right-sidebar">
-    <div style="font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted);">Network Status</div>
-    <div id="rightSidebarContent" style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">
-      Death Note edition active. Custom search and social tabs enabled.
-    </div>
+  <div class="boot-text" id="bootText">
+    INITIALIZING...
   </div>
 
 </div>
 
-<div id="toastStack" aria-live="polite"></div>
+
+<!-- ======================================
+     LOGIN / SIGNUP CHOICE
+====================================== -->
+
+<div class="screen hidden" id="access">
+
+  <div class="title">
+    ACCESS
+  </div>
+
+  <div class="subtitle">
+    IDENTIFICATION REQUIRED
+  </div>
+
+  <div class="choice">
+
+    <button onclick="showLogin()">
+      <span class="choice-icon">◉</span>
+      LOG IN
+    </button>
+
+    <button onclick="showSignup()">
+      <span class="choice-icon">✎</span>
+      SIGN UP
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- ======================================
+     LOGIN
+====================================== -->
+
+<div class="screen hidden" id="login">
+
+  <div class="title">
+    LOG IN
+  </div>
+
+  <div class="subtitle">
+    EXISTING IDENTITY
+  </div>
+
+  <div id="authNotice" class="status-line" role="status" aria-live="polite" hidden></div>
+
+  <label>
+    EMAIL ADDRESS
+  </label>
+
+  <input
+    id="loginEmail"
+    type="email"
+    placeholder="Enter your email address"
+    autocomplete="email"
+  >
+
+  <label>
+    PASSWORD
+  </label>
+
+  <input
+    id="loginPassword"
+    type="password"
+    placeholder="Enter password"
+    autocomplete="current-password"
+    onkeydown="if(event.key==='Enter')login()"
+  >
+
+  <button onclick="login()">
+    ENTER SYSTEM
+  </button>
+
+  <button onclick="resetPassword()">
+    RESET PASSWORD BY EMAIL
+  </button>
+
+  <button onclick="backToAccess()">
+    BACK
+  </button>
+
+</div>
+
+
+<!-- ======================================
+     SIGN UP
+====================================== -->
+
+<div class="screen hidden" id="signup">
+
+  <div class="title">
+    SIGN UP
+  </div>
+
+  <div class="subtitle">
+    CREATE NEW IDENTITY
+  </div>
+
+  <label>
+    EMAIL ADDRESS
+  </label>
+
+  <input
+    id="signupEmail"
+    type="email"
+    placeholder="Enter your email address"
+    autocomplete="email"
+  >
+
+  <label>
+    USERNAME
+  </label>
+
+  <input
+    id="signupUsername"
+    type="text"
+    placeholder="Choose a username"
+    autocomplete="off"
+  >
+
+  <label>
+    NICKNAME
+  </label>
+
+  <input
+    id="signupNickname"
+    type="text"
+    placeholder="Choose a nickname"
+    autocomplete="off"
+  >
+
+  <label>
+    PASSWORD
+  </label>
+
+  <input
+    id="signupPassword"
+    type="password"
+    placeholder="Create a password"
+    autocomplete="new-password"
+  >
+
+  <label>
+    CONFIRM PASSWORD
+  </label>
+
+  <input
+    id="signupConfirm"
+    type="password"
+    placeholder="Confirm password"
+    autocomplete="new-password"
+    onkeydown="if(event.key==='Enter')signup()"
+  >
+
+  <button onclick="signup()">
+    CREATE ACCOUNT
+  </button>
+
+  <button onclick="backToAccess()">
+    BACK
+  </button>
+
+</div>
+
+
+<!-- ======================================
+     DASHBOARD
+====================================== -->
+
+<div class="screen hidden" id="dashboard">
+
+  <div class="title">
+    CONTROL PANEL
+  </div>
+
+  <div class="subtitle">
+    SYSTEM ONLINE
+  </div>
+
+  <div id="roleBadge" class="role">
+    USER ACCESS
+  </div>
+
+  <div class="welcome" id="welcomeText"></div>
+
+  <div id="birthdayReveal" class="birthday-reveal hidden">🎂 BOSS MAYSI PROTOCOL: BIRTHDAY MODE UNLOCKED</div>
+  <div class="modules">
+
+    <div class="module" onclick="openModule('LIBRARY')">
+      <span class="icon">📚</span>
+      LIBRARY
+    </div>
+
+    <div class="module" onclick="openModule('STORAGE')">
+      <span class="icon">💾</span>
+      STORAGE
+    </div>
+
+    <div class="module" onclick="openModule('GAMES')">
+      <span class="icon">🎮</span>
+      GAMES
+    </div>
+
+    <div class="module" onclick="openModule('RIDDLES')">
+      <span class="icon">🧠</span>
+      RIDDLES
+    </div>
+
+    <div class="module" onclick="openModule('QUIZ')">
+      <span class="icon">📝</span>
+      QUIZ
+    </div>
+
+    <div class="module" onclick="openModule('LINKS')">
+      <span class="icon">🔗</span>
+      LINKS
+    </div>
+
+    <div class="module" onclick="openModule('CHAT')">
+      <span class="icon">💬</span>
+      CHAT
+    </div>
+
+    <div class="module" onclick="openModule('SERVERS')">
+      <span class="icon">🌐</span>
+      SERVERS
+    </div>
+
+    <div class="module" onclick="openModule('PROFILES')">
+      <span class="icon">👤</span>
+      PROFILES
+    </div>
+
+    <div class="module" onclick="openModule('SANTA')">
+      <span class="icon">🤖</span>
+      SANTA
+    </div>
+
+  </div>
+
+  <div class="santa">
+
+    <strong>
+      🤖 SANTA — ONLINE ●
+    </strong>
+
+    <p id="santaMessage"></p>
+
+  </div>
+
+  <div class="footer">
+
+    <span id="systemStatus">
+      SYSTEM STATUS: ONLINE
+    </span>
+
+    <button
+      class="logout"
+      onclick="logout()">
+      LOG OUT
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- ======================================
+     MODAL
+====================================== -->
+
+<div class="modal hidden" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" onclick="if(event.target===this)closeModule()">
+
+  <div class="modal-box">
+
+    <div class="modal-title" id="modalTitle"></div>
+
+    <div class="modal-text" id="modalText"></div>
+
+    <div id="extraContent"></div>
+
+    <button
+      class="close"
+      onclick="closeModule()">
+      RETURN
+    </button>
+
+  </div>
+
+</div>
+
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, query, where, getDocs, orderBy, limit, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+import {
+  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  sendPasswordResetEmail, signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, setDoc, collection, collectionGroup, addDoc, getDocs,
+  query, orderBy, limit, onSnapshot, serverTimestamp, runTransaction,
+  updateDoc, deleteDoc, where
+} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
+/* Firebase Web App configuration for BOSS SYSTEM. */
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyC255XuKEt8JJKbWRjqLEqhxcOn1TXGC2U",
   authDomain: "boss-system-ddf6c.firebaseapp.com",
   projectId: "boss-system-ddf6c",
   storageBucket: "boss-system-ddf6c.firebasestorage.app",
   messagingSenderId: "67593000613",
-  appId: "1:67593000613:web:b03c162be0e1661b171f4c"
+  appId: "1:67593000613:web:b03c162be0e1661b171f4c",
+  measurementId: "G-E6NGWHFJXH"
 };
-const app = initializeApp(FIREBASE_CONFIG), auth = getAuth(app), db = getFirestore(app);
-let authIsSignup=false, currentProfile=null, activeChatUnsub=null, presenceTimer=null, serverUnsub=null, allServers=[];
+
+const firebaseConfigured = !Object.values(FIREBASE_CONFIG).some(v => String(v).startsWith("YOUR_"));
+let app = null, auth = null, db = null, currentUser = null, currentProfile = null;
+let chatUnsubscribe = null, reportUnsubscribe = null, transferUnsubscribe = null, presenceUnsubscribe = null;
+let activeTransfer = null, activePeer = null, activeChannel = null, receivedChunks = [], receiveMeta = null;
+let gameState = null, quizState = null;
 const $ = id => document.getElementById(id);
-const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function toast(msg){ const el=document.createElement('div'); el.className='toast'; el.textContent=msg; $('toastStack')?.append(el); setTimeout(()=>el.remove(),4300); }
-function errorText(e){ const map={ 'auth/invalid-credential':'Email or password is incorrect. Please try again.', 'auth/user-not-found':'No account exists for this email.', 'auth/wrong-password':'Incorrect password.', 'auth/email-already-in-use':'This email already has an account. Switch to Login.', 'auth/weak-password':'Choose a password with at least 6 characters.', 'auth/invalid-email':'Enter a valid email address.', 'permission-denied':'Firestore blocked this action. Check that the latest Firestore Rules match this feature.'}; return map[e?.code] || e?.message || 'Something went wrong. Please try again.'; }
-function setNotice(msg, good=false){ $('authNotice').textContent=msg; $('authNotice').style.color=good?'#80ed99':'var(--accent-crimson)'; }
-function formatDate(value){ if(!value)return 'Not set'; const d=value.toDate?value.toDate():new Date(value); return Number.isNaN(d.getTime())?String(value):d.toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
-function birthdayParts(value){ if(!value)return null; let d; if(/^\d{2}-\d{2}-\d{4}$/.test(value)){const [m,day,y]=value.split('-').map(Number);d=new Date(y,m-1,day);} else d=new Date(value); if(Number.isNaN(d.getTime()))return null; return {month:d.getMonth(),day:d.getDate()}; }
-function daysUntilBirthday(value){const p=birthdayParts(value);if(!p)return null;const now=new Date();const today=new Date(now.getFullYear(),now.getMonth(),now.getDate());let next=new Date(now.getFullYear(),p.month,p.day);if(next<today)next=new Date(now.getFullYear()+1,p.month,p.day);return Math.round((next-today)/86400000);}
-function isAdmin(){return ['BOSS','SANTA'].includes(currentProfile?.role);}
-function setBusy(b){const btn=document.querySelector('button[onclick="handleAuthSubmit()"]');if(btn){btn.disabled=b;btn.textContent=b?'Please wait…':'Authenticate';}}
-window.toggleAuthMode=()=>{authIsSignup=!authIsSignup;$('signupFields').classList.toggle('hidden',!authIsSignup);setNotice('');};
-window.handleAuthSubmit=async()=>{
- const email=$('authEmail').value.trim(), password=$('authPassword').value, notice=$('authNotice'); setNotice('');
- if(!email||!password){setNotice('Enter both your email and password.');return;}
- setBusy(true);
- try{
-  if(authIsSignup){
-   const username=$('authUsername').value.trim().toLowerCase().replace(/[^a-z0-9_.]/g,'');
-   const nickname=$('authNickname').value.trim(); const birthday=$('authBirthday').value.trim();
-   if(username.length<3){setNotice('Username must be at least 3 characters (letters, numbers, _ or .).');return;}
-   if(!nickname){setNotice('Please enter a display name.');return;}
-   const existing=await getDoc(doc(db,'usernames',username)); if(existing.exists()){setNotice('That username is already taken. Try another.');return;}
-   const cred=await createUserWithEmailAndPassword(auth,email,password);
-   // Never grant privileged roles from a client-controlled username.
-   const profile={uid:cred.user.uid,username,usernameLower:username,nickname,birthday: birthday || '',bio:'',pfp:'',role:'USER',createdAt:serverTimestamp(),lastSeen:serverTimestamp(),online:true};
-   await setDoc(doc(db,'users',cred.user.uid),profile);
-   await setDoc(doc(db,'usernames',username),{uid:cred.user.uid,username,usernameLower:username});
-   currentProfile={...profile,createdAt:new Date(),lastSeen:new Date()};
-  }else{await signInWithEmailAndPassword(auth,email,password);}
- }catch(e){setNotice(errorText(e));}finally{setBusy(false);}
-};
-window.resetPassword=async()=>{const email=$('authEmail').value.trim();if(!email){setNotice('Enter your email first, then choose Forgot password.');return;}try{await sendPasswordResetEmail(auth,email);setNotice('Password reset email sent. Check your inbox.',true);}catch(e){setNotice(errorText(e));}};
+const RESERVED_USERNAMES = new Set(["maysi", "santa", "bossmaysi", "boss_maysi", "boss-maysi"]);
+const MAX_TRANSFER_BYTES = 25 * 1024 * 1024;
+const CHUNK_SIZE = 16 * 1024;
 
-onAuthStateChanged(auth, async user=>{
- if(!user){currentProfile=null;$('authScreen').classList.remove('hidden');$('appShell').classList.add('hidden');if(activeChatUnsub)activeChatUnsub();if(serverUnsub)serverUnsub();if(presenceTimer)clearInterval(presenceTimer);return;}
- try{
-  const snap=await getDoc(doc(db,'users',user.uid));
-  if(!snap.exists()){
-   // Existing Auth accounts without profiles are repaired as regular users, never admins.
-   const fallbackName=(user.email?.split('@')[0]||'user').toLowerCase().replace(/[^a-z0-9_.]/g,'').slice(0,24)||'user_'+user.uid.slice(0,6);
-   currentProfile={uid:user.uid,username:fallbackName,usernameLower:fallbackName,nickname:user.displayName||fallbackName,birthday:'',bio:'',pfp:'',role:'USER',online:true,lastSeen:new Date()};
-   await setDoc(doc(db,'users',user.uid),{...currentProfile,lastSeen:serverTimestamp()},{merge:true});
-   await setDoc(doc(db,'usernames',fallbackName),{uid:user.uid,username:fallbackName,usernameLower:fallbackName},{merge:true});
-  }else currentProfile=snap.data();
-  $('authScreen').classList.add('hidden');$('appShell').classList.remove('hidden');initDashboard();
- }catch(e){
-  // Keep a visible, actionable error instead of silently dropping the user at the login screen.
-  $('authScreen').classList.remove('hidden');$('appShell').classList.add('hidden');setNotice('Signed in, but profile access failed: '+errorText(e)+' Check Firestore Rules and the users/'+user.uid+' document.');
- }
-});
-function initDashboard(){ $('currentUserRoleTag').textContent=currentProfile.role||'USER';updateProfileView();listenToGlobalChat();startPresence();loadServers();checkBirthdays();renderRightPanel(); }
-function startPresence(){
- const write=()=>{if(!auth.currentUser)return;updateDoc(doc(db,'users',auth.currentUser.uid),{online:true,lastSeen:serverTimestamp()}).catch(e=>console.warn('Presence update:',e));};write();if(presenceTimer)clearInterval(presenceTimer);presenceTimer=setInterval(write,60000);
- window.addEventListener('beforeunload',()=>{if(auth.currentUser)updateDoc(doc(db,'users',auth.currentUser.uid),{online:false,lastSeen:serverTimestamp()}).catch(()=>{});});
-}
-function renderRightPanel(){ $('rightSidebarContent').innerHTML=`<div class="card" style="padding:14px"><div style="font-weight:700;color:#fff">${esc(currentProfile.nickname||currentProfile.username)}</div><div class="pill" style="margin-top:8px">${esc(currentProfile.role||'USER')}</div><p style="margin-top:12px">● <span style="color:#80ed99">Connected</span></p><p style="margin-top:8px">Servers: <strong>${allServers.length}</strong></p><p style="margin-top:8px">Birthday: <strong>${esc(currentProfile.birthday||'Not set')}</strong></p></div><div class="card" style="padding:14px"><strong style="color:#fff">SANTA tip</strong><p style="margin-top:8px">Try <code>/help</code>, ask how to use a feature, or request a friendly roast.</p></div>`; }
-function updateProfileView(){if(!currentProfile)return;$('profDisplayName').textContent=currentProfile.nickname||currentProfile.username||'User';$('profHandle').textContent='@'+(currentProfile.username||'user');$('profBioText').textContent=currentProfile.bio||'No bio specified.';$('profBdayText').textContent=currentProfile.birthday||'Not set';$('editNickInput').value=currentProfile.nickname||'';$('editBdayInput').value=currentProfile.birthday||'';$('editBioInput').value=currentProfile.bio||'';$('editPfpInput').value=currentProfile.pfp||'';const el=$('profileAvatarDisplay');el.replaceChildren();if(currentProfile.pfp){const img=document.createElement('img');img.src=currentProfile.pfp;img.alt='Profile picture';img.referrerPolicy='no-referrer';img.onerror=()=>{el.textContent='🍎'};el.append(img);}else el.textContent=(currentProfile.nickname||currentProfile.username||'U').slice(0,1).toUpperCase();}
-window.saveProfileData=async()=>{if(!auth.currentUser||!currentProfile)return;const nickname=$('editNickInput').value.trim(), birthday=$('editBdayInput').value.trim(),bio=$('editBioInput').value.trim(),pfp=$('editPfpInput').value.trim();if(!nickname){toast('Display name cannot be empty.');return;}if(birthday&&!birthdayParts(birthday)){toast('Birthday format must be MM-DD-YYYY or a valid date.');return;}try{await updateDoc(doc(db,'users',auth.currentUser.uid),{nickname,birthday,bio,pfp});Object.assign(currentProfile,{nickname,birthday,bio,pfp});updateProfileView();toast('Profile saved. Birthday details updated.');renderRightPanel();checkBirthdays();}catch(e){toast(errorText(e));}};
-window.searchFriendByUsername=async()=>{const qtext=$('friendSearchInput').value.trim().toLowerCase(),out=$('friendSearchResults');out.replaceChildren();if(!qtext){toast('Type a username to search.');return;}try{const qs=await getDocs(query(collection(db,'usernames'),where('usernameLower','==',qtext),limit(1)));if(qs.empty){out.innerHTML='<div class="card">No profile found for that username.</div>';return;}const u=qs.docs[0].data(),us=await getDoc(doc(db,'users',u.uid)),d=us.exists()?us.data():{};out.innerHTML=`<div class="friend-result-card"><div><strong>${esc(d.nickname||u.username)}</strong><div style="color:var(--text-muted);font-size:12px">@${esc(u.username)} · ${d.online?'Online':'Last seen '+esc(formatDate(d.lastSeen))}</div><div style="font-size:12px;margin-top:6px">${esc(d.bio||'No bio specified.')}</div></div><span class="pill">${esc(d.role||'USER')}</span></div>`;}catch(e){out.innerHTML=`<div class="card">${esc(errorText(e))}</div>`;}};
-function listenToGlobalChat(){if(activeChatUnsub)activeChatUnsub();const list=$('messageList');activeChatUnsub=onSnapshot(query(collection(db,'chatMessages'),orderBy('createdAt','asc'),limit(60)),snap=>{list.replaceChildren();snap.forEach(d=>{const m=d.data(),item=document.createElement('div');item.className='message-item';const avatar=document.createElement('div');avatar.className='avatar';avatar.textContent=(m.nickname||m.username||'U').slice(0,1).toUpperCase();const content=document.createElement('div');content.className='message-content';const head=document.createElement('div');head.className='message-header';const author=document.createElement('span');author.className='message-author';author.textContent=m.nickname||m.username||'User';const time=document.createElement('span');time.className='message-time';time.textContent=m.createdAt?.toDate?m.createdAt.toDate().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'Just now';const body=document.createElement('div');body.className='message-text';body.textContent=m.text||'';head.append(author,time);content.append(head,body);item.append(avatar,content);list.append(item);});list.scrollTop=list.scrollHeight;},e=>toast('Chat could not load: '+errorText(e)));}
-window.sendMessage=async()=>{const input=$('chatInput'),text=input.value.trim();if(!text||!auth.currentUser||!currentProfile)return;if(text.length>1000){toast('Messages are limited to 1,000 characters.');return;}input.value='';try{await addDoc(collection(db,'chatMessages'),{uid:auth.currentUser.uid,username:currentProfile.username,nickname:currentProfile.nickname,text,createdAt:serverTimestamp()});}catch(e){input.value=text;toast('Message failed: '+errorText(e));}};
-window.switchPage=(pageKey,element)=>{document.querySelectorAll('.server-icon').forEach(el=>el.classList.remove('active'));if(element)element.classList.add('active');['chat','friends','servers','profile','library','storage','games','santa'].forEach(p=>$('page-'+p)?.classList.add('hidden'));$('page-'+pageKey)?.classList.remove('hidden');$('currentViewTitle').textContent=({chat:'Global Chat',friends:'Find Friends',servers:'Server Network',profile:'Profile',library:'Library',storage:'Storage Vault',games:'Arcade & Intelligence',santa:'SANTA AI Assistant'})[pageKey]||pageKey.toUpperCase();if(pageKey==='servers')loadServers();if(pageKey==='profile')updateProfileView();};
-window.selectChannel=(name)=>{document.querySelectorAll('.channel-sidebar .nav-item').forEach(el=>el.classList.remove('active'));if(window.event?.currentTarget)window.event.currentTarget.classList.add('active');$('currentViewTitle').textContent=name;};
-
-// Server features use Firestore documents. The companion Rules file must authorize servers/memberships.
-function loadServers(){if(serverUnsub)serverUnsub();serverUnsub=onSnapshot(query(collection(db,'servers'),limit(50)),snap=>{allServers=snap.docs.map(d=>({id:d.id,...d.data()}));renderServers();renderRightPanel();},e=>{console.warn(e);const host=$('page-servers');if(host)host.dataset.ruleError=errorText(e);renderServers(errorText(e));});}
-function renderServers(err=''){const host=$('page-servers');if(!host)return;let area=$('serverList');if(!area){area=document.createElement('div');area.id='serverList';area.style.marginTop='18px';host.append(area);}const visible=allServers.filter(s=>s.visibility==='public'||s.ownerUid===auth.currentUser?.uid||(s.memberUids||[]).includes(auth.currentUser?.uid)||isAdmin());area.innerHTML=(err?`<div class="card" style="margin-bottom:12px;color:#ffb3c1">Server list unavailable: ${esc(err)}. Your Rules file may not yet include server access.</div>`:'')+`<div class="card"><h3 style="font-family:Cinzel;margin-bottom:8px">Discover servers</h3><p style="color:var(--text-muted);font-size:13px;margin-bottom:12px">Public spaces are discoverable. Private spaces require membership or an invitation.</p>${visible.length?visible.map(s=>`<div class="friend-result-card"><div><strong>${esc(s.name||'Unnamed server')}</strong><div style="color:var(--text-muted);font-size:12px">${s.visibility==='private'?'🔒 Private':'🌐 Public'} · ${esc(s.description||'No description')}</div></div><button class="button button-secondary" data-server-join="${esc(s.id)}">${(s.memberUids||[]).includes(auth.currentUser?.uid)||s.ownerUid===auth.currentUser?.uid?'Open':'Join'}</button></div>`).join(''):'<p style="color:var(--text-muted)">No servers visible yet. Create one above.</p>'}</div>`;area.querySelectorAll('[data-server-join]').forEach(b=>b.onclick=()=>joinServer(b.dataset.serverJoin));}
-async function joinServer(id){const s=allServers.find(x=>x.id===id);if(!s)return;if(s.visibility==='private'&&s.ownerUid!==auth.currentUser?.uid&&!(s.memberUids||[]).includes(auth.currentUser?.uid)&&!isAdmin()){toast('This server is private. Ask its owner for an invite.');return;}if(s.visibility==='public'&&!(s.memberUids||[]).includes(auth.currentUser.uid)){try{await updateDoc(doc(db,'servers',id),{memberUids:[...(s.memberUids||[]),auth.currentUser.uid]});toast('Joined server: '+s.name);}catch(e){toast('Could not join: '+errorText(e));return;}}toast('Server selected: '+s.name);}
-async function createServer(){const name=$('newServerName').value.trim();if(name.length<3){toast('Server name must be at least 3 characters.');return;}const privateMode=confirm('Create a PRIVATE server? Choose Cancel for PUBLIC.');try{const ref=await addDoc(collection(db,'servers'),{name,description:'',visibility:privateMode?'private':'public',ownerUid:auth.currentUser.uid,ownerUsername:currentProfile.username,memberUids:[auth.currentUser.uid],createdAt:serverTimestamp()});$('newServerName').value='';toast((privateMode?'Private':'Public')+' server created.');}catch(e){toast('Server creation blocked: '+errorText(e)+' Update Firestore Rules for servers first.');}}
-
-// Birthdays: client-side reminders work when a signed-in friend opens the app; guaranteed scheduled notifications need a backend scheduler.
-async function checkBirthdays(){if(!auth.currentUser||!currentProfile)return;try{const snap=await getDocs(query(collection(db,'users'),limit(200)));const today=new Date(), key=`bday-notice-${auth.currentUser.uid}-${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;if(sessionStorage.getItem(key))return;const upcoming=[];snap.forEach(d=>{const p=d.data();if(p.uid===auth.currentUser.uid)return;const days=daysUntilBirthday(p.birthday);if(days===1)upcoming.push(p.nickname||p.username||'A friend');if(days===0)upcoming.push((p.nickname||p.username||'A friend')+' (today)');});if(upcoming.length){const msg=upcoming.map(n=>n.endsWith('(today)')?`It's ${n.replace(' (today)','')}'s birthday today! 🎂 Send them a wish!`:`Tomorrow is ${n}'s birthday! 🎂 Don't forget to send your wishes.`);msg.forEach(t=>toast(t));sessionStorage.setItem(key,'1');}}catch(e){console.warn('Birthday reminder:',e);}}
-
-const riddles=[{q:'What gets wetter the more it dries?',a:['A towel','Rain','A sponge','Ice'],correct:0,why:'A towel absorbs water while drying something else.'},{q:'I speak without a mouth and hear without ears. What am I?',a:['A radio','An echo','A shadow','A clock'],correct:1,why:'An echo repeats sound without a body.'},{q:'What has keys but cannot open locks?',a:['A piano','A map','A door','A treasure chest'],correct:0,why:'A piano has musical keys.'},{q:'The more you take, the more you leave behind. What are they?',a:['Coins','Footsteps','Photos','Breaths'],correct:1,why:'Every step leaves a footprint.'}];
-const quizzes=[{q:'Which planet is known as the Red Planet?',a:['Venus','Mars','Jupiter','Mercury'],c:1},{q:'In chess, which piece moves in an L shape?',a:['Bishop','Queen','Knight','Rook'],c:2},{q:'What is 12 × 8?',a:['84','92','96','108'],c:2},{q:'Which is the Death Note shinigami associated with apples?',a:['Rem','Ryuk','Gelus','Sidoh'],c:1},{q:'Which gas do plants absorb from the atmosphere?',a:['Oxygen','Nitrogen','Carbon dioxide','Helium'],c:2}];
-let gameXP=Number(localStorage.getItem('boss-xp')||0),gameStreak=Number(localStorage.getItem('boss-streak')||0);
-function addXP(n){gameXP+=n;localStorage.setItem('boss-xp',gameXP);$('rightSidebarContent').dataset.xp=gameXP;toast(`+${n} XP — keep going!`);}
-function showGame(title,html){let modal=$('gameModal');if(!modal){modal=document.createElement('div');modal.id='gameModal';modal.className='auth-overlay';modal.innerHTML='<div class="auth-card" style="max-width:560px;max-height:85vh;overflow:auto"><button id="gameClose" class="button button-secondary" style="float:right">Close ✕</button><div id="gameModalBody" style="clear:both;padding-top:16px"></div></div>';document.body.append(modal);$('gameClose').onclick=()=>modal.classList.add('hidden');}modal.classList.remove('hidden');$('gameModalBody').innerHTML=`<h2 style="font-family:Cinzel;margin-bottom:12px">${esc(title)}</h2>${html}`;}
-function launchRiddle(){const r=riddles[Math.floor(Math.random()*riddles.length)];showGame('🍎 Riddle Chamber',`<p style="margin-bottom:14px">${esc(r.q)}</p>${r.a.map((a,i)=>`<button class="button button-secondary game-choice" data-riddle="${i}">${esc(a)}</button>`).join('')}<p id="riddleFeedback" style="margin-top:14px;color:var(--text-muted)">Choose carefully. SANTA is watching. 👀</p>`);document.querySelectorAll('[data-riddle]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-riddle]').forEach(x=>x.disabled=true);const ok=Number(b.dataset.riddle)===r.correct;$('riddleFeedback').textContent=ok?'Correct! '+r.why:'Not quite. '+r.why;if(ok)addXP(25);});}
-function launchQuiz(){let i=0,score=0;function draw(){if(i>=quizzes.length){if(score>=3)addXP(score*10);showGame('📝 System Quiz — Results',`<p>You scored <strong>${score}/${quizzes.length}</strong>.</p><p style="margin-top:10px">${score===quizzes.length?'Perfect run. SANTA is suspiciously impressed. 🏆':score>=3?'Solid work. Your brain has survived the test.':'Training arc begins now. Try again, legend.'}</p><p style="margin-top:10px">XP earned: ${score>=3?score*10:0}</p><button class="button" id="quizAgain">Play again</button>`);$('quizAgain').onclick=launchQuiz;return;}const q=quizzes[i];showGame(`📝 Quiz Round ${i+1}/${quizzes.length}`,`<div class="pill">Score: ${score}</div><p style="margin:14px 0">${esc(q.q)}</p>${q.a.map((a,j)=>`<button class="button button-secondary game-choice" data-quiz="${j}">${esc(a)}</button>`).join('')}`);document.querySelectorAll('[data-quiz]').forEach(b=>b.onclick=()=>{if(Number(b.dataset.quiz)===q.c)score++;i++;draw();});}draw();}
-function launchMemory(){
- const vals=['🐈','🍎','📓','🦇','🕯️','🗝️'];
- const deck=[...vals,...vals].sort(()=>Math.random()-.5);
- let open=[],matched=0,moves=0; const matchedCards=new Set();
- function draw(){
-  showGame('🐈 Cat Memory Arena',`<p style="margin-bottom:10px">Match all pairs. Moves: <strong>${moves}</strong></p><div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px">${deck.map((v,i)=>`<button class="button button-secondary" style="height:58px;font-size:23px" data-card="${i}" ${matchedCards.has(i)?'disabled':''}>${matchedCards.has(i)||open.includes(i)?v:'?'}</button>`).join('')}</div><p style="margin-top:12px;color:var(--text-muted)">Find all six pairs.</p>`);
-  document.querySelectorAll('[data-card]').forEach(btn=>btn.onclick=()=>{
-   const idx=Number(btn.dataset.card); if(open.length===2||open.includes(idx)||matchedCards.has(idx))return;
-   open.push(idx);
-   if(open.length===2){moves++;if(deck[open[0]]===deck[open[1]]){matchedCards.add(open[0]);matchedCards.add(open[1]);matched+=2;}
-    setTimeout(()=>{if(matched===12){addXP(Math.max(10,80-moves));showGame('🏆 Memory Cleared',`You matched every pair in ${moves} moves! <button class="button" id="memoryAgain">Run again</button>`);$('memoryAgain').onclick=launchMemory;return;}open=[];draw();},450);
-   } else draw();
+let authObserverBusy = false;
+if (firebaseConfigured) {
+  app = initializeApp(FIREBASE_CONFIG);
+  auth = getAuth(app);
+  db = getFirestore(app);
+  onAuthStateChanged(auth, async user => {
+    currentUser = user;
+    if (!user) {
+      currentProfile = null;
+      authObserverBusy = false;
+      return;
+    }
+    if (authObserverBusy) return;
+    authObserverBusy = true;
+    try {
+      const snap = await getDoc(doc(db, "users", user.uid));
+      if (!snap.exists()) {
+        currentProfile = null;
+        hideAllScreens();
+        $("login").classList.remove("hidden");
+        setAuthNotice("Firebase accepted the email/password, but this account has no users/" + user.uid + " profile document. Do not create another account. In Firestore, open the users collection and make sure the document ID is this exact UID; it needs uid, username, nickname, usernameLower and role fields. BOSS/SANTA roles must be assigned only by you in Firebase Console.");
+        return;
+      }
+      const data = snap.data();
+      if (data.uid && data.uid !== user.uid) throw new Error("Profile UID does not match the signed-in account. Check the users document ID in Firestore.");
+      if (!["BOSS", "SANTA", "USER"].includes(data.role)) throw new Error("This account has an invalid role value. Use BOSS, SANTA, or USER in the Firestore profile.");
+      currentProfile = { uid:user.uid, ...data };
+      enterDashboard(currentProfile);
+      startPresence();
+      setAuthNotice("");
+    } catch (err) {
+      currentProfile = null;
+      hideAllScreens();
+      $("login").classList.remove("hidden");
+      setAuthNotice("Signed-in profile could not be loaded. " + (err?.code || err?.message || "Check Firestore rules and the users/{UID} document."));
+      console.error("BOSS SYSTEM auth/profile error", err);
+    } finally {
+      authObserverBusy = false;
+    }
   });
- }
- draw();
+} else {
+  console.warn("Firebase is not configured. Fill FIREBASE_CONFIG in index.html first.");
 }
-function launchLeaderboard(){showGame('🏆 Local XP Ranking',`<p>Your current local XP: <strong>${gameXP}</strong></p><p style="margin-top:8px;color:var(--text-muted)">This is a local score until the Scores collection is wired into Firestore Rules. Shared rankings need secured server-side score validation.</p>`);}
-window.sendSantaAI=()=>{const input=$('santaInput'),txt=input.value.trim();if(!txt)return;input.value='';const log=$('santaLog');const add=(who,msg)=>{const el=document.createElement('div');el.className='message-text';el.style.marginTop='7px';el.textContent=who+': '+msg;log.append(el);log.scrollTop=log.scrollHeight;};add('YOU',txt);const low=txt.toLowerCase();let replies;
-if(/^(hi|hello|hey|yo|sup|good morning|good evening)\b/.test(low))replies=['Well, well. Someone has entered the lair. What are we breaking—metaphorically? 😈','Greetings, human. Your timing is suspiciously acceptable.','Hey there. SANTA is online, dramatically under-caffeinated, and ready.'];
-else if(low.includes('/help')||low.includes('what can you do')||low.includes('commands'))replies=['Command menu: /help, /roast, /joke, /tip, /birthday, /profile, /servers, /games. Or ask naturally: “How do I create a private server?”','I can help with profiles, birthday settings, servers, games, and system navigation. I can also roast your questionable decisions. Politely-ish.'];
-else if(low.includes('roast')||low==='/roast')replies=[`${currentProfile?.nickname||'Human'}, your confidence is premium. Your planning is still on the free trial. 💀`,'I would roast your code, but I respect archaeological sites. Some of those bugs have history.','Even BOSS MAYSI makes mistakes. The difference is, the rest of us call them “features” and pray.'];
-else if(low.includes('birthday')||low.includes('bday'))replies=['Open Profile → Edit Profile → Birthday, enter MM-DD-YYYY, then save. Birthday reminders currently appear when friends open the system; guaranteed scheduled push notifications need a trusted scheduler/backend.'];
-else if(low.includes('server'))replies=['Open the 🌐 Servers tab, enter a server name, then choose Public or Private when prompted. Private access must also be allowed by Firestore Rules; frontend checks alone are not security.'];
-else if(low.includes('game')||low.includes('quiz')||low.includes('riddle'))replies=['Go to 🎮 Arcade & Intelligence. Try a riddle for 25 XP or clear the quiz for bonus XP. Lose with dignity; or at least lose quietly. 😌'];
-else if(low.includes('profile')||low.includes('online')||low.includes('last seen'))replies=['Open 👤 Profile to edit your display name, birthday, bio, and profile picture URL. Presence updates about once a minute while you are signed in.'];
-else if(low.includes('how')||low.includes('help me')||low.includes('use'))replies=['Tell me which feature you mean—servers, profile, birthday, chat, storage, or games—and I’ll walk you through it. I’m snarky, not psychic.'];
-else if(low.includes('joke')||low.includes('/joke'))replies=['Why did the developer go broke? Too many cache misses. I’ll see myself out.','My favourite exercise is running… `npm run dev`.'];
-else if(low.includes('thank'))replies=['You’re welcome. I’ll add it to the list of times I carried this operation. 😌','Anytime. Praise is accepted in the form of fewer typos.'];
-else if(low.includes('santa'))replies=['Present. Slightly dramatic, extremely available, and only 12% judging you.','You summoned me. State your mission, human.'];
-else replies=['Interesting. Give me one more detail so I can help instead of confidently guessing.','I caught the vibe, but not the exact request. Try asking about servers, profiles, birthdays, games, or type /help.','That sentence has mystery-novel energy. What do you want SANTA to do with it?'];
-add('SANTA AI',replies[Math.floor(Math.random()*replies.length)]);};
-window.logout=async()=>{try{if(auth.currentUser)await updateDoc(doc(db,'users',auth.currentUser.uid),{online:false,lastSeen:serverTimestamp()});if(activeChatUnsub)activeChatUnsub();if(serverUnsub)serverUnsub();await signOut(auth);}catch(e){toast(errorText(e));}};
-// Replace placeholder alert handlers with working feature handlers.
-document.addEventListener('DOMContentLoaded',()=>{});
-const createBtn=[...document.querySelectorAll('#page-servers button')].find(b=>b.textContent.includes('Create Server'));if(createBtn)createBtn.onclick=createServer;
-const saveNoteBtn=[...document.querySelectorAll('#page-library button')].find(b=>b.textContent.includes('Save Note'));if(saveNoteBtn)saveNoteBtn.onclick=async()=>{const title=$('noteTitle').value.trim(),body=$('noteBody').value.trim();if(!title||!body){toast('Add both a title and note content.');return;}const key='boss-notes-'+auth.currentUser.uid;const notes=JSON.parse(localStorage.getItem(key)||'[]');notes.unshift({title,body,at:new Date().toISOString()});localStorage.setItem(key,JSON.stringify(notes.slice(0,100)));$('noteTitle').value='';$('noteBody').value='';toast('Note saved on this device. It is not encrypted cloud storage.');};
-const uploadBtn=[...document.querySelectorAll('#page-storage button')].find(b=>b.textContent.includes('Upload'));if(uploadBtn)uploadBtn.onclick=()=>{const file=$('#page-storage input[type=file]').files[0];if(!file){toast('Choose a file first.');return;}if(file.size>25*1024*1024){toast('This file is larger than 25 MB.');return;}const reader=new FileReader();reader.onload=()=>{const files=JSON.parse(localStorage.getItem('boss-local-files')||'[]');files.push({name:file.name,type:file.type,size:file.size,data:reader.result,at:new Date().toISOString()});try{localStorage.setItem('boss-local-files',JSON.stringify(files));toast('File saved in this browser’s local storage. Not encrypted or synced.');}catch(e){toast('Browser storage is full. Try a smaller file.');}};reader.readAsDataURL(file);};
-const gameBtns=[...document.querySelectorAll('#page-games button')];gameBtns.find(b=>b.textContent.includes('Play Game'))?.addEventListener('click',launchMemory);gameBtns.find(b=>b.textContent.includes('Solve Riddle'))?.addEventListener('click',launchRiddle);gameBtns.find(b=>b.textContent.includes('Start Quiz'))?.addEventListener('click',launchQuiz);gameBtns.find(b=>b.textContent.includes('View Leaderboard'))?.addEventListener('click',launchLeaderboard);
-// Add password reset link and a server description/visibility selector without disturbing the existing layout.
-const authCard=document.querySelector('.auth-card');if(authCard&&!$('resetPasswordLink')){const a=document.createElement('a');a.id='resetPasswordLink';a.href='#';a.textContent='Forgot password?';a.style.cssText='display:block;text-align:center;margin-top:12px;color:var(--text-muted);font-size:12px;text-decoration:none';a.onclick=e=>{e.preventDefault();window.resetPassword();};authCard.append(a);}
-const serverCard=$('page-servers')?.querySelector('.card');if(serverCard&&!$('newServerDescription')){const desc=document.createElement('input');desc.id='newServerDescription';desc.className='input-field';desc.placeholder='Short description (optional)';const btn=serverCard.querySelector('button');serverCard.insertBefore(desc,btn);const p=document.createElement('p');p.style.cssText='color:var(--text-muted);font-size:12px;margin-top:8px';p.textContent='Choose Public or Private in the confirmation dialog. Server features require matching Firestore Rules.';serverCard.append(p);}
+
+const bootLines = ["CONNECTING TO PRIVATE NETWORK...","SCANNING ACCESS POINT...","LOADING DIGITAL NOTEBOOK...","CHECKING SECURITY...","SANTA CORE: ONLINE","BOSS PROTOCOL: READY","ACCESS TERMINAL: READY"];
+let bootIndex = 0;
+function bootAnimation(){
+  const target = $("bootText");
+  const interval = setInterval(() => {
+    if (bootIndex >= bootLines.length) {
+      clearInterval(interval);
+      setTimeout(() => { $("opening").classList.add("hidden"); $("access").classList.remove("hidden"); }, 350);
+      return;
+    }
+    target.textContent = bootLines[bootIndex++];
+  }, 300);
+}
+window.addEventListener("load", bootAnimation);
+function hideAllScreens(){document.querySelectorAll(".screen").forEach(el=>el.classList.add("hidden"));}
+function showLogin(){hideAllScreens();$("login").classList.remove("hidden");setAuthNotice("");}
+function showSignup(){hideAllScreens();$("signup").classList.remove("hidden");setAuthNotice("");}
+function backToAccess(){hideAllScreens();$("access").classList.remove("hidden");setAuthNotice("");}
+window.showLogin=showLogin; window.showSignup=showSignup; window.backToAccess=backToAccess;
+
+function setAuthNotice(message){
+  const box=$("authNotice");
+  if(!box)return;
+  box.textContent=message||"";
+  box.hidden=!message;
+}
+function showError(err){
+  console.error(err);
+  setAuthNotice(err?.code ? (err.code + ": " + (err.message||"Request failed.")) : (err?.message||"Request failed."));
+  const code = err?.code || "";
+  const messages = {
+    "auth/email-already-in-use":"That email is already registered.",
+    "auth/invalid-email":"Please enter a valid email address.",
+    "auth/weak-password":"Use a password with at least 6 characters.",
+    "auth/invalid-credential":"Email or password is incorrect.",
+    "auth/network-request-failed":"Network problem. Check your internet connection.",
+    "permission-denied":"Firebase blocked this action. Check Firestore rules and your setup."
+  };
+  alert(messages[code] || err?.message || "Something went wrong. Check the browser console for details.");
+}
+function requireFirebase(){if(!firebaseConfigured){alert("Firebase setup is not finished. Follow BOSS-SYSTEM-SETUP.md first.");return false;}return true;}
+function cleanUsername(value){return value.trim().toLowerCase();}
+function validUsername(value){return /^[a-zA-Z0-9_]{3,20}$/.test(value);}
+
+async function signup(){
+  if(!requireFirebase()) return;
+  setAuthNotice("");
+  const email=$("signupEmail").value.trim().toLowerCase();
+  const username=$("signupUsername").value.trim();
+  const usernameLower=cleanUsername(username);
+  const nickname=$("signupNickname").value.trim();
+  const password=$("signupPassword").value;
+  const confirm=$("signupConfirm").value;
+  if(!email||!username||!nickname||!password||!confirm){alert("All fields are required.");return;}
+  if(!validUsername(username)){alert("Username must be 3–20 characters and use only letters, numbers or underscores.");return;}
+  if(RESERVED_USERNAMES.has(usernameLower)||["boss maysi","santa"].includes(nickname.toLowerCase())){alert("That identity is reserved.");return;}
+  if(password.length<6){alert("Password must contain at least 6 characters.");return;}
+  if(password!==confirm){alert("Passwords do not match.");return;}
+  let credential=null;
+  try{
+    credential=await createUserWithEmailAndPassword(auth,email,password);
+    currentUser=credential.user;
+    const uid=credential.user.uid;
+    await runTransaction(db,async tx=>{
+      const nameRef=doc(db,"usernames",usernameLower);
+      const nameSnap=await tx.get(nameRef);
+      if(nameSnap.exists()) throw new Error("That username is already taken. Choose another.");
+      tx.set(doc(db,"users",uid),{uid,username,nickname,usernameLower,role:"USER",presenceStatus:"online",lastSeenAt:serverTimestamp(),createdAt:serverTimestamp()});
+      tx.set(nameRef,{uid,username,usernameLower,createdAt:serverTimestamp()});
+    });
+    const profileSnap=await getDoc(doc(db,"users",uid));
+    currentProfile={uid,...profileSnap.data()};
+    enterDashboard(currentProfile);
+    startPresence();
+    $("signupEmail").value=$("signupUsername").value=$("signupNickname").value=$("signupPassword").value=$("signupConfirm").value="";
+    alert("Account created! You're signed in now.");
+  }catch(err){
+    if(credential?.user){try{await credential.user.delete();}catch(_){}}
+    showError(err);
+  }
+}
+async function login(){
+  if(!requireFirebase()) return;
+  const email=$("loginEmail").value.trim().toLowerCase();
+  const password=$("loginPassword").value;
+  if(!email||!password){setAuthNotice("Enter both your email address and password.");return;}
+  const btn=$("login").querySelector('button[onclick="login()"]');
+  const original=btn?.textContent;
+  if(btn){btn.disabled=true;btn.textContent="VERIFYING ACCESS…";}
+  setAuthNotice("Checking Firebase credentials…");
+  try{
+    const credential=await signInWithEmailAndPassword(auth,email,password);
+    currentUser=credential.user;
+    const profileSnap=await getDoc(doc(db,"users",credential.user.uid));
+    if(!profileSnap.exists()){
+      setAuthNotice("Email/password accepted, but the matching Firestore profile is missing. UID: "+credential.user.uid+". Do not create another account. Fix the users document ID in Firestore; the exact UID must be the document ID.");
+      return;
+    }
+    const profile=profileSnap.data();
+    if(profile.uid && profile.uid!==credential.user.uid){
+      setAuthNotice("Profile UID mismatch. The users document ID and its uid field must match the UID shown in Firebase Authentication.");
+      return;
+    }
+    if(!["BOSS","SANTA","USER"].includes(profile.role)){
+      setAuthNotice("Invalid profile role. Set role to BOSS, SANTA, or USER in Firebase Console.");
+      return;
+    }
+    currentProfile={uid:credential.user.uid,...profile};
+    enterDashboard(currentProfile);
+    startPresence();
+    $("loginPassword").value="";
+    setAuthNotice("");
+  }catch(err){
+    const messages={
+      "auth/invalid-credential":"Email or password is incorrect. Use the existing account email and password, or use Reset Password by Email.",
+      "auth/invalid-email":"That email address is not valid.",
+      "auth/too-many-requests":"Firebase temporarily blocked sign-in attempts. Wait a while, then try again.",
+      "auth/network-request-failed":"Network error. Check internet and try again.",
+      "permission-denied":"Firestore denied the profile read. The Firestore rules or users/{UID} document need checking."
+    };
+    setAuthNotice(messages[err?.code] || ((err?.code?err.code+": ":"")+(err?.message||"Login failed.")));
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent=original||"ENTER SYSTEM";}
+  }
+}
+async function resetPassword(){
+  if(!requireFirebase())return;
+  const email=($("loginEmail").value||"").trim().toLowerCase();
+  if(!email){alert("Enter your email address in the login box first.");return;}
+  try{await sendPasswordResetEmail(auth,email);alert("If the account exists, a password-reset email has been sent.");}
+  catch(err){showError(err);}
+}
+async function setOwnPresence(status){
+  if(!db||!currentUser)return;
+  try{await updateDoc(doc(db,"users",currentUser.uid),{presenceStatus:status,lastSeenAt:serverTimestamp()});}catch(err){console.warn("Presence update failed",err);}
+}
+function startPresence(){
+  if(!db||!currentUser)return;
+  setOwnPresence("online");
+  if(presenceUnsubscribe)presenceUnsubscribe();
+  presenceUnsubscribe=onSnapshot(doc(db,"users",currentUser.uid),snap=>{
+    if(snap.exists()&&currentProfile)currentProfile={...currentProfile,...snap.data()};
+  },err=>console.warn("Presence listener failed",err));
+}
+window.addEventListener("pagehide",()=>{
+  if(!db||!currentUser)return;
+  // Best-effort status update when this page is closed.
+  updateDoc(doc(db,"users",currentUser.uid),{presenceStatus:"offline",lastSeenAt:serverTimestamp()}).catch(()=>{});
+});
+async function logout(){
+  await setOwnPresence("offline");
+  if(presenceUnsubscribe)presenceUnsubscribe(); presenceUnsubscribe=null;
+  if(chatUnsubscribe)chatUnsubscribe(); if(reportUnsubscribe)reportUnsubscribe(); if(transferUnsubscribe)transferUnsubscribe();
+  chatUnsubscribe=reportUnsubscribe=transferUnsubscribe=null;
+  if(activePeer)activePeer.close(); activePeer=null; activeChannel=null; activeTransfer=null;
+  if(auth)await signOut(auth);
+  hideAllScreens();$("access").classList.remove("hidden");
+}
+window.signup=signup;window.login=login;window.resetPassword=resetPassword;window.logout=logout;
+
+function enterDashboard(profile){
+  if(!profile || !currentUser || profile.uid!==currentUser.uid){setAuthNotice("Dashboard blocked: signed-in Firebase user and profile UID do not match.");return;}
+  currentProfile=profile;
+  hideAllScreens();$("dashboard").classList.remove("hidden");
+  $("welcomeText").textContent=`IDENTITY VERIFIED — WELCOME, ${(profile.nickname||profile.username||"USER").toUpperCase()}.`;
+  const badge=$("roleBadge");
+  const role=profile.role||"USER";
+  badge.textContent=role==="BOSS"?"◆ BOSS MAYSI — HIGHEST AUTHORITY":role==="SANTA"?"◆ SANTA — SYSTEM CONTROLLER":"USER ACCESS";
+  badge.classList.toggle("admin",role==="BOSS"||role==="SANTA");
+  $("santaMessage").textContent=role==="BOSS"?"BOSS MAYSI recognized. Highest authority verified. SANTA Core is standing by.":role==="SANTA"?"SANTA Core online. Use /help to view available commands.":`Welcome, ${profile.nickname||profile.username}. Keep it clever, not chaotic. 🤖`;
+  const now=new Date();
+  $("birthdayReveal").classList.toggle("hidden",!(now.getMonth()===10&&now.getDate()===17));
+  listenForTransfers();
+}
+
+function el(tag,attrs={},text=""){
+  const node=document.createElement(tag);
+  for(const [key,value] of Object.entries(attrs)){if(key==="class")node.className=value;else if(key.startsWith("on")&&typeof value==="function")node.addEventListener(key.slice(2),value);else if(value!==undefined&&value!==null)node.setAttribute(key,String(value));}
+  if(text!=="")node.textContent=text;
+  return node;
+}
+function clearExtra(){const extra=$("extraContent");extra.replaceChildren();return extra;}
+function panel(parent,title){const p=el("section",{class:"panel"});p.append(el("h3",{},title));parent.append(p);return p;}
+function field(parent,labelText,tag="input",attrs={}){const wrap=el("div");wrap.append(el("label",{class:"field-label"},labelText));const input=el(tag,attrs);wrap.append(input);parent.append(wrap);return input;}
+function action(parent,label,fn,cls=""){const b=el("button",{type:"button",class:cls},label);b.addEventListener("click",fn);parent.append(b);return b;}
+function item(parent,title,detail=""){const box=el("div",{class:"item"});box.append(el("strong",{},title));if(detail)box.append(el("small",{},detail));parent.append(box);return box;}
+function fmtDate(value){try{return value?.toDate?value.toDate().toLocaleString():new Date(value).toLocaleString();}catch(_){return "";}}
+
+async function openModule(module){
+  if(!currentUser||!currentProfile){alert("Please log in first.");return;}
+  if(!firebaseConfigured){alert("Finish Firebase setup first.");return;}
+  $("modalTitle").textContent=module;
+  $("modalText").textContent="Loading module…";
+  const extra=clearExtra();$("modal").classList.remove("hidden");
+  try{
+    if(module==="LIBRARY")await renderLibrary(extra);
+    else if(module==="STORAGE")await renderStorage(extra);
+    else if(module==="GAMES")renderGames(extra);
+    else if(module==="RIDDLES")renderRiddles(extra);
+    else if(module==="QUIZ")renderQuiz(extra);
+    else if(module==="LINKS")await renderLinks(extra);
+    else if(module==="CHAT")renderChat(extra);
+    else if(module==="SERVERS")await renderServers(extra);
+    else if(module==="PROFILES")await renderProfiles(extra);
+    else if(module==="SANTA")renderSanta(extra);
+  }catch(err){$("modalText").textContent="Module error: "+(err.message||"unknown error");showError(err);}
+}
+window.openModule=openModule;
+
+async function renderLibrary(root){
+  $("modalText").textContent="Your notes are saved to your signed-in account in Firestore. File attachments stay local unless you transfer them.";
+  const form=panel(root,"CREATE NOTE");const title=field(form,"NOTE TITLE","input",{type:"text",placeholder:"Note title",maxlength:"100"});const body=field(form,"NOTE CONTENT","textarea",{rows:"4",placeholder:"Write your note…",maxlength:"10000"});
+  action(form,"SAVE NOTE",async()=>{if(!title.value.trim()||!body.value.trim()){alert("Enter a title and note.");return;}await addDoc(collection(db,"users",currentUser.uid,"notes"),{title:title.value.trim(),body:body.value.trim(),createdAt:serverTimestamp(),updatedAt:serverTimestamp()});title.value=body.value="";await renderLibrary(root);},"red-button");
+  const list=panel(root,"SAVED NOTES");const snap=await getDocs(query(collection(db,"users",currentUser.uid,"notes"),orderBy("createdAt","desc"),limit(50)));
+  if(snap.empty)list.append(el("p",{class:"status-line"},"No notes yet."));
+  snap.forEach(d=>{const n=d.data();const box=item(list,n.title||"Untitled",fmtDate(n.createdAt));box.append(el("p",{},n.body||""));action(box,"DELETE",async()=>{if(confirm("Delete this note?")){await deleteDoc(d.ref);await renderLibrary(root);}},"red-button");});
+}
+
+const DB_NAME="bossSystemLocalFilesV1";
+function openLocalDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open(DB_NAME,1);req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains("files"))d.createObjectStore("files",{keyPath:"id"});};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});}
+async function fileDB(method,value){const d=await openLocalDB();return new Promise((resolve,reject)=>{const tx=d.transaction("files",method==="getAll"?"readonly":"readwrite");const store=tx.objectStore("files");let req;if(method==="put")req=store.put(value);else if(method==="delete")req=store.delete(value);else req=store.getAll();req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);tx.oncomplete=()=>d.close();tx.onerror=()=>reject(tx.error);});}
+async function renderStorage(root){
+  $("modalText").textContent="Files stay on this browser/device using IndexedDB. They do not sync automatically and can be lost if site data is cleared. Direct transfer is limited to 25 MB and requires both users online.";
+  const form=panel(root,"SAVE FILE ON THIS DEVICE");const picker=field(form,"CHOOSE A FILE","input",{type:"file"});action(form,"SAVE LOCALLY",async()=>{const f=picker.files?.[0];if(!f){alert("Choose a file first.");return;}try{await fileDB("put",{id:crypto.randomUUID(),name:f.name,type:f.type,size:f.size,lastModified:f.lastModified,blob:f,createdAt:Date.now()});picker.value="";await renderStorage(root);}catch(e){alert("Browser storage failed or is full: "+e.message);}},"red-button");
+  const sendPanel=panel(root,"DIRECT SEND — NO CLOUD FILE UPLOAD");const recipient=field(sendPanel,"RECIPIENT USERNAME","input",{type:"text",placeholder:"Enter exact username"});const sendPicker=field(sendPanel,"FILE TO SEND","input",{type:"file"});action(sendPanel,"START TRANSFER",()=>startTransfer(recipient.value.trim().toLowerCase(),sendPicker.files?.[0]),"red-button");const transferStatus=el("div",{id:"transferStatus",class:"status-line"},"Transfer status: ready");sendPanel.append(transferStatus);
+  const inbox=panel(root,"INCOMING TRANSFERS");const inboxList=el("div",{id:"transferInbox"});inbox.append(inboxList);loadIncomingTransfers(inboxList);
+  const list=panel(root,"FILES SAVED ON THIS DEVICE");const files=await fileDB("getAll");if(!files.length)list.append(el("p",{class:"status-line"},"No local files saved yet."));
+  for(const f of files.sort((a,b)=>b.createdAt-a.createdAt)){const box=item(list,f.name,`${(f.size/1024/1024).toFixed(2)} MB • ${fmtDate(f.createdAt)}`);const actions=el("div",{class:"row-actions"});action(actions,"DOWNLOAD",()=>downloadBlob(f.blob,f.name));action(actions,"DELETE",async()=>{if(confirm("Delete this local file?")){await fileDB("delete",f.id);await renderStorage(root);}},"red-button");box.append(actions);}
+}
+function downloadBlob(blob,name){const url=URL.createObjectURL(blob);const a=el("a",{href:url,download:name});document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+function setTransferStatus(text){const n=$("transferStatus");if(n)n.textContent=text;}
+async function waitIceComplete(pc){if(pc.iceGatheringState==="complete")return;await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error("Connection setup timed out. Try again on a different network.")),12000);pc.addEventListener("icegatheringstatechange",()=>{if(pc.iceGatheringState==="complete"){clearTimeout(timer);resolve();}});});}
+function createPeer(){return new RTCPeerConnection({iceServers:[{urls:"stun:stun.l.google.com:19302"}]});}
+async function findRecipient(username){const snap=await getDocs(query(collection(db,"usernames"),where("usernameLower","==",username),limit(1)));if(snap.empty)return null;return snap.docs[0].data().uid;}
+async function startTransfer(username,file){
+  if(!username||!file){alert("Enter the recipient username and choose a file.");return;}
+  if(file.size>MAX_TRANSFER_BYTES){alert("This prototype supports files up to 25 MB.");return;}
+  if(username===currentProfile.usernameLower){alert("You cannot send a file to yourself.");return;}
+  try{
+    const recipientUid=await findRecipient(username);if(!recipientUid){alert("Username not found. They must have a BOSS SYSTEM account.");return;}
+    activePeer=createPeer();activeTransfer={file,recipientUid,role:"sender"};activeChannel=activePeer.createDataChannel("boss-file",{ordered:true});
+    activeChannel.binaryType="arraybuffer";
+    activeChannel.onopen=async()=>{setTransferStatus("Connected. Sending file…");activeChannel.send(JSON.stringify({type:"meta",name:file.name,size:file.size,mime:file.type||"application/octet-stream"}));const buf=await file.arrayBuffer();for(let offset=0;offset<buf.byteLength;offset+=CHUNK_SIZE){if(!activeChannel||activeChannel.readyState!=="open")throw new Error("Transfer connection closed.");while(activeChannel.bufferedAmount>1024*1024)await new Promise(r=>setTimeout(r,80));activeChannel.send(buf.slice(offset,Math.min(offset+CHUNK_SIZE,buf.byteLength)));setTransferStatus(`Sending… ${Math.min(100,Math.round((offset+CHUNK_SIZE)/buf.byteLength*100))}%`);}activeChannel.send(JSON.stringify({type:"done"}));setTransferStatus("File sent. Wait for receiver confirmation.");};
+    activeChannel.onerror=()=>setTransferStatus("Transfer channel error.");
+    const offer=await activePeer.createOffer();await activePeer.setLocalDescription(offer);await waitIceComplete(activePeer);
+    const ref=await addDoc(collection(db,"transfers"),{senderUid:currentUser.uid,senderName:currentProfile.nickname||currentProfile.username,recipientUid,status:"offered",offer:activePeer.localDescription.sdp,fileName:file.name,fileSize:file.size,createdAt:serverTimestamp()});activeTransfer.docId=ref.id;setTransferStatus("Offer sent. Ask recipient to open STORAGE and accept the transfer.");
+    const unsub=onSnapshot(ref,async snap=>{const data=snap.data();if(!data)return;if(data.status==="accepted"&&data.answer&&activePeer?.signalingState==="have-local-offer"){try{await activePeer.setRemoteDescription({type:"answer",sdp:data.answer});}catch(e){setTransferStatus("Could not establish connection: "+e.message);}}if(data.status==="rejected"||data.status==="cancelled"){setTransferStatus("Transfer was rejected or cancelled.");unsub();}});
+  }catch(err){setTransferStatus("Transfer failed: "+err.message);showError(err);}
+}
+async function loadIncomingTransfers(root){
+  root.replaceChildren();try{const snap=await getDocs(query(collection(db,"transfers"),where("recipientUid","==",currentUser.uid),limit(20)));const docs=snap.docs.filter(d=>d.data().status==="offered");if(!docs.length){root.append(el("p",{class:"status-line"},"No pending transfers."));return;}for(const d of docs){const t=d.data();const box=item(root,t.fileName||"Incoming file",`${t.senderName||"A user"} • ${((t.fileSize||0)/1024/1024).toFixed(2)} MB`);action(box,"ACCEPT",()=>acceptTransfer(d.ref,t),"red-button");action(box,"REJECT",()=>updateDoc(d.ref,{status:"rejected"}));}}catch(err){root.append(el("p",{class:"status-line"},"Could not load transfers: "+err.message));}
+}
+async function listenForTransfers(){if(transferUnsubscribe)transferUnsubscribe();if(!db||!currentUser)return;transferUnsubscribe=onSnapshot(query(collection(db,"transfers"),where("recipientUid","==",currentUser.uid),limit(20)),snap=>{const pending=snap.docs.filter(d=>d.data().status==="offered");if(pending.length&&$("modalTitle").textContent==="STORAGE"){const root=$("transferInbox");if(root)loadIncomingTransfers(root);} });}
+async function acceptTransfer(ref,t){
+  try{
+    activePeer=createPeer();activeTransfer={role:"receiver",ref,fileName:t.fileName,fileSize:t.fileSize};receivedChunks=[];receiveMeta=null;
+    activePeer.ondatachannel=event=>{activeChannel=event.channel;activeChannel.binaryType="arraybuffer";activeChannel.onmessage=async ev=>{if(typeof ev.data==="string"){let m;try{m=JSON.parse(ev.data);}catch(_){return;}if(m.type==="meta"){receiveMeta=m;receivedChunks=[];setTransferStatus(`Receiving ${m.name}…`);}else if(m.type==="done"){const blob=new Blob(receivedChunks,{type:receiveMeta?.mime||"application/octet-stream"});downloadBlob(blob,receiveMeta?.name||t.fileName||"received-file");setTransferStatus("Transfer complete. Check your downloads; save it to My Storage if you want to keep it in the browser.");receivedChunks=[];}}else{receivedChunks.push(ev.data);const total=receivedChunks.reduce((n,c)=>n+(c.byteLength||c.size||0),0);setTransferStatus(`Receiving… ${Math.min(100,Math.round(total/Math.max(1,t.fileSize)*100))}%`);}};};
+    await activePeer.setRemoteDescription({type:"offer",sdp:t.offer});const answer=await activePeer.createAnswer();await activePeer.setLocalDescription(answer);await waitIceComplete(activePeer);await updateDoc(ref,{answer:activePeer.localDescription.sdp,status:"accepted"});setTransferStatus("Accepted. Connecting to sender…");closeModule();openModule("STORAGE");
+  }catch(err){alert("Could not accept transfer: "+err.message);}
+}
+
+async function renderLinks(root){
+  $("modalText").textContent="Save useful URLs to your account. Only the URL and label are stored in Firestore.";
+  const form=panel(root,"SAVE A LINK");const label=field(form,"LINK NAME","input",{type:"text",placeholder:"YouTube, Instagram, study site…",maxlength:"100"});const url=field(form,"URL","input",{type:"url",placeholder:"https://example.com"});action(form,"SAVE LINK",async()=>{let parsed;try{parsed=new URL(url.value.trim());}catch(_){alert("Enter a valid full URL.");return;}if(!["https:","http:"].includes(parsed.protocol)){alert("Only http and https links are allowed.");return;}await addDoc(collection(db,"users",currentUser.uid,"links"),{label:label.value.trim()||parsed.hostname,url:parsed.href,createdAt:serverTimestamp()});label.value=url.value="";await renderLinks(root);},"red-button");
+  const list=panel(root,"YOUR LINKS");const snap=await getDocs(query(collection(db,"users",currentUser.uid,"links"),orderBy("createdAt","desc"),limit(100)));if(snap.empty)list.append(el("p",{class:"status-line"},"No links saved."));snap.forEach(d=>{const v=d.data();const box=item(list,v.label||v.url,v.url);const a=el("a",{href:v.url,target:"_blank",rel:"noopener noreferrer"},"OPEN LINK");a.style.color="#ff9999";box.append(a);action(box,"DELETE",async()=>{if(confirm("Delete this link?")){await deleteDoc(d.ref);await renderLinks(root);}},"red-button");});
+}
+
+function renderGames(root){
+  $("modalText").textContent="CAT MEMORY ARENA — match every pair. This version runs locally; it does not upload game data unless a score is saved.";
+  const game=panel(root,"CAT MEMORY ARENA");const stats=el("p",{class:"status-line",id:"memoryStats"},"Moves: 0 • Pairs: 0");game.append(stats);const grid=el("div",{class:"memory-grid",id:"memoryGrid"});game.append(grid);const emojis=["🐈","🌙","🖤","⭐","🍓","🦇","🎮","🌌"];let deck=[...emojis,...emojis].sort(()=>Math.random()-.5);gameState={moves:0,pairs:0,first:null,locked:false,deck,matched:new Set()};deck.forEach((emoji,i)=>{const b=el("button",{class:"memory-card",type:"button"},"?");b.addEventListener("click",()=>{if(gameState.locked||gameState.matched.has(i)||b.textContent!=="?")return;b.textContent=emoji;if(gameState.first===null){gameState.first=i;}else{gameState.moves++;const first=gameState.first;gameState.first=null;if(deck[first]===emoji){gameState.matched.add(first);gameState.matched.add(i);grid.children[first].disabled=true;b.disabled=true;gameState.pairs++;}else{gameState.locked=true;setTimeout(()=>{grid.children[first].textContent="?";b.textContent="?";gameState.locked=false;},650);}stats.textContent=`Moves: ${gameState.moves} • Pairs: ${gameState.pairs}/8`;if(gameState.pairs===8){stats.textContent+=` • Complete! Score: ${Math.max(10,1000-gameState.moves*25)}`;saveScore("CAT MEMORY ARENA",Math.max(10,1000-gameState.moves*25));}}});grid.append(b);});action(game,"RESTART GAME",()=>renderGames(root));
+}
+async function saveScore(game,score){try{await addDoc(collection(db,"scores"),{uid:currentUser.uid,username:currentProfile.username,nickname:currentProfile.nickname,game,score,createdAt:serverTimestamp()});}catch(e){console.warn("Score not saved",e);}}
+
+const riddles=[
+  {q:"I have keys but no locks, space but no room. What am I?",a:"A keyboard",hint:"You use me to type."},
+  {q:"The more you take, the more you leave behind. What are they?",a:"Footsteps",hint:"Think about walking."},
+  {q:"What has a face and two hands but no arms or legs?",a:"A clock",hint:"It helps you know the time."},
+  {q:"What gets wetter the more it dries?",a:"A towel",hint:"You use it after washing."},
+  {q:"What has many teeth but cannot bite?",a:"A comb",hint:"It helps with hair."}
+];
+function renderRiddles(root){$("modalText").textContent="A little challenge from SANTA. Ask for a hint when you need one.";const p=panel(root,"RIDDLE CHAMBER");let r=riddles[Math.floor(Math.random()*riddles.length)];p.append(el("p",{},r.q));const out=el("p",{class:"status-line"});p.append(out);action(p,"HINT",()=>out.textContent="Hint: "+r.hint);action(p,"REVEAL ANSWER",()=>out.textContent="Answer: "+r.a,"red-button");action(p,"NEXT RIDDLE",()=>renderRiddles(root));}
+const quizzes={
+  Anime:[{q:"In Naruto, what village is Naruto from?",o:["Hidden Leaf","Hidden Sand","Hidden Mist"],a:0},{q:"Which anime features the Survey Corps?",o:["One Piece","Attack on Titan","Bleach"],a:1}],
+  Study:[{q:"What is 7 × 8?",o:["54","56","64"],a:1},{q:"What is the chemical symbol for oxygen?",o:["O","Ox","Og"],a:0}],
+  Gaming:[{q:"Which company makes the PlayStation?",o:["Nintendo","Sony","Valve"],a:1},{q:"In Minecraft, which tool is commonly used to mine stone?",o:["Pickaxe","Fishing rod","Hoe"],a:0}]
+};
+function renderQuiz(root){$("modalText").textContent="Choose a category. This starter quiz contains sample questions that can be expanded later.";const p=panel(root,"QUIZ ARENA");const select=field(p,"CATEGORY","select");["Anime","Study","Gaming"].forEach(x=>select.append(el("option",{value:x},x)));const area=el("div");p.append(area);action(p,"START QUIZ",()=>startQuiz(select.value,area));}
+function startQuiz(category,area){area.replaceChildren();const questions=quizzes[category];quizState={i:0,score:0,category,questions};showQuizQuestion(area);}
+function showQuizQuestion(area){area.replaceChildren();if(quizState.i>=quizState.questions.length){area.append(el("p",{class:"status-line"},`Quiz complete! Score: ${quizState.score}/${quizState.questions.length}`));saveScore("QUIZ: "+quizState.category,quizState.score*100);return;}const q=quizState.questions[quizState.i];area.append(el("p",{},`${quizState.i+1}. ${q.q}`));q.o.forEach((opt,i)=>action(area,opt,()=>{if(i===q.a)quizState.score++;quizState.i++;showQuizQuestion(area); }));}
+
+function renderChat(root){
+  $("modalText").textContent="Shared chat lobby. Messages are visible to signed-in users. Users can report messages; moderators can review reports. Do not post private information.";
+  const form=panel(root,"SYSTEM CHAT");const list=el("div",{class:"chat-box",id:"fireChatBox"});form.append(list);const input=field(form,"MESSAGE","input",{type:"text",placeholder:"Write a message…",maxlength:"1000"});action(form,"SEND MESSAGE",async()=>{const message=input.value.trim();if(!message)return;try{await addDoc(collection(db,"chatMessages"),{uid:currentUser.uid,username:currentProfile.username,nickname:currentProfile.nickname,text:message,createdAt:serverTimestamp()});input.value="";}catch(e){showError(e);}},"red-button");
+  if(chatUnsubscribe)chatUnsubscribe();chatUnsubscribe=onSnapshot(query(collection(db,"chatMessages"),orderBy("createdAt","desc"),limit(60)),snap=>{list.replaceChildren();snap.docs.reverse().forEach(d=>{const m=d.data();const line=el("div",{class:"chat-message"});line.append(el("strong",{},(m.nickname||m.username||"USER")+": "),el("span",{},m.text||""));line.append(el("small",{},fmtDate(m.createdAt)));if(m.uid!==currentUser.uid){action(line,"REPORT",async()=>{const reason=prompt("Why are you reporting this message? (Please be specific)");if(reason===null)return;await addDoc(collection(db,"reports"),{messageId:d.id,reportedUid:m.uid,reportedName:m.nickname||m.username,reporterUid:currentUser.uid,reason:reason.slice(0,500),status:"open",createdAt:serverTimestamp()});alert("Report submitted.");});}if(["BOSS","SANTA"].includes(currentProfile.role))action(line,"REMOVE MESSAGE",async()=>{if(confirm("Remove this message?"))await deleteDoc(d.ref);},"red-button");list.append(line);});list.scrollTop=list.scrollHeight;});
+  if(["BOSS","SANTA"].includes(currentProfile.role)){const mod=panel(root,"MODERATION REPORTS");const reports=el("div");mod.append(reports);if(reportUnsubscribe)reportUnsubscribe();reportUnsubscribe=onSnapshot(query(collection(db,"reports"),where("status","==","open"),limit(30)),snap=>{reports.replaceChildren();if(snap.empty)reports.append(el("p",{class:"status-line"},"No open reports."));snap.forEach(d=>{const r=d.data();const box=item(reports,"Report: "+(r.reportedName||"user"),r.reason||"No reason provided");action(box,"MARK REVIEWED",async()=>{await updateDoc(d.ref,{status:"reviewed",reviewedBy:currentUser.uid,reviewedAt:serverTimestamp()});});});});}
+}
+
+async function renderProfiles(root){
+  $("modalText").textContent="Signed-in users can view public profile details and presence. Do not put private information in your profile.";
+  const searchPanel=panel(root,"FIND A PROFILE");
+  const username=field(searchPanel,"EXACT USERNAME","input",{type:"text",placeholder:"Enter username",maxlength:"20"});
+  const results=el("div");searchPanel.append(results);
+  async function showProfile(uid,data){
+    const box=item(results,(data.nickname||data.username||"USER")+" (@"+(data.username||"unknown")+")",data.role||"USER");
+    const online=data.presenceStatus==="online";
+    const line=el("p",{class:"status-line profile-line"});
+    line.append(el("span",{class:"presence-dot"+(online?" online":"")}),el("span",{},online?"ONLINE":"OFFLINE"));
+    if(!online&&data.lastSeenAt)line.append(el("span",{},"Last seen: "+fmtDate(data.lastSeenAt)));
+    box.append(line);
+  }
+  action(searchPanel,"SEARCH USER",async()=>{
+    results.replaceChildren();const key=cleanUsername(username.value);
+    if(!validUsername(key)){results.append(el("p",{class:"status-line"},"Enter a valid username (3–20 letters, numbers or underscores)."));return;}
+    try{const snap=await getDocs(query(collection(db,"users"),where("usernameLower","==",key),limit(1)));if(snap.empty){results.append(el("p",{class:"status-line"},"No profile found."));return;}const d=snap.docs[0];await showProfile(d.id,d.data());}
+    catch(err){results.append(el("p",{class:"status-line"},"Could not load profile: "+err.message));}
+  },"red-button");
+  const recent=panel(root,"RECENT PROFILES");
+  try{const snap=await getDocs(query(collection(db,"users"),orderBy("usernameLower","asc"),limit(30)));if(snap.empty)recent.append(el("p",{class:"status-line"},"No profiles available."));snap.forEach(d=>{const data=d.data();const box=item(recent,(data.nickname||data.username||"USER")+" (@"+(data.username||"unknown")+")",data.role||"USER");const online=data.presenceStatus==="online";const line=el("p",{class:"status-line profile-line"});line.append(el("span",{class:"presence-dot"+(online?" online":"")}),el("span",{},online?"ONLINE":"OFFLINE"));if(!online&&data.lastSeenAt)line.append(el("span",{},"Last seen: "+fmtDate(data.lastSeenAt)));box.append(line);});}
+  catch(err){recent.append(el("p",{class:"status-line"},"Could not load profiles: "+err.message));}
+}
+async function renderServers(root){
+  $("modalText").textContent="Discover public servers, create your own public or private server, and manage membership. Private server data is protected by Firestore rules.";
+  const create=panel(root,"CREATE SERVER");
+  const name=field(create,"SERVER NAME","input",{type:"text",placeholder:"Choose a server name",maxlength:"50"});
+  const description=field(create,"DESCRIPTION","textarea",{rows:"3",placeholder:"What is this server for?",maxlength:"300"});
+  const visibility=field(create,"VISIBILITY","select");visibility.append(el("option",{value:"public"},"PUBLIC — anyone signed in can join"),el("option",{value:"private"},"PRIVATE — owner adds members"));
+  const ownedAndJoined=panel(root,"YOUR SERVERS");
+  const publicPanel=panel(root,"DISCOVER PUBLIC SERVERS");
+  async function refresh(){
+    ownedAndJoined.replaceChildren();ownedAndJoined.append(el("h3",{},"YOUR SERVERS"));
+    const seen=new Set();
+    try{
+      const own=await getDocs(query(collection(db,"servers"),where("ownerUid","==",currentUser.uid),limit(50)));
+      for(const d of own.docs){seen.add(d.id);renderServerCard(ownedAndJoined,d.id,d.data(),true);}
+      const memberships=await getDocs(query(collectionGroup(db,"members"),where("uid","==",currentUser.uid),limit(50)));
+      for(const m of memberships.docs){const parent=m.ref.parent.parent;if(!parent||seen.has(parent.id))continue;const snap=await getDoc(parent);if(snap.exists()){seen.add(parent.id);renderServerCard(ownedAndJoined,parent.id,snap.data(),false);}}
+      if(!seen.size)ownedAndJoined.append(el("p",{class:"status-line"},"You have not joined any servers yet."));
+    }catch(err){ownedAndJoined.append(el("p",{class:"status-line"},"Could not load your servers: "+err.message));}
+    publicPanel.replaceChildren();publicPanel.append(el("h3",{},"DISCOVER PUBLIC SERVERS"));
+    try{const snap=await getDocs(query(collection(db,"servers"),where("visibility","==","public"),limit(50)));let count=0;for(const d of snap.docs){count++;const joined=await getDoc(doc(db,"servers",d.id,"members",currentUser.uid));renderServerCard(publicPanel,d.id,d.data(),false,!joined.exists());}if(!count)publicPanel.append(el("p",{class:"status-line"},"No public servers yet. Create one to get started."));}
+    catch(err){publicPanel.append(el("p",{class:"status-line"},"Could not load public servers: "+err.message));}
+  }
+  function renderServerCard(parent,id,data,isOwner,isDiscover=false){
+    const box=item(parent,data.name||"Untitled server",data.description||"No description provided.");
+    box.append(el("span",{class:"server-tag"},(data.visibility||"public").toUpperCase()));
+    const memberPath=doc(db,"servers",id,"members",currentUser.uid);
+    if(isOwner){box.append(el("p",{class:"muted-copy"},"You own this server."));const invite=field(box,"ADD MEMBER BY USERNAME","input",{type:"text",placeholder:"Username",maxlength:"20"});action(box,"ADD MEMBER",async()=>{const key=cleanUsername(invite.value);if(!validUsername(key)){alert("Enter a valid username.");return;}try{const userSnap=await getDocs(query(collection(db,"users"),where("usernameLower","==",key),limit(1)));if(userSnap.empty){alert("User not found.");return;}const target=userSnap.docs[0];await setDoc(doc(db,"servers",id,"members",target.id),{uid:target.id,username:target.data().username,nickname:target.data().nickname||"",joinedAt:serverTimestamp()});alert("Member added to server.");await refresh();}catch(err){showError(err);}},"red-button");}
+    else if(isDiscover){action(box,"JOIN PUBLIC SERVER",async()=>{try{await setDoc(memberPath,{uid:currentUser.uid,username:currentProfile.username,nickname:currentProfile.nickname||"",joinedAt:serverTimestamp()});alert("Joined server.");await refresh();}catch(err){showError(err);}},"red-button");}
+    else {action(box,"LEAVE SERVER",async()=>{if(!confirm("Leave this server?"))return;try{await deleteDoc(memberPath);await refresh();}catch(err){showError(err);}},"red-button");}
+  }
+  action(create,"CREATE SERVER",async()=>{const serverName=name.value.trim();if(serverName.length<3){alert("Server name must contain at least 3 characters.");return;}try{const ref=await addDoc(collection(db,"servers"),{ownerUid:currentUser.uid,name:serverName,description:description.value.trim(),visibility:visibility.value,createdAt:serverTimestamp(),updatedAt:serverTimestamp()});await setDoc(doc(db,"servers",ref.id,"members",currentUser.uid),{uid:currentUser.uid,username:currentProfile.username,nickname:currentProfile.nickname||"",joinedAt:serverTimestamp()});name.value=description.value="";alert("Server created.");await refresh();}catch(err){showError(err);}},"red-button");
+  await refresh();
+}
+
+function renderSanta(root){
+  $("modalText").textContent="SANTA CORE // COMMAND CONSOLE. This build runs verified local commands; it is not yet connected to a conversational AI model. Admin commands are checked against the role stored in Firestore.";
+  const p=panel(root,"SANTA CORE");const log=el("div",{class:"chat-box",id:"santaLog"});log.append(el("p",{class:"chat-message chat-santa"},"SANTA: Core online. Type /help for commands."));p.append(log);const input=field(p,"COMMAND","input",{type:"text",placeholder:"/help"});action(p,"EXECUTE",()=>runSanta(input.value,log),"red-button");input.addEventListener("keydown",e=>{if(e.key==="Enter")runSanta(input.value,log);});
+}
+async function runSanta(value,log){const cmd=value.trim();if(!cmd)return;log.append(el("p",{class:"chat-message chat-user"},"YOU: "+cmd));const lower=cmd.toLowerCase();let response="Command not recognized. Type /help.";if(lower==="/help")response="Commands: /help, /status, /whoami, /birthday. Admin only: /reports.";else if(lower==="/status")response="Frontend online. Firebase: "+(firebaseConfigured?"configured":"not configured")+". Signed in: yes.";else if(lower==="/whoami")response=`${currentProfile.nickname} (@${currentProfile.username}) — role ${currentProfile.role}.`;else if(lower==="/birthday")response="BOSS MAYSI birthday protocol is scheduled for November 17 (browser local date).";else if(lower==="/reports"){if(!["BOSS","SANTA"].includes(currentProfile.role))response="ACCESS DENIED. Moderator role required.";else{try{const snap=await getDocs(query(collection(db,"reports"),where("status","==","open"),limit(20)));response=`${snap.size} open report(s). Open CHAT to review reports and message context.`;}catch(e){response="Could not load reports: "+e.message;}}}log.append(el("p",{class:"chat-message chat-santa"},"SANTA: "+response));log.scrollTop=log.scrollHeight;}
+
+function closeModule(){
+  if(chatUnsubscribe)chatUnsubscribe();
+  if(reportUnsubscribe)reportUnsubscribe();
+  chatUnsubscribe=reportUnsubscribe=null;
+  $("modal").classList.add("hidden");
+  $("extraContent").replaceChildren();
+  document.body.style.overflow="";
+}
+window.closeModule=closeModule;
+document.addEventListener("keydown",event=>{if(event.key==="Escape"&&!$("modal").classList.contains("hidden"))closeModule();});
 </script>
+
 </body>
 </html>
