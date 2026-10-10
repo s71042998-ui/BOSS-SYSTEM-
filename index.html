@@ -151,6 +151,36 @@ body:before {
 .auth-card { width: 100%; max-width: 420px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 16px; padding: 32px; box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 40px var(--glow-red); }
 .input-field { width: 100%; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 12px; color: #fff; outline: none; margin: 8px 0 16px; }
 .input-field:focus { border-color: var(--accent-crimson); box-shadow: 0 0 12px var(--glow-red); }
+
+/* Premium responsive polish */
+button, input, textarea { font: inherit; }
+button:disabled { opacity:.55; cursor:not-allowed; }
+.view-body { min-width:0; }
+.card { backdrop-filter: blur(10px); transition: border-color .2s, transform .2s, box-shadow .2s; }
+.card:hover { border-color: rgba(230,57,70,.25); }
+.status-dot.offline { background:#777; }
+#toastStack { position:fixed; right:20px; bottom:20px; z-index:2000; display:grid; gap:8px; max-width:min(380px,calc(100vw - 32px)); }
+.toast { background:#17121a; border:1px solid rgba(230,57,70,.45); border-radius:10px; padding:12px 15px; box-shadow:0 12px 35px #0009; color:#fff; font-size:13px; animation:toastIn .2s ease-out; }
+@keyframes toastIn { from {opacity:0;transform:translateY(8px)} to {opacity:1;transform:translateY(0)} }
+.form-row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+.form-row .input-field { flex:1; min-width:160px; }
+.pill { display:inline-flex; padding:4px 8px; border:1px solid var(--border); border-radius:999px; color:var(--text-muted); font-size:11px; }
+.game-choice { text-align:left; width:100%; margin-top:8px; }
+@media(max-width:1000px) { .right-sidebar { display:none; } .channel-sidebar { width:220px; } }
+@media(max-width:700px) {
+ html,body { width:100%; height:100%; overflow:auto; }
+ #appShell { min-height:100vh; height:auto; }
+ .server-bar { width:58px; padding:10px 0; gap:9px; }
+ .server-icon { width:40px; height:40px; font-size:17px; }
+ .channel-sidebar { width:0; display:none; }
+ .main-view { min-height:100vh; min-width:0; }
+ .view-header { padding:0 12px; }
+ .view-header h2 { font-size:14px; letter-spacing:1px; }
+ .view-body { padding:12px; }
+ .auth-card { width:calc(100% - 28px); padding:22px; }
+ .profile-meta > div[style*="display: flex"] { flex-wrap:wrap; gap:10px !important; }
+}
+
 </style>
 </head>
 <body>
@@ -173,7 +203,7 @@ body:before {
       <input id="authNickname" class="input-field" type="text" placeholder="Display Name">
       
       <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">BIRTHDATE (MM-DD-YYYY)</label>
-      <input id="authBirthday" class="input-field" type="text" placeholder="11-17-2009" value="11-17-2009">
+      <input id="authBirthday" class="input-field" type="text" placeholder="MM-DD-YYYY" value="">
     </div>
 
     <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">PASSWORD</label>
@@ -188,7 +218,7 @@ body:before {
 </div>
 
 <!-- APP SHELL -->
-<div id="appShell">
+<div id="appShell" class="hidden">
 
   <!-- FAR LEFT ICON BAR -->
   <div class="server-bar">
@@ -394,9 +424,10 @@ body:before {
 
 </div>
 
+<div id="toastStack" aria-live="polite"></div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, query, where, getDocs, orderBy, limit, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
 const FIREBASE_CONFIG = {
@@ -407,216 +438,129 @@ const FIREBASE_CONFIG = {
   messagingSenderId: "67593000613",
   appId: "1:67593000613:web:b03c162be0e1661b171f4c"
 };
+const app = initializeApp(FIREBASE_CONFIG), auth = getAuth(app), db = getFirestore(app);
+let authIsSignup=false, currentProfile=null, activeChatUnsub=null, presenceTimer=null, serverUnsub=null, allServers=[];
+const $ = id => document.getElementById(id);
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg){ const el=document.createElement('div'); el.className='toast'; el.textContent=msg; $('toastStack')?.append(el); setTimeout(()=>el.remove(),4300); }
+function errorText(e){ const map={ 'auth/invalid-credential':'Email or password is incorrect. Please try again.', 'auth/user-not-found':'No account exists for this email.', 'auth/wrong-password':'Incorrect password.', 'auth/email-already-in-use':'This email already has an account. Switch to Login.', 'auth/weak-password':'Choose a password with at least 6 characters.', 'auth/invalid-email':'Enter a valid email address.', 'permission-denied':'Firestore blocked this action. Check that the latest Firestore Rules match this feature.'}; return map[e?.code] || e?.message || 'Something went wrong. Please try again.'; }
+function setNotice(msg, good=false){ $('authNotice').textContent=msg; $('authNotice').style.color=good?'#80ed99':'var(--accent-crimson)'; }
+function formatDate(value){ if(!value)return 'Not set'; const d=value.toDate?value.toDate():new Date(value); return Number.isNaN(d.getTime())?String(value):d.toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
+function birthdayParts(value){ if(!value)return null; let d; if(/^\d{2}-\d{2}-\d{4}$/.test(value)){const [m,day,y]=value.split('-').map(Number);d=new Date(y,m-1,day);} else d=new Date(value); if(Number.isNaN(d.getTime()))return null; return {month:d.getMonth(),day:d.getDate()}; }
+function daysUntilBirthday(value){const p=birthdayParts(value);if(!p)return null;const now=new Date();const today=new Date(now.getFullYear(),now.getMonth(),now.getDate());let next=new Date(now.getFullYear(),p.month,p.day);if(next<today)next=new Date(now.getFullYear()+1,p.month,p.day);return Math.round((next-today)/86400000);}
+function isAdmin(){return ['BOSS','SANTA'].includes(currentProfile?.role);}
+function setBusy(b){const btn=document.querySelector('button[onclick="handleAuthSubmit()"]');if(btn){btn.disabled=b;btn.textContent=b?'Please wait…':'Authenticate';}}
+window.toggleAuthMode=()=>{authIsSignup=!authIsSignup;$('signupFields').classList.toggle('hidden',!authIsSignup);setNotice('');};
+window.handleAuthSubmit=async()=>{
+ const email=$('authEmail').value.trim(), password=$('authPassword').value, notice=$('authNotice'); setNotice('');
+ if(!email||!password){setNotice('Enter both your email and password.');return;}
+ setBusy(true);
+ try{
+  if(authIsSignup){
+   const username=$('authUsername').value.trim().toLowerCase().replace(/[^a-z0-9_.]/g,'');
+   const nickname=$('authNickname').value.trim(); const birthday=$('authBirthday').value.trim();
+   if(username.length<3){setNotice('Username must be at least 3 characters (letters, numbers, _ or .).');return;}
+   if(!nickname){setNotice('Please enter a display name.');return;}
+   const existing=await getDoc(doc(db,'usernames',username)); if(existing.exists()){setNotice('That username is already taken. Try another.');return;}
+   const cred=await createUserWithEmailAndPassword(auth,email,password);
+   // Never grant privileged roles from a client-controlled username.
+   const profile={uid:cred.user.uid,username,usernameLower:username,nickname,birthday: birthday || '',bio:'',pfp:'',role:'USER',createdAt:serverTimestamp(),lastSeen:serverTimestamp(),online:true};
+   await setDoc(doc(db,'users',cred.user.uid),profile);
+   await setDoc(doc(db,'usernames',username),{uid:cred.user.uid,username,usernameLower:username});
+   currentProfile={...profile,createdAt:new Date(),lastSeen:new Date()};
+  }else{await signInWithEmailAndPassword(auth,email,password);}
+ }catch(e){setNotice(errorText(e));}finally{setBusy(false);}
+};
+window.resetPassword=async()=>{const email=$('authEmail').value.trim();if(!email){setNotice('Enter your email first, then choose Forgot password.');return;}try{await sendPasswordResetEmail(auth,email);setNotice('Password reset email sent. Check your inbox.',true);}catch(e){setNotice(errorText(e));}};
 
-const app = initializeApp(FIREBASE_CONFIG);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-let authIsSignup = false;
-let currentProfile = null;
-let activeChatUnsub = null;
-
-onAuthStateChanged(auth, async user => {
-  if (user) {
-    document.getElementById("authScreen").classList.add("hidden");
-    const snap = await getDoc(doc(db, "users", user.uid));
-    if (snap.exists()) {
-      currentProfile = snap.data();
-    } else {
-      currentProfile = { uid: user.uid, username: "user", nickname: "User", birthday: "11-17-2009", bio: "", pfp: "", role: "USER" };
-    }
-    initDashboard();
-  } else {
-    document.getElementById("authScreen").classList.remove("hidden");
-  }
+onAuthStateChanged(auth, async user=>{
+ if(!user){currentProfile=null;$('authScreen').classList.remove('hidden');$('appShell').classList.add('hidden');if(activeChatUnsub)activeChatUnsub();if(serverUnsub)serverUnsub();if(presenceTimer)clearInterval(presenceTimer);return;}
+ try{
+  const snap=await getDoc(doc(db,'users',user.uid));
+  if(!snap.exists()){
+   // Existing Auth accounts without profiles are repaired as regular users, never admins.
+   const fallbackName=(user.email?.split('@')[0]||'user').toLowerCase().replace(/[^a-z0-9_.]/g,'').slice(0,24)||'user_'+user.uid.slice(0,6);
+   currentProfile={uid:user.uid,username:fallbackName,usernameLower:fallbackName,nickname:user.displayName||fallbackName,birthday:'',bio:'',pfp:'',role:'USER',online:true,lastSeen:new Date()};
+   await setDoc(doc(db,'users',user.uid),{...currentProfile,lastSeen:serverTimestamp()},{merge:true});
+   await setDoc(doc(db,'usernames',fallbackName),{uid:user.uid,username:fallbackName,usernameLower:fallbackName},{merge:true});
+  }else currentProfile=snap.data();
+  $('authScreen').classList.add('hidden');$('appShell').classList.remove('hidden');initDashboard();
+ }catch(e){
+  // Keep a visible, actionable error instead of silently dropping the user at the login screen.
+  $('authScreen').classList.remove('hidden');$('appShell').classList.add('hidden');setNotice('Signed in, but profile access failed: '+errorText(e)+' Check Firestore Rules and the users/'+user.uid+' document.');
+ }
 });
-
-window.toggleAuthMode = () => {
-  authIsSignup = !authIsSignup;
-  document.getElementById("signupFields").classList.toggle("hidden", !authIsSignup);
-};
-
-window.handleAuthSubmit = async () => {
-  const email = document.getElementById("authEmail").value.trim();
-  const password = document.getElementById("authPassword").value;
-  const notice = document.getElementById("authNotice");
-  notice.textContent = "";
-
-  try {
-    if (authIsSignup) {
-      const username = document.getElementById("authUsername").value.trim().toLowerCase();
-      const nickname = document.getElementById("authNickname").value.trim();
-      const birthday = document.getElementById("authBirthday").value.trim() || "11-17-2009";
-
-      const cred = await createUserWithEmailAndPassword(auth, email, password);
-      currentProfile = {
-        uid: cred.user.uid, username, nickname, birthday, bio: "Death Note system user.", pfp: "",
-        role: username === "boss_maysi" ? "BOSS" : "USER"
-      };
-      await setDoc(doc(db, "users", cred.user.uid), currentProfile);
-      await setDoc(doc(db, "usernames", username), { uid: cred.user.uid, username, usernameLower: username });
-    } else {
-      await signInWithEmailAndPassword(auth, email, password);
-    }
-  } catch(e) { notice.textContent = e.message; }
-};
-
-function initDashboard() {
-  document.getElementById("currentUserRoleTag").textContent = currentProfile.role || "USER";
-  updateProfileView();
-  listenToGlobalChat();
+function initDashboard(){ $('currentUserRoleTag').textContent=currentProfile.role||'USER';updateProfileView();listenToGlobalChat();startPresence();loadServers();checkBirthdays();renderRightPanel(); }
+function startPresence(){
+ const write=()=>{if(!auth.currentUser)return;updateDoc(doc(db,'users',auth.currentUser.uid),{online:true,lastSeen:serverTimestamp()}).catch(e=>console.warn('Presence update:',e));};write();if(presenceTimer)clearInterval(presenceTimer);presenceTimer=setInterval(write,60000);
+ window.addEventListener('beforeunload',()=>{if(auth.currentUser)updateDoc(doc(db,'users',auth.currentUser.uid),{online:false,lastSeen:serverTimestamp()}).catch(()=>{});});
 }
+function renderRightPanel(){ $('rightSidebarContent').innerHTML=`<div class="card" style="padding:14px"><div style="font-weight:700;color:#fff">${esc(currentProfile.nickname||currentProfile.username)}</div><div class="pill" style="margin-top:8px">${esc(currentProfile.role||'USER')}</div><p style="margin-top:12px">● <span style="color:#80ed99">Connected</span></p><p style="margin-top:8px">Servers: <strong>${allServers.length}</strong></p><p style="margin-top:8px">Birthday: <strong>${esc(currentProfile.birthday||'Not set')}</strong></p></div><div class="card" style="padding:14px"><strong style="color:#fff">SANTA tip</strong><p style="margin-top:8px">Try <code>/help</code>, ask how to use a feature, or request a friendly roast.</p></div>`; }
+function updateProfileView(){if(!currentProfile)return;$('profDisplayName').textContent=currentProfile.nickname||currentProfile.username||'User';$('profHandle').textContent='@'+(currentProfile.username||'user');$('profBioText').textContent=currentProfile.bio||'No bio specified.';$('profBdayText').textContent=currentProfile.birthday||'Not set';$('editNickInput').value=currentProfile.nickname||'';$('editBdayInput').value=currentProfile.birthday||'';$('editBioInput').value=currentProfile.bio||'';$('editPfpInput').value=currentProfile.pfp||'';const el=$('profileAvatarDisplay');el.replaceChildren();if(currentProfile.pfp){const img=document.createElement('img');img.src=currentProfile.pfp;img.alt='Profile picture';img.referrerPolicy='no-referrer';img.onerror=()=>{el.textContent='🍎'};el.append(img);}else el.textContent=(currentProfile.nickname||currentProfile.username||'U').slice(0,1).toUpperCase();}
+window.saveProfileData=async()=>{if(!auth.currentUser||!currentProfile)return;const nickname=$('editNickInput').value.trim(), birthday=$('editBdayInput').value.trim(),bio=$('editBioInput').value.trim(),pfp=$('editPfpInput').value.trim();if(!nickname){toast('Display name cannot be empty.');return;}if(birthday&&!birthdayParts(birthday)){toast('Birthday format must be MM-DD-YYYY or a valid date.');return;}try{await updateDoc(doc(db,'users',auth.currentUser.uid),{nickname,birthday,bio,pfp});Object.assign(currentProfile,{nickname,birthday,bio,pfp});updateProfileView();toast('Profile saved. Birthday details updated.');renderRightPanel();checkBirthdays();}catch(e){toast(errorText(e));}};
+window.searchFriendByUsername=async()=>{const qtext=$('friendSearchInput').value.trim().toLowerCase(),out=$('friendSearchResults');out.replaceChildren();if(!qtext){toast('Type a username to search.');return;}try{const qs=await getDocs(query(collection(db,'usernames'),where('usernameLower','==',qtext),limit(1)));if(qs.empty){out.innerHTML='<div class="card">No profile found for that username.</div>';return;}const u=qs.docs[0].data(),us=await getDoc(doc(db,'users',u.uid)),d=us.exists()?us.data():{};out.innerHTML=`<div class="friend-result-card"><div><strong>${esc(d.nickname||u.username)}</strong><div style="color:var(--text-muted);font-size:12px">@${esc(u.username)} · ${d.online?'Online':'Last seen '+esc(formatDate(d.lastSeen))}</div><div style="font-size:12px;margin-top:6px">${esc(d.bio||'No bio specified.')}</div></div><span class="pill">${esc(d.role||'USER')}</span></div>`;}catch(e){out.innerHTML=`<div class="card">${esc(errorText(e))}</div>`;}};
+function listenToGlobalChat(){if(activeChatUnsub)activeChatUnsub();const list=$('messageList');activeChatUnsub=onSnapshot(query(collection(db,'chatMessages'),orderBy('createdAt','asc'),limit(60)),snap=>{list.replaceChildren();snap.forEach(d=>{const m=d.data(),item=document.createElement('div');item.className='message-item';const avatar=document.createElement('div');avatar.className='avatar';avatar.textContent=(m.nickname||m.username||'U').slice(0,1).toUpperCase();const content=document.createElement('div');content.className='message-content';const head=document.createElement('div');head.className='message-header';const author=document.createElement('span');author.className='message-author';author.textContent=m.nickname||m.username||'User';const time=document.createElement('span');time.className='message-time';time.textContent=m.createdAt?.toDate?m.createdAt.toDate().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'Just now';const body=document.createElement('div');body.className='message-text';body.textContent=m.text||'';head.append(author,time);content.append(head,body);item.append(avatar,content);list.append(item);});list.scrollTop=list.scrollHeight;},e=>toast('Chat could not load: '+errorText(e)));}
+window.sendMessage=async()=>{const input=$('chatInput'),text=input.value.trim();if(!text||!auth.currentUser||!currentProfile)return;if(text.length>1000){toast('Messages are limited to 1,000 characters.');return;}input.value='';try{await addDoc(collection(db,'chatMessages'),{uid:auth.currentUser.uid,username:currentProfile.username,nickname:currentProfile.nickname,text,createdAt:serverTimestamp()});}catch(e){input.value=text;toast('Message failed: '+errorText(e));}};
+window.switchPage=(pageKey,element)=>{document.querySelectorAll('.server-icon').forEach(el=>el.classList.remove('active'));if(element)element.classList.add('active');['chat','friends','servers','profile','library','storage','games','santa'].forEach(p=>$('page-'+p)?.classList.add('hidden'));$('page-'+pageKey)?.classList.remove('hidden');$('currentViewTitle').textContent=({chat:'Global Chat',friends:'Find Friends',servers:'Server Network',profile:'Profile',library:'Library',storage:'Storage Vault',games:'Arcade & Intelligence',santa:'SANTA AI Assistant'})[pageKey]||pageKey.toUpperCase();if(pageKey==='servers')loadServers();if(pageKey==='profile')updateProfileView();};
+window.selectChannel=(name)=>{document.querySelectorAll('.channel-sidebar .nav-item').forEach(el=>el.classList.remove('active'));if(window.event?.currentTarget)window.event.currentTarget.classList.add('active');$('currentViewTitle').textContent=name;};
 
-function updateProfileView() {
-  document.getElementById("profDisplayName").textContent = currentProfile.nickname || currentProfile.username;
-  document.getElementById("profHandle").textContent = `@${currentProfile.username}`;
-  document.getElementById("profBioText").textContent = currentProfile.bio || "No bio specified.";
-  document.getElementById("profBdayText").textContent = currentProfile.birthday || "11-17-2009";
+// Server features use Firestore documents. The companion Rules file must authorize servers/memberships.
+function loadServers(){if(serverUnsub)serverUnsub();serverUnsub=onSnapshot(query(collection(db,'servers'),limit(50)),snap=>{allServers=snap.docs.map(d=>({id:d.id,...d.data()}));renderServers();renderRightPanel();},e=>{console.warn(e);const host=$('page-servers');if(host)host.dataset.ruleError=errorText(e);renderServers(errorText(e));});}
+function renderServers(err=''){const host=$('page-servers');if(!host)return;let area=$('serverList');if(!area){area=document.createElement('div');area.id='serverList';area.style.marginTop='18px';host.append(area);}const visible=allServers.filter(s=>s.visibility==='public'||s.ownerUid===auth.currentUser?.uid||(s.memberUids||[]).includes(auth.currentUser?.uid)||isAdmin());area.innerHTML=(err?`<div class="card" style="margin-bottom:12px;color:#ffb3c1">Server list unavailable: ${esc(err)}. Your Rules file may not yet include server access.</div>`:'')+`<div class="card"><h3 style="font-family:Cinzel;margin-bottom:8px">Discover servers</h3><p style="color:var(--text-muted);font-size:13px;margin-bottom:12px">Public spaces are discoverable. Private spaces require membership or an invitation.</p>${visible.length?visible.map(s=>`<div class="friend-result-card"><div><strong>${esc(s.name||'Unnamed server')}</strong><div style="color:var(--text-muted);font-size:12px">${s.visibility==='private'?'🔒 Private':'🌐 Public'} · ${esc(s.description||'No description')}</div></div><button class="button button-secondary" data-server-join="${esc(s.id)}">${(s.memberUids||[]).includes(auth.currentUser?.uid)||s.ownerUid===auth.currentUser?.uid?'Open':'Join'}</button></div>`).join(''):'<p style="color:var(--text-muted)">No servers visible yet. Create one above.</p>'}</div>`;area.querySelectorAll('[data-server-join]').forEach(b=>b.onclick=()=>joinServer(b.dataset.serverJoin));}
+async function joinServer(id){const s=allServers.find(x=>x.id===id);if(!s)return;if(s.visibility==='private'&&s.ownerUid!==auth.currentUser?.uid&&!(s.memberUids||[]).includes(auth.currentUser?.uid)&&!isAdmin()){toast('This server is private. Ask its owner for an invite.');return;}if(s.visibility==='public'&&!(s.memberUids||[]).includes(auth.currentUser.uid)){try{await updateDoc(doc(db,'servers',id),{memberUids:[...(s.memberUids||[]),auth.currentUser.uid]});toast('Joined server: '+s.name);}catch(e){toast('Could not join: '+errorText(e));return;}}toast('Server selected: '+s.name);}
+async function createServer(){const name=$('newServerName').value.trim();if(name.length<3){toast('Server name must be at least 3 characters.');return;}const privateMode=confirm('Create a PRIVATE server? Choose Cancel for PUBLIC.');try{const ref=await addDoc(collection(db,'servers'),{name,description:'',visibility:privateMode?'private':'public',ownerUid:auth.currentUser.uid,ownerUsername:currentProfile.username,memberUids:[auth.currentUser.uid],createdAt:serverTimestamp()});$('newServerName').value='';toast((privateMode?'Private':'Public')+' server created.');}catch(e){toast('Server creation blocked: '+errorText(e)+' Update Firestore Rules for servers first.');}}
 
-  document.getElementById("editNickInput").value = currentProfile.nickname || "";
-  document.getElementById("editBdayInput").value = currentProfile.birthday || "11-17-2009";
-  document.getElementById("editBioInput").value = currentProfile.bio || "";
-  document.getElementById("editPfpInput").value = currentProfile.pfp || "";
+// Birthdays: client-side reminders work when a signed-in friend opens the app; guaranteed scheduled notifications need a backend scheduler.
+async function checkBirthdays(){if(!auth.currentUser||!currentProfile)return;try{const snap=await getDocs(query(collection(db,'users'),limit(200)));const today=new Date(), key=`bday-notice-${auth.currentUser.uid}-${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;if(sessionStorage.getItem(key))return;const upcoming=[];snap.forEach(d=>{const p=d.data();if(p.uid===auth.currentUser.uid)return;const days=daysUntilBirthday(p.birthday);if(days===1)upcoming.push(p.nickname||p.username||'A friend');if(days===0)upcoming.push((p.nickname||p.username||'A friend')+' (today)');});if(upcoming.length){const msg=upcoming.map(n=>n.endsWith('(today)')?`It's ${n.replace(' (today)','')}'s birthday today! 🎂 Send them a wish!`:`Tomorrow is ${n}'s birthday! 🎂 Don't forget to send your wishes.`);msg.forEach(t=>toast(t));sessionStorage.setItem(key,'1');}}catch(e){console.warn('Birthday reminder:',e);}}
 
-  const pfpDiv = document.getElementById("profileAvatarDisplay");
-  if(currentProfile.pfp) {
-    pfpDiv.innerHTML = `<img src="${currentProfile.pfp}" alt="PFP">`;
-  } else {
-    pfpDiv.innerHTML = "🍎";
-  }
+const riddles=[{q:'What gets wetter the more it dries?',a:['A towel','Rain','A sponge','Ice'],correct:0,why:'A towel absorbs water while drying something else.'},{q:'I speak without a mouth and hear without ears. What am I?',a:['A radio','An echo','A shadow','A clock'],correct:1,why:'An echo repeats sound without a body.'},{q:'What has keys but cannot open locks?',a:['A piano','A map','A door','A treasure chest'],correct:0,why:'A piano has musical keys.'},{q:'The more you take, the more you leave behind. What are they?',a:['Coins','Footsteps','Photos','Breaths'],correct:1,why:'Every step leaves a footprint.'}];
+const quizzes=[{q:'Which planet is known as the Red Planet?',a:['Venus','Mars','Jupiter','Mercury'],c:1},{q:'In chess, which piece moves in an L shape?',a:['Bishop','Queen','Knight','Rook'],c:2},{q:'What is 12 × 8?',a:['84','92','96','108'],c:2},{q:'Which is the Death Note shinigami associated with apples?',a:['Rem','Ryuk','Gelus','Sidoh'],c:1},{q:'Which gas do plants absorb from the atmosphere?',a:['Oxygen','Nitrogen','Carbon dioxide','Helium'],c:2}];
+let gameXP=Number(localStorage.getItem('boss-xp')||0),gameStreak=Number(localStorage.getItem('boss-streak')||0);
+function addXP(n){gameXP+=n;localStorage.setItem('boss-xp',gameXP);$('rightSidebarContent').dataset.xp=gameXP;toast(`+${n} XP — keep going!`);}
+function showGame(title,html){let modal=$('gameModal');if(!modal){modal=document.createElement('div');modal.id='gameModal';modal.className='auth-overlay';modal.innerHTML='<div class="auth-card" style="max-width:560px;max-height:85vh;overflow:auto"><button id="gameClose" class="button button-secondary" style="float:right">Close ✕</button><div id="gameModalBody" style="clear:both;padding-top:16px"></div></div>';document.body.append(modal);$('gameClose').onclick=()=>modal.classList.add('hidden');}modal.classList.remove('hidden');$('gameModalBody').innerHTML=`<h2 style="font-family:Cinzel;margin-bottom:12px">${esc(title)}</h2>${html}`;}
+function launchRiddle(){const r=riddles[Math.floor(Math.random()*riddles.length)];showGame('🍎 Riddle Chamber',`<p style="margin-bottom:14px">${esc(r.q)}</p>${r.a.map((a,i)=>`<button class="button button-secondary game-choice" data-riddle="${i}">${esc(a)}</button>`).join('')}<p id="riddleFeedback" style="margin-top:14px;color:var(--text-muted)">Choose carefully. SANTA is watching. 👀</p>`);document.querySelectorAll('[data-riddle]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-riddle]').forEach(x=>x.disabled=true);const ok=Number(b.dataset.riddle)===r.correct;$('riddleFeedback').textContent=ok?'Correct! '+r.why:'Not quite. '+r.why;if(ok)addXP(25);});}
+function launchQuiz(){let i=0,score=0;function draw(){if(i>=quizzes.length){if(score>=3)addXP(score*10);showGame('📝 System Quiz — Results',`<p>You scored <strong>${score}/${quizzes.length}</strong>.</p><p style="margin-top:10px">${score===quizzes.length?'Perfect run. SANTA is suspiciously impressed. 🏆':score>=3?'Solid work. Your brain has survived the test.':'Training arc begins now. Try again, legend.'}</p><p style="margin-top:10px">XP earned: ${score>=3?score*10:0}</p><button class="button" id="quizAgain">Play again</button>`);$('quizAgain').onclick=launchQuiz;return;}const q=quizzes[i];showGame(`📝 Quiz Round ${i+1}/${quizzes.length}`,`<div class="pill">Score: ${score}</div><p style="margin:14px 0">${esc(q.q)}</p>${q.a.map((a,j)=>`<button class="button button-secondary game-choice" data-quiz="${j}">${esc(a)}</button>`).join('')}`);document.querySelectorAll('[data-quiz]').forEach(b=>b.onclick=()=>{if(Number(b.dataset.quiz)===q.c)score++;i++;draw();});}draw();}
+function launchMemory(){
+ const vals=['🐈','🍎','📓','🦇','🕯️','🗝️'];
+ const deck=[...vals,...vals].sort(()=>Math.random()-.5);
+ let open=[],matched=0,moves=0; const matchedCards=new Set();
+ function draw(){
+  showGame('🐈 Cat Memory Arena',`<p style="margin-bottom:10px">Match all pairs. Moves: <strong>${moves}</strong></p><div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px">${deck.map((v,i)=>`<button class="button button-secondary" style="height:58px;font-size:23px" data-card="${i}" ${matchedCards.has(i)?'disabled':''}>${matchedCards.has(i)||open.includes(i)?v:'?'}</button>`).join('')}</div><p style="margin-top:12px;color:var(--text-muted)">Find all six pairs.</p>`);
+  document.querySelectorAll('[data-card]').forEach(btn=>btn.onclick=()=>{
+   const idx=Number(btn.dataset.card); if(open.length===2||open.includes(idx)||matchedCards.has(idx))return;
+   open.push(idx);
+   if(open.length===2){moves++;if(deck[open[0]]===deck[open[1]]){matchedCards.add(open[0]);matchedCards.add(open[1]);matched+=2;}
+    setTimeout(()=>{if(matched===12){addXP(Math.max(10,80-moves));showGame('🏆 Memory Cleared',`You matched every pair in ${moves} moves! <button class="button" id="memoryAgain">Run again</button>`);$('memoryAgain').onclick=launchMemory;return;}open=[];draw();},450);
+   } else draw();
+  });
+ }
+ draw();
 }
-
-window.saveProfileData = async () => {
-  if (!auth.currentUser) return;
-  currentProfile.nickname = document.getElementById("editNickInput").value;
-  currentProfile.birthday = document.getElementById("editBdayInput").value;
-  currentProfile.bio = document.getElementById("editBioInput").value;
-  currentProfile.pfp = document.getElementById("editPfpInput").value;
-
-  await updateDoc(doc(db, "users", auth.currentUser.uid), {
-    nickname: currentProfile.nickname,
-    birthday: currentProfile.birthday,
-    bio: currentProfile.bio,
-    pfp: currentProfile.pfp
-  });
-  updateProfileView();
-  alert("Profile saved successfully!");
-};
-
-window.searchFriendByUsername = async () => {
-  const queryText = document.getElementById("friendSearchInput").value.trim().toLowerCase();
-  const resultsDiv = document.getElementById("friendSearchResults");
-  resultsDiv.replaceChildren();
-
-  if(!queryText) { alert("Please type a username to search."); return; }
-
-  try {
-    const q = query(collection(db, "usernames"), where("usernameLower", "==", queryText));
-    const querySnapshot = await getDocs(q);
-
-    if (querySnapshot.empty) {
-      resultsDiv.innerHTML = `<div class="card" style="color:var(--text-muted);">No user found with username "${queryText}".</div>`;
-      return;
-    }
-
-    querySnapshot.forEach(async docSnap => {
-      const data = docSnap.data();
-      const userSnap = await getDoc(doc(db, "users", data.uid));
-      const userData = userSnap.exists() ? userSnap.data() : { nickname: data.username, bio: "" };
-
-      const card = document.createElement("div"); card.className = "friend-result-card";
-      card.innerHTML = `
-        <div style="display:flex; align-items:center; gap:12px;">
-          <div class="avatar" style="width:40px; height:40px;">${(userData.nickname || 'U')[0].toUpperCase()}</div>
-          <div>
-            <div style="font-weight:600; font-size:14px; color:#fff;">${userData.nickname || data.username}</div>
-            <div style="font-size:11px; color:var(--text-muted);">@${data.username}</div>
-          </div>
-        </div>
-        <button class="button" onclick="alert('Friend request sent to @${data.username}!')">Add Friend</button>
-      `;
-      resultsDiv.append(card);
-    });
-  } catch(e) {
-    alert("Search error: " + e.message);
-  }
-};
-
-function listenToGlobalChat() {
-  if (activeChatUnsub) activeChatUnsub();
-  const list = document.getElementById("messageList");
-  activeChatUnsub = onSnapshot(query(collection(db, "chatMessages"), orderBy("createdAt", "desc"), limit(40)), snap => {
-    list.replaceChildren();
-    snap.docs.reverse().forEach(d => {
-      const m = d.data();
-      const item = document.createElement("div"); item.className = "message-item";
-      item.innerHTML = `
-        <div class="avatar">${(m.nickname || m.username || 'U')[0].toUpperCase()}</div>
-        <div class="message-content">
-          <div class="message-header">
-            <span class="message-author">${m.nickname || m.username}</span>
-            <span class="message-time">Live</span>
-          </div>
-          <div class="message-text">${m.text}</div>
-        </div>
-      `;
-      list.append(item);
-    });
-    list.scrollTop = list.scrollHeight;
-  });
-}
-
-window.sendMessage = async () => {
-  const input = document.getElementById("chatInput");
-  const text = input.value.trim();
-  if (!text) return;
-  input.value = "";
-  await addDoc(collection(db, "chatMessages"), {
-    uid: auth.currentUser.uid,
-    username: currentProfile.username,
-    nickname: currentProfile.nickname,
-    text, createdAt: serverTimestamp()
-  });
-};
-
-window.switchPage = (pageKey, element) => {
-  document.querySelectorAll(".server-icon").forEach(el => el.classList.remove("active"));
-  if(element) element.classList.add("active");
-
-  ['chat', 'friends', 'servers', 'profile', 'library', 'storage', 'games', 'santa'].forEach(p => {
-    document.getElementById("page-" + p).classList.add("hidden");
-  });
-
-  document.getElementById("page-" + pageKey).classList.remove("hidden");
-  document.getElementById("currentViewTitle").textContent = pageKey.toUpperCase() + " TAB";
-};
-
-window.selectChannel = (name) => {
-  document.querySelectorAll(".channel-sidebar .nav-item").forEach(el => el.classList.remove("active"));
-  event.currentTarget.classList.add("active");
-  document.getElementById("currentViewTitle").textContent = name;
-};
-
-window.sendSantaAI = () => {
-  const input = document.getElementById("santaInput");
-  const txt = input.value.trim();
-  if(!txt) return;
-  const log = document.getElementById("santaLog");
-  log.innerHTML += `<div class="message-text" style="background:#1e1a24; margin-top:6px;">YOU: ${txt}</div>`;
-  input.value = "";
-  setTimeout(() => {
-    let reply = "SANTA AI: Systems operational.";
-    const low = txt.toLowerCase();
-    if(low.includes("roast")) reply = "SANTA AI: You want a roast? Your code works without errors on the first try... which means you haven't tested it hard enough yet.";
-    log.innerHTML += `<div class="message-text" style="background:#16131a; margin-top:6px;">SANTA AI: ${reply}</div>`;
-    log.scrollTop = log.scrollHeight;
-  }, 300);
-};
-
-window.logout = async () => {
-  if (activeChatUnsub) activeChatUnsub();
-  await signOut(auth);
-};
+function launchLeaderboard(){showGame('🏆 Local XP Ranking',`<p>Your current local XP: <strong>${gameXP}</strong></p><p style="margin-top:8px;color:var(--text-muted)">This is a local score until the Scores collection is wired into Firestore Rules. Shared rankings need secured server-side score validation.</p>`);}
+window.sendSantaAI=()=>{const input=$('santaInput'),txt=input.value.trim();if(!txt)return;input.value='';const log=$('santaLog');const add=(who,msg)=>{const el=document.createElement('div');el.className='message-text';el.style.marginTop='7px';el.textContent=who+': '+msg;log.append(el);log.scrollTop=log.scrollHeight;};add('YOU',txt);const low=txt.toLowerCase();let replies;
+if(/^(hi|hello|hey|yo|sup|good morning|good evening)\b/.test(low))replies=['Well, well. Someone has entered the lair. What are we breaking—metaphorically? 😈','Greetings, human. Your timing is suspiciously acceptable.','Hey there. SANTA is online, dramatically under-caffeinated, and ready.'];
+else if(low.includes('/help')||low.includes('what can you do')||low.includes('commands'))replies=['Command menu: /help, /roast, /joke, /tip, /birthday, /profile, /servers, /games. Or ask naturally: “How do I create a private server?”','I can help with profiles, birthday settings, servers, games, and system navigation. I can also roast your questionable decisions. Politely-ish.'];
+else if(low.includes('roast')||low==='/roast')replies=[`${currentProfile?.nickname||'Human'}, your confidence is premium. Your planning is still on the free trial. 💀`,'I would roast your code, but I respect archaeological sites. Some of those bugs have history.','Even BOSS MAYSI makes mistakes. The difference is, the rest of us call them “features” and pray.'];
+else if(low.includes('birthday')||low.includes('bday'))replies=['Open Profile → Edit Profile → Birthday, enter MM-DD-YYYY, then save. Birthday reminders currently appear when friends open the system; guaranteed scheduled push notifications need a trusted scheduler/backend.'];
+else if(low.includes('server'))replies=['Open the 🌐 Servers tab, enter a server name, then choose Public or Private when prompted. Private access must also be allowed by Firestore Rules; frontend checks alone are not security.'];
+else if(low.includes('game')||low.includes('quiz')||low.includes('riddle'))replies=['Go to 🎮 Arcade & Intelligence. Try a riddle for 25 XP or clear the quiz for bonus XP. Lose with dignity; or at least lose quietly. 😌'];
+else if(low.includes('profile')||low.includes('online')||low.includes('last seen'))replies=['Open 👤 Profile to edit your display name, birthday, bio, and profile picture URL. Presence updates about once a minute while you are signed in.'];
+else if(low.includes('how')||low.includes('help me')||low.includes('use'))replies=['Tell me which feature you mean—servers, profile, birthday, chat, storage, or games—and I’ll walk you through it. I’m snarky, not psychic.'];
+else if(low.includes('joke')||low.includes('/joke'))replies=['Why did the developer go broke? Too many cache misses. I’ll see myself out.','My favourite exercise is running… `npm run dev`.'];
+else if(low.includes('thank'))replies=['You’re welcome. I’ll add it to the list of times I carried this operation. 😌','Anytime. Praise is accepted in the form of fewer typos.'];
+else if(low.includes('santa'))replies=['Present. Slightly dramatic, extremely available, and only 12% judging you.','You summoned me. State your mission, human.'];
+else replies=['Interesting. Give me one more detail so I can help instead of confidently guessing.','I caught the vibe, but not the exact request. Try asking about servers, profiles, birthdays, games, or type /help.','That sentence has mystery-novel energy. What do you want SANTA to do with it?'];
+add('SANTA AI',replies[Math.floor(Math.random()*replies.length)]);};
+window.logout=async()=>{try{if(auth.currentUser)await updateDoc(doc(db,'users',auth.currentUser.uid),{online:false,lastSeen:serverTimestamp()});if(activeChatUnsub)activeChatUnsub();if(serverUnsub)serverUnsub();await signOut(auth);}catch(e){toast(errorText(e));}};
+// Replace placeholder alert handlers with working feature handlers.
+document.addEventListener('DOMContentLoaded',()=>{});
+const createBtn=[...document.querySelectorAll('#page-servers button')].find(b=>b.textContent.includes('Create Server'));if(createBtn)createBtn.onclick=createServer;
+const saveNoteBtn=[...document.querySelectorAll('#page-library button')].find(b=>b.textContent.includes('Save Note'));if(saveNoteBtn)saveNoteBtn.onclick=async()=>{const title=$('noteTitle').value.trim(),body=$('noteBody').value.trim();if(!title||!body){toast('Add both a title and note content.');return;}const key='boss-notes-'+auth.currentUser.uid;const notes=JSON.parse(localStorage.getItem(key)||'[]');notes.unshift({title,body,at:new Date().toISOString()});localStorage.setItem(key,JSON.stringify(notes.slice(0,100)));$('noteTitle').value='';$('noteBody').value='';toast('Note saved on this device. It is not encrypted cloud storage.');};
+const uploadBtn=[...document.querySelectorAll('#page-storage button')].find(b=>b.textContent.includes('Upload'));if(uploadBtn)uploadBtn.onclick=()=>{const file=$('#page-storage input[type=file]').files[0];if(!file){toast('Choose a file first.');return;}if(file.size>25*1024*1024){toast('This file is larger than 25 MB.');return;}const reader=new FileReader();reader.onload=()=>{const files=JSON.parse(localStorage.getItem('boss-local-files')||'[]');files.push({name:file.name,type:file.type,size:file.size,data:reader.result,at:new Date().toISOString()});try{localStorage.setItem('boss-local-files',JSON.stringify(files));toast('File saved in this browser’s local storage. Not encrypted or synced.');}catch(e){toast('Browser storage is full. Try a smaller file.');}};reader.readAsDataURL(file);};
+const gameBtns=[...document.querySelectorAll('#page-games button')];gameBtns.find(b=>b.textContent.includes('Play Game'))?.addEventListener('click',launchMemory);gameBtns.find(b=>b.textContent.includes('Solve Riddle'))?.addEventListener('click',launchRiddle);gameBtns.find(b=>b.textContent.includes('Start Quiz'))?.addEventListener('click',launchQuiz);gameBtns.find(b=>b.textContent.includes('View Leaderboard'))?.addEventListener('click',launchLeaderboard);
+// Add password reset link and a server description/visibility selector without disturbing the existing layout.
+const authCard=document.querySelector('.auth-card');if(authCard&&!$('resetPasswordLink')){const a=document.createElement('a');a.id='resetPasswordLink';a.href='#';a.textContent='Forgot password?';a.style.cssText='display:block;text-align:center;margin-top:12px;color:var(--text-muted);font-size:12px;text-decoration:none';a.onclick=e=>{e.preventDefault();window.resetPassword();};authCard.append(a);}
+const serverCard=$('page-servers')?.querySelector('.card');if(serverCard&&!$('newServerDescription')){const desc=document.createElement('input');desc.id='newServerDescription';desc.className='input-field';desc.placeholder='Short description (optional)';const btn=serverCard.querySelector('button');serverCard.insertBefore(desc,btn);const p=document.createElement('p');p.style.cssText='color:var(--text-muted);font-size:12px;margin-top:8px';p.textContent='Choose Public or Private in the confirmation dialog. Server features require matching Firestore Rules.';serverCard.append(p);}
 </script>
 </body>
 </html>
