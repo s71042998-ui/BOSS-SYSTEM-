@@ -3,69 +3,74 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BOSS SYSTEM // BLOODY SUPREME EDITION</title>
+<title>DEATH NOTE // SUPREME SYSTEM</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-  --bg-dark: #070506;
-  --bg-sidebar: #0e070a;
-  --bg-panel: #130a0e;
-  --bg-input: #1a0d13;
-  --bg-hover: rgba(178, 13, 34, 0.12);
-  --accent-blood: #b20d22;
-  --accent-crimson: #ef334f;
-  --blood-glow: rgba(178, 13, 34, 0.35);
-  --text-main: #f5edf0;
-  --text-muted: #a49aa1;
-  --border: rgba(178, 13, 34, 0.22);
-  --online: #8fe0a6;
+  --bg-dark: #080709;
+  --bg-sidebar: #0f0d12;
+  --bg-panel: #16131a;
+  --bg-input: #1e1a24;
+  --bg-hover: rgba(186, 24, 27, 0.15);
+  --accent-red: #ba181b;
+  --accent-crimson: #e63946;
+  --glow-red: rgba(230, 57, 70, 0.4);
+  --text-main: #f1faee;
+  --text-muted: #a09abc;
+  --text-gold: #d4af37;
+  --border: rgba(255, 255, 255, 0.08);
+  --online: #2a9d8f;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
 html, body { width: 100vw; height: 100vh; background: var(--bg-dark); color: var(--text-main); overflow: hidden; }
+
+/* Death Note Vignette Ambient Light */
 body:before {
-  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 999;
-  box-shadow: inset 0 0 120px rgba(0,0,0,0.95);
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 99;
+  background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(0,0,0,0.85) 100%);
+  box-shadow: inset 0 0 100px #000;
 }
 
 #appShell { display: flex; width: 100vw; height: 100vh; background: var(--bg-dark); }
 .hidden { display: none !important; }
 
-/* Far Left Icon Bar (Bloody Theme) */
+/* Far Left Icon Bar (Death Note Aesthetic) */
 .server-bar {
-  width: 76px; background: #050304; border-right: 1px solid var(--border);
-  display: flex; flex-direction: column; align-items: center; padding: 18px 0; gap: 14px;
+  width: 76px; background: #050406; border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; align-items: center; padding: 18px 0; gap: 14px; z-index: 10;
 }
 .server-icon {
   width: 48px; height: 48px; border-radius: 14px; background: var(--bg-panel);
   display: flex; align-items: center; justify-content: center; font-size: 20px;
-  cursor: pointer; transition: all 0.2s ease; border: 1px solid var(--border); color: var(--text-main);
+  cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid var(--border); color: var(--text-main);
   position: relative;
 }
 .server-icon:hover, .server-icon.active {
-  border-radius: 12px; background: var(--accent-blood); color: #fff;
-  box-shadow: 0 0 20px var(--blood-glow); border-color: var(--accent-crimson);
+  border-radius: 12px; background: var(--accent-red); color: #fff;
+  box-shadow: 0 0 20px var(--glow-red); border-color: var(--accent-crimson);
 }
 .server-icon.active::before {
-  content: ""; position: absolute; left: -14px; top: 12px; bottom: 12px;
+  content: ""; position: absolute; left: -14px; top: 10px; bottom: 10px;
   width: 4px; background: var(--accent-crimson); border-radius: 0 4px 4px 0;
-  box-shadow: 0 0 10px var(--accent-crimson);
+  box-shadow: 0 0 12px var(--accent-crimson);
 }
-.server-divider { width: 32px; height: 2px; background: var(--border); margin: 4px 0; }
+.server-divider { width: 32px; height: 1px; background: var(--border); margin: 4px 0; }
 
-/* Secondary Sub-Sidebar */
+/* Secondary Sidebar */
 .channel-sidebar {
   width: 260px; background: var(--bg-sidebar); border-right: 1px solid var(--border);
-  display: flex; flex-direction: column; padding: 18px;
+  display: flex; flex-direction: column; padding: 18px; z-index: 5;
 }
 .search-box {
   background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px;
   padding: 10px 14px; color: var(--text-main); font-size: 13px; outline: none; width: 100%; margin-bottom: 16px;
+  transition: 0.2s;
 }
-.search-box:focus { border-color: var(--accent-crimson); }
+.search-box:focus { border-color: var(--accent-crimson); box-shadow: 0 0 10px var(--glow-red); }
 .sidebar-section-label {
-  font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+  font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
   color: var(--text-muted); margin: 14px 0 8px 4px;
 }
 .nav-item {
@@ -73,17 +78,17 @@ body:before {
   cursor: pointer; color: var(--text-muted); font-size: 13px; font-weight: 500; transition: 0.15s;
 }
 .nav-item:hover, .nav-item.active { background: var(--bg-hover); color: var(--text-main); }
-.nav-item.active { background: rgba(178, 13, 34, 0.2); color: #fff; border-left: 3px solid var(--accent-crimson); font-weight: 600; }
-.avatar { width: 36px; height: 36px; border-radius: 50%; background: #260c14; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; position: relative; flex-shrink: 0; }
+.nav-item.active { background: rgba(186, 24, 27, 0.25); color: #fff; border-left: 3px solid var(--accent-crimson); font-weight: 600; }
+.avatar { width: 36px; height: 36px; border-radius: 50%; background: #1a1622; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; position: relative; flex-shrink: 0; }
 .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--online); position: absolute; bottom: 0; right: 0; border: 2px solid var(--bg-sidebar); }
 
-/* Main Central Content Area */
+/* Main Content Area */
 .main-view { flex: 1; display: flex; flex-direction: column; background: var(--bg-dark); overflow: hidden; }
 .view-header {
   height: 64px; border-bottom: 1px solid var(--border); display: flex; align-items: center;
   justify-content: space-between; padding: 0 24px; background: var(--bg-sidebar);
 }
-.view-header h2 { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700; letter-spacing: 1px; }
+.view-header h2 { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255,255,255,0.1); }
 .view-body { flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
 
 /* Right Panel */
@@ -92,23 +97,23 @@ body:before {
   padding: 20px; display: flex; flex-direction: column; gap: 20px; overflow-y: auto;
 }
 
-/* Cards & Buttons */
-.card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.5); }
+/* Card & Button Styles */
+.card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
 .button {
-  background: linear-gradient(135deg, #7a0917, #42050c); color: #fff; border: 1px solid #9e1b32; border-radius: 8px;
-  padding: 10px 18px; font-weight: 600; font-size: 13px; cursor: pointer; transition: 0.2s;
+  background: linear-gradient(135deg, #ba181b, #660708); color: #fff; border: 1px solid var(--accent-crimson); border-radius: 8px;
+  padding: 10px 18px; font-weight: 600; font-size: 13px; cursor: pointer; transition: 0.25s;
   display: inline-flex; align-items: center; justify-content: center; gap: 8px; letter-spacing: 0.5px;
 }
-.button:hover { background: linear-gradient(135deg, #b20d22, #5c0b16); box-shadow: 0 0 15px var(--blood-glow); border-color: var(--accent-crimson); }
+.button:hover { background: linear-gradient(135deg, #e63946, #800f2f); box-shadow: 0 0 20px var(--glow-red); }
 .button-secondary { background: var(--bg-input); border: 1px solid var(--border); color: var(--text-main); }
 .button-secondary:hover { background: var(--bg-hover); }
 
-/* Instagram-style Profile View */
-.profile-banner { height: 130px; background: linear-gradient(135deg, #5c0b16, #1f050b); border-radius: 12px 12px 0 0; position: relative; border-bottom: 1px solid var(--border); }
+/* Profile Page Styling */
+.profile-banner { height: 140px; background: linear-gradient(135deg, #2b0b10, #080709); border-radius: 12px 12px 0 0; position: relative; border-bottom: 1px solid var(--border); }
 .profile-avatar-large {
-  width: 90px; height: 90px; border-radius: 50%; background: #1a0d13; border: 4px solid var(--bg-panel);
+  width: 90px; height: 90px; border-radius: 50%; background: #16131a; border: 3px solid var(--accent-red);
   position: absolute; bottom: -30px; left: 24px; display: flex; align-items: center; justify-content: center;
-  font-size: 32px; font-weight: 700; overflow: hidden; box-shadow: 0 0 20px var(--blood-glow);
+  font-size: 32px; font-weight: 700; overflow: hidden; box-shadow: 0 0 25px var(--glow-red);
 }
 .profile-avatar-large img { width: 100%; height: 100%; object-fit: cover; }
 .profile-meta { padding: 40px 24px 24px; background: var(--bg-panel); border-radius: 0 0 12px 12px; border: 1px solid var(--border); border-top: none; }
@@ -122,9 +127,9 @@ body:before {
 .message-item { display: flex; gap: 12px; }
 .message-content { display: flex; flex-direction: column; gap: 4px; }
 .message-header { display: flex; align-items: center; gap: 8px; }
-.message-author { font-weight: 600; font-size: 14px; color: #ffccd3; }
+.message-author { font-weight: 600; font-size: 14px; color: #f1faee; }
 .message-time { font-size: 11px; color: var(--text-muted); }
-.message-text { font-size: 13.5px; color: #e5e7eb; line-height: 1.5; background: var(--bg-panel); padding: 10px 14px; border-radius: 0 12px 12px 12px; border: 1px solid var(--border); width: fit-content; max-width: 600px; }
+.message-text { font-size: 13.5px; color: #e0e1dd; line-height: 1.5; background: var(--bg-panel); padding: 10px 14px; border-radius: 0 12px 12px 12px; border: 1px solid var(--border); width: fit-content; max-width: 600px; }
 
 .chat-input-bar {
   background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px;
@@ -132,24 +137,20 @@ body:before {
 }
 .chat-input-bar input { background: transparent; border: none; outline: none; color: #fff; width: 100%; font-size: 14px; }
 
-/* Arcade & Games Grid */
-.arcade-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
-.arcade-card {
-  background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 22px;
-  display: flex; flex-direction: column; gap: 12px; position: relative; overflow: hidden; transition: 0.2s;
+/* Friends Search Result Item */
+.friend-result-card {
+  display: flex; align-items: center; justify-content: space-between; background: var(--bg-panel);
+  border: 1px solid var(--border); padding: 14px; border-radius: 10px; margin-bottom: 10px;
 }
-.arcade-card:hover { border-color: var(--accent-crimson); box-shadow: 0 0 20px var(--blood-glow); transform: translateY(-2px); }
-.arcade-card h4 { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; color: #fff; }
-.arcade-card p { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; }
 
 /* Auth Overlay */
 .auth-overlay {
-  position: fixed; inset: 0; background: rgba(5, 3, 4, 0.95); backdrop-filter: blur(12px);
-  display: flex; align-items: center; justify-content: center; z-index: 100;
+  position: fixed; inset: 0; background: rgba(5, 4, 6, 0.96); backdrop-filter: blur(16px);
+  display: flex; align-items: center; justify-content: center; z-index: 1000;
 }
-.auth-card { width: 100%; max-width: 420px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 16px; padding: 32px; box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 30px var(--blood-glow); }
+.auth-card { width: 100%; max-width: 420px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 16px; padding: 32px; box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 40px var(--glow-red); }
 .input-field { width: 100%; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 12px; color: #fff; outline: none; margin: 8px 0 16px; }
-.input-field:focus { border-color: var(--accent-crimson); box-shadow: 0 0 10px var(--blood-glow); }
+.input-field:focus { border-color: var(--accent-crimson); box-shadow: 0 0 12px var(--glow-red); }
 </style>
 </head>
 <body>
@@ -157,9 +158,9 @@ body:before {
 <!-- AUTHENTICATION OVERLAY -->
 <div id="authScreen" class="auth-overlay">
   <div class="auth-card">
-    <h2 style="font-family: 'Cinzel', serif; font-size: 24px; font-weight: 700; margin-bottom: 6px; letter-spacing: 1px;">BOSS SYSTEM</h2>
-    <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;">Secure Bloody Matrix // Authentication</p>
-    <div id="authNotice" style="color: #ff8090; font-size: 12px; margin-bottom: 12px;"></div>
+    <h2 style="font-family: 'Cinzel', serif; font-size: 26px; font-weight: 800; margin-bottom: 6px; letter-spacing: 2px;">DEATH NOTE</h2>
+    <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;">System Verification Gate</p>
+    <div id="authNotice" style="color: var(--accent-crimson); font-size: 12px; margin-bottom: 12px;"></div>
 
     <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">EMAIL ADDRESS</label>
     <input id="authEmail" class="input-field" type="email" placeholder="user@domain.com">
@@ -178,7 +179,7 @@ body:before {
     <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">PASSWORD</label>
     <input id="authPassword" class="input-field" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')handleAuthSubmit()">
 
-    <button class="button" style="width: 100%; margin-top: 8px;" onclick="handleAuthSubmit()">Authorize Access</button>
+    <button class="button" style="width: 100%; margin-top: 8px;" onclick="handleAuthSubmit()">Authenticate</button>
     
     <div style="text-align: center; margin-top: 16px;">
       <a href="#" style="color: var(--accent-crimson); font-size: 12px; text-decoration: none;" onclick="toggleAuthMode()">Switch Login / Sign Up</a>
@@ -191,26 +192,27 @@ body:before {
 
   <!-- FAR LEFT ICON BAR -->
   <div class="server-bar">
-    <div class="server-icon active" title="DMs & Chat" onclick="switchPage('chat', this)">💬</div>
+    <div class="server-icon active" title="DMs & Direct Chats" onclick="switchPage('chat', this)">💬</div>
+    <div class="server-icon" title="Add Friends" onclick="switchPage('friends', this)">👥</div>
     <div class="server-divider"></div>
-    <div class="server-icon" title="Servers Hub" onclick="switchPage('servers', this)">🌐</div>
+    <div class="server-icon" title="Servers" onclick="switchPage('servers', this)">🌐</div>
     <div class="server-icon" title="Instagram Profile" onclick="switchPage('profile', this)">👤</div>
-    <div class="server-icon" title="Library Notes" onclick="switchPage('library', this)">📚</div>
-    <div class="server-icon" title="Local Storage" onclick="switchPage('storage', this)">💾</div>
-    <div class="server-icon" title="Arcade, Games & Leaderboards" onclick="switchPage('games', this)">🎮</div>
+    <div class="server-icon" title="Library Notes" onclick="switchPage('library', this)">📖</div>
+    <div class="server-icon" title="Storage" onclick="switchPage('storage', this)">💾</div>
+    <div class="server-icon" title="Games & Riddles" onclick="switchPage('games', this)">🎮</div>
     <div class="server-icon" title="SANTA AI Assistant" onclick="switchPage('santa', this)">🤖</div>
     <div class="server-divider" style="margin-top: auto;"></div>
     <div class="server-icon" style="color: var(--accent-crimson);" title="Log Out" onclick="logout()">🚪</div>
   </div>
 
-  <!-- SECONDARY SUB-SIDEBAR -->
+  <!-- SECONDARY SIDEBAR -->
   <div class="channel-sidebar" id="subSidebar">
     <input class="search-box" type="text" placeholder="Quick search...">
-    <div class="sidebar-section-label" id="subSidebarLabel">Direct Channels</div>
+    <div class="sidebar-section-label" id="subSidebarLabel">Conversations</div>
     <div id="subSidebarList">
-      <div class="nav-item active" onclick="selectChannel('Global Blood Chat')">
+      <div class="nav-item active" onclick="selectChannel('Global Chat')">
         <div class="avatar">#<div class="status-dot"></div></div>
-        <span>Global Blood Chat</span>
+        <span>Global Chat</span>
       </div>
       <div class="nav-item" onclick="selectChannel('Direct Messages')">
         <div class="avatar">💬<div class="status-dot"></div></div>
@@ -223,11 +225,11 @@ body:before {
   <div class="main-view">
     <div class="view-header">
       <div style="display: flex; align-items: center; gap: 12px;">
-        <h2 id="currentViewTitle">Global Blood Chat</h2>
-        <span id="currentUserRoleTag" style="font-size: 11px; background: rgba(178, 13, 34, 0.25); color: #ff8090; border: 1px solid var(--border); padding: 4px 8px; border-radius: 4px; font-weight: 600;">USER</span>
+        <h2 id="currentViewTitle">Global Chat</h2>
+        <span id="currentUserRoleTag" style="font-size: 11px; background: rgba(186, 24, 27, 0.25); color: #ffb3c1; border: 1px solid var(--border); padding: 4px 8px; border-radius: 4px; font-weight: 600;">USER</span>
       </div>
       <div>
-        <button class="button button-secondary" onclick="switchPage('profile', document.querySelectorAll('.server-icon')[2])">Insta Profile</button>
+        <button class="button button-secondary" onclick="switchPage('profile', document.querySelectorAll('.server-icon')[3])">Insta Profile</button>
       </div>
     </div>
 
@@ -237,13 +239,13 @@ body:before {
       <div id="page-chat" class="chat-container">
         <div class="message-list" id="messageList">
           <div class="message-item">
-            <div class="avatar">S</div>
+            <div class="avatar">L</div>
             <div class="message-content">
               <div class="message-header">
                 <span class="message-author">SANTA AI</span>
-                <span class="message-time">Secure Node</span>
+                <span class="message-time">System Core</span>
               </div>
-              <div class="message-text">Dark bloody matrix initialized. Encryption active.</div>
+              <div class="message-text">Death Note system active. Secure channels online.</div>
             </div>
           </div>
         </div>
@@ -253,21 +255,35 @@ body:before {
         </div>
       </div>
 
-      <!-- PAGE 2: SERVERS HUB -->
+      <!-- PAGE 2: ADD FRIENDS TAB (SEARCH BY USERNAME) -->
+      <div id="page-friends" class="hidden">
+        <div class="card">
+          <h3 style="font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700; margin-bottom: 10px;">Find & Add Friends</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Search by exact username to connect directly on the network.</p>
+          <div style="display: flex; gap: 10px;">
+            <input id="friendSearchInput" class="input-field" type="text" placeholder="Enter username (e.g. boss_maysi)..." style="margin: 0;">
+            <button class="button" style="width: 120px;" onclick="searchFriendByUsername()">Search</button>
+          </div>
+        </div>
+
+        <div id="friendSearchResults" style="margin-top: 20px;"></div>
+      </div>
+
+      <!-- PAGE 3: SERVERS HUB -->
       <div id="page-servers" class="hidden">
         <div class="card">
-          <h3 style="font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; margin-bottom: 12px;">Public & Private Server Nodes</h3>
-          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Create custom community nodes or join private invite-protected servers.</p>
+          <h3 style="font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; margin-bottom: 12px;">Server Networks</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Create private custom server spaces or join existing ones.</p>
           <input id="newServerName" class="input-field" type="text" placeholder="Server Name...">
-          <button class="button" onclick="alert('Server node created successfully!')">Initialize Server Node</button>
+          <button class="button" onclick="alert('Server node created successfully!')">Create Server</button>
         </div>
       </div>
 
-      <!-- PAGE 3: INSTAGRAM PROFILE -->
+      <!-- PAGE 4: INSTAGRAM PROFILE -->
       <div id="page-profile" class="hidden">
         <div class="card" style="padding: 0; overflow: hidden;">
           <div class="profile-banner">
-            <div class="profile-avatar-large" id="profileAvatarDisplay">👑</div>
+            <div class="profile-avatar-large" id="profileAvatarDisplay">🍎</div>
           </div>
           <div class="profile-meta">
             <h2 id="profDisplayName">User</h2>
@@ -299,64 +315,64 @@ body:before {
         </div>
       </div>
 
-      <!-- PAGE 4: LIBRARY NOTES -->
+      <!-- PAGE 5: LIBRARY NOTES -->
       <div id="page-library" class="hidden">
         <div class="card">
-          <h3 style="font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; margin-bottom: 12px;">Encrypted Notebook</h3>
-          <input id="noteTitle" class="input-field" type="text" placeholder="Note Title...">
-          <textarea id="noteBody" class="input-field" rows="4" placeholder="Write secure notes..."></textarea>
-          <button class="button" onclick="alert('Note saved to encrypted Firestore collection!')">Save Note</button>
+          <h3 style="font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; margin-bottom: 12px;">Notebook / Library</h3>
+          <input id="noteTitle" class="input-field" type="text" placeholder="Title...">
+          <textarea id="noteBody" class="input-field" rows="4" placeholder="Write confidential notes..."></textarea>
+          <button class="button" onclick="alert('Note saved to encrypted database!')">Save Note</button>
         </div>
       </div>
 
-      <!-- PAGE 5: LOCAL STORAGE -->
+      <!-- PAGE 6: LOCAL STORAGE -->
       <div id="page-storage" class="hidden">
         <div class="card">
-          <h3 style="font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; margin-bottom: 12px;">Local Storage & P2P Transfer</h3>
-          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Secure browser storage and direct peer-to-peer file sharing up to 25MB.</p>
+          <h3 style="font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; margin-bottom: 12px;">Storage Vault</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Local encrypted file storage up to 25MB.</p>
           <input type="file" class="input-field">
-          <button class="button">Upload & Save Locally</button>
+          <button class="button">Upload File</button>
         </div>
       </div>
 
-      <!-- PAGE 6: GAMES, RIDDLES, QUIZZES & LEADERBOARDS -->
+      <!-- PAGE 7: GAMES, RIDDLES, QUIZZES & LEADERBOARDS -->
       <div id="page-games" class="hidden">
-        <div class="card" style="margin-bottom: 20px; background: linear-gradient(135deg, #2b060d, #120306); border-color: #7a0917;">
-          <h3 style="font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700; margin-bottom: 6px;">🎮 ARCADE & INTEL HUB</h3>
-          <p style="font-size: 13px; color: var(--text-muted);">Play challenges, solve SANTA riddles, conquer timed quizzes, and climb the global XP leaderboard.</p>
+        <div class="card" style="margin-bottom: 20px; background: linear-gradient(135deg, #1f080c, #080709);">
+          <h3 style="font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700; margin-bottom: 6px;">🎮 Arcade & Intelligence Arena</h3>
+          <p style="font-size: 13px; color: var(--text-muted);">Solve SANTA riddles, complete timed quizzes, play memory challenges, and view leaderboards.</p>
         </div>
         
-        <div class="arcade-grid">
-          <div class="arcade-card">
-            <h4>Cat Memory Arena 🐈</h4>
-            <p>Match pairs under timed conditions. Earn XP and build daily winning streaks.</p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
+          <div class="card">
+            <h4 style="font-family:'Cinzel'; margin-bottom:6px;">Cat Memory Arena 🐈</h4>
+            <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Match cards under time pressure for XP rewards.</p>
             <button class="button" onclick="alert('Launching Cat Memory Arena...')">Play Game</button>
           </div>
-          <div class="arcade-card">
-            <h4>SANTA Riddle Chamber 🧠</h4>
-            <p>Solve cryptic neural puzzles set by SANTA AI for bonus system points.</p>
-            <button class="button" onclick="alert('Riddle Chamber active: I have keys but no locks...')">Solve Riddle</button>
+          <div class="card">
+            <h4 style="font-family:'Cinzel'; margin-bottom:6px;">Riddle Chamber 🍎</h4>
+            <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Cryptic riddles generated by SANTA AI.</p>
+            <button class="button" onclick="alert('Riddle Chamber: What gets wetter as it dries?')">Solve Riddle</button>
           </div>
-          <div class="arcade-card">
-            <h4>System Quiz Arena 📝</h4>
-            <p>Test your knowledge across anime, study, and gaming categories.</p>
-            <button class="button" onclick="alert('Quiz arena initialized.')">Start Quiz</button>
+          <div class="card">
+            <h4 style="font-family:'Cinzel'; margin-bottom:6px;">System Quiz 📝</h4>
+            <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Anime, gaming, and logic trivia quizzes.</p>
+            <button class="button" onclick="alert('Quiz initialized.')">Start Quiz</button>
           </div>
-          <div class="arcade-card">
-            <h4>Global Leaderboard 🏆</h4>
-            <p>Check top ranking operators, XP streaks, and high scores across the network.</p>
-            <button class="button button-secondary" onclick="alert('Leaderboard: 1. BOSS MAYSI | 2. SANTA AI | 3. Operator')">View Scores</button>
+          <div class="card">
+            <h4 style="font-family:'Cinzel'; margin-bottom:6px;">Global Rankings 🏆</h4>
+            <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Check top XP ranks and activity streaks.</p>
+            <button class="button button-secondary" onclick="alert('Rankings: 1. BOSS MAYSI | 2. SANTA AI')">View Leaderboard</button>
           </div>
         </div>
       </div>
 
-      <!-- PAGE 7: SANTA AI ASSISTANT -->
+      <!-- PAGE 8: SANTA AI ASSISTANT -->
       <div id="page-santa" class="hidden">
         <div class="card">
-          <h3 style="font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; margin-bottom: 12px;">SANTA AI Command Center</h3>
-          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Ask questions, request savage roasts, or check system intelligence.</p>
+          <h3 style="font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; margin-bottom: 12px;">SANTA AI Intelligence Command</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Ask questions, request roasts, or check system diagnostics.</p>
           <div class="message-list" style="height: 200px; background: var(--bg-input); padding: 12px; border-radius: 8px; margin-bottom: 12px;" id="santaLog">
-            <div class="message-text">SANTA AI: Core online. Type /help or /roast.</div>
+            <div class="message-text">SANTA AI: Death Note system core online. Type /help or /roast.</div>
           </div>
           <div class="chat-input-bar" style="margin: 0;">
             <input id="santaInput" type="text" placeholder="Type a command or query..." onkeydown="if(event.key==='Enter')sendSantaAI()">
@@ -370,9 +386,9 @@ body:before {
 
   <!-- RIGHT SIDEBAR -->
   <div class="right-sidebar">
-    <div style="font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted);">Active Node</div>
+    <div style="font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted);">Network Status</div>
     <div id="rightSidebarContent" style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">
-      Bloody obsidian interface active. Switch modules using the far left server bar.
+      Death Note edition active. Custom search and social tabs enabled.
     </div>
   </div>
 
@@ -381,7 +397,7 @@ body:before {
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, query, where, getDocs, orderBy, limit, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyC255XuKEt8JJKbWRjqLEqhxcOn1TXGC2U",
@@ -434,7 +450,7 @@ window.handleAuthSubmit = async () => {
 
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       currentProfile = {
-        uid: cred.user.uid, username, nickname, birthday, bio: "Secure bloody node.", pfp: "",
+        uid: cred.user.uid, username, nickname, birthday, bio: "Death Note system user.", pfp: "",
         role: username === "boss_maysi" ? "BOSS" : "USER"
       };
       await setDoc(doc(db, "users", cred.user.uid), currentProfile);
@@ -466,7 +482,7 @@ function updateProfileView() {
   if(currentProfile.pfp) {
     pfpDiv.innerHTML = `<img src="${currentProfile.pfp}" alt="PFP">`;
   } else {
-    pfpDiv.innerHTML = "👑";
+    pfpDiv.innerHTML = "🍎";
   }
 }
 
@@ -484,7 +500,46 @@ window.saveProfileData = async () => {
     pfp: currentProfile.pfp
   });
   updateProfileView();
-  alert("Profile updated successfully!");
+  alert("Profile saved successfully!");
+};
+
+window.searchFriendByUsername = async () => {
+  const queryText = document.getElementById("friendSearchInput").value.trim().toLowerCase();
+  const resultsDiv = document.getElementById("friendSearchResults");
+  resultsDiv.replaceChildren();
+
+  if(!queryText) { alert("Please type a username to search."); return; }
+
+  try {
+    const q = query(collection(db, "usernames"), where("usernameLower", "==", queryText));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      resultsDiv.innerHTML = `<div class="card" style="color:var(--text-muted);">No user found with username "${queryText}".</div>`;
+      return;
+    }
+
+    querySnapshot.forEach(async docSnap => {
+      const data = docSnap.data();
+      const userSnap = await getDoc(doc(db, "users", data.uid));
+      const userData = userSnap.exists() ? userSnap.data() : { nickname: data.username, bio: "" };
+
+      const card = document.createElement("div"); card.className = "friend-result-card";
+      card.innerHTML = `
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div class="avatar" style="width:40px; height:40px;">${(userData.nickname || 'U')[0].toUpperCase()}</div>
+          <div>
+            <div style="font-weight:600; font-size:14px; color:#fff;">${userData.nickname || data.username}</div>
+            <div style="font-size:11px; color:var(--text-muted);">@${data.username}</div>
+          </div>
+        </div>
+        <button class="button" onclick="alert('Friend request sent to @${data.username}!')">Add Friend</button>
+      `;
+      resultsDiv.append(card);
+    });
+  } catch(e) {
+    alert("Search error: " + e.message);
+  }
 };
 
 function listenToGlobalChat() {
@@ -528,41 +583,12 @@ window.switchPage = (pageKey, element) => {
   document.querySelectorAll(".server-icon").forEach(el => el.classList.remove("active"));
   if(element) element.classList.add("active");
 
-  ['chat', 'servers', 'profile', 'library', 'storage', 'games', 'santa'].forEach(p => {
+  ['chat', 'friends', 'servers', 'profile', 'library', 'storage', 'games', 'santa'].forEach(p => {
     document.getElementById("page-" + p).classList.add("hidden");
   });
 
   document.getElementById("page-" + pageKey).classList.remove("hidden");
-  document.getElementById("currentViewTitle").textContent = pageKey.toUpperCase() + " MATRIX";
-
-  const subLabel = document.getElementById("subSidebarLabel");
-  const subList = document.getElementById("subSidebarList");
-  subList.replaceChildren();
-
-  if(pageKey === 'chat') {
-    subLabel.textContent = "Direct Channels";
-    subList.innerHTML = `
-      <div class="nav-item active" onclick="selectChannel('Global Blood Chat')"><div class="avatar">#</div><span>Global Blood Chat</span></div>
-      <div class="nav-item" onclick="selectChannel('Direct Messages')"><div class="avatar">💬</div><span>Direct Messages</span></div>
-    `;
-  } else if(pageKey === 'servers') {
-    subLabel.textContent = "Server Nodes";
-    subList.innerHTML = `
-      <div class="nav-item active"><div class="avatar">S</div><span>Syndicate Core</span></div>
-      <div class="nav-item"><div class="avatar">F</div><span>Family Node</span></div>
-    `;
-  } else if(pageKey === 'games') {
-    subLabel.textContent = "Arcade Hub";
-    subList.innerHTML = `
-      <div class="nav-item active"><div class="avatar">🐈</div><span>Cat Memory Arena</span></div>
-      <div class="nav-item"><div class="avatar">🧠</div><span>Riddle Chamber</span></div>
-      <div class="nav-item"><div class="avatar">📝</div><span>System Quiz</span></div>
-      <div class="nav-item"><div class="avatar">🏆</div><span>Global Leaderboard</span></div>
-    `;
-  } else {
-    subLabel.textContent = "Module Actions";
-    subList.innerHTML = `<div class="nav-item active"><div class="avatar">⚡</div><span>Active Node</span></div>`;
-  }
+  document.getElementById("currentViewTitle").textContent = pageKey.toUpperCase() + " TAB";
 };
 
 window.selectChannel = (name) => {
@@ -576,13 +602,13 @@ window.sendSantaAI = () => {
   const txt = input.value.trim();
   if(!txt) return;
   const log = document.getElementById("santaLog");
-  log.innerHTML += `<div class="message-text" style="background:#261019; margin-top:6px;">YOU: ${txt}</div>`;
+  log.innerHTML += `<div class="message-text" style="background:#1e1a24; margin-top:6px;">YOU: ${txt}</div>`;
   input.value = "";
   setTimeout(() => {
-    let reply = "SANTA AI: Systems operational. Ready for execution.";
+    let reply = "SANTA AI: Systems operational.";
     const low = txt.toLowerCase();
-    if(low.includes("roast")) reply = "SANTA AI: You want a roast? Your code compiles on the first try... which just means you haven't tested it hard enough yet.";
-    log.innerHTML += `<div class="message-text" style="background:#130a0e; margin-top:6px;">SANTA AI: ${reply}</div>`;
+    if(low.includes("roast")) reply = "SANTA AI: You want a roast? Your code works without errors on the first try... which means you haven't tested it hard enough yet.";
+    log.innerHTML += `<div class="message-text" style="background:#16131a; margin-top:6px;">SANTA AI: ${reply}</div>`;
     log.scrollTop = log.scrollHeight;
   }, 300);
 };
