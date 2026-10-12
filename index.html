@@ -91,6 +91,44 @@ label,.field-label{display:block;color:#b3a2aa;font-family:"Share Tech Mono",mon
 @media(min-width:760px){.modules{grid-template-columns:repeat(4,minmax(0,1fr))}.screen:has(.modules){max-width:1040px}}
 @media(max-width:600px){body{padding:10px 8px;align-items:flex-start}.screen{padding:24px 17px;margin:8px 0}.choice{grid-template-columns:1fr 1fr;gap:9px}.choice button{min-height:95px;padding:10px 6px;font-size:11px}.modules{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.module{min-height:100px;padding:14px 6px;font-size:10px;letter-spacing:1px}.icon{font-size:24px}.modal{padding:8px;align-items:center}.modal-box{max-height:94vh;padding:17px 13px}.chat-box{height:280px;max-height:42vh}.row-actions{flex-direction:column}.row-actions button{width:100%}.memory-card{min-height:55px;padding:4px}.footer{align-items:flex-start;flex-direction:column}.logout{width:100%}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition:none!important}}
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);max-width:min(92vw,520px);padding:12px 18px;background:#250b12;border:1px solid #a72138;color:#ffd0d7;font-size:13px;line-height:1.5;z-index:30;box-shadow:0 10px 40px #000;border-radius:4px}
+.module:focus-visible{outline:2px solid #e33c55}
+
+/* ---- visual pass ---- */
+.item .server-tag{display:inline-block;margin:12px 8px 4px 0}
+.modal-head{position:sticky;top:calc(-1*clamp(18px,3vw,30px));z-index:3;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;background:#171118;margin:calc(-1*clamp(18px,3vw,30px)) calc(-1*clamp(18px,3vw,30px)) 16px;padding:clamp(18px,3vw,30px) clamp(18px,3vw,30px) 12px;border-bottom:1px solid #2c1d24}
+.modal-head .modal-title{margin:0;color:#f6e7eb}
+.modal-x{flex:none;width:40px;height:40px;padding:0;margin:0;letter-spacing:0;font-size:15px;line-height:1;background:#250b12;border:1px solid #742234}
+.modal-x:hover{background:#4a1220;border-color:var(--accent,#c0314b)}
+.modal-box>.close{position:static;box-shadow:none;margin-top:22px}
+.modal-box{border-top:3px solid var(--accent,#763040)}
+.panel h3{padding-left:10px;border-left:2px solid var(--accent,#b91e38)}
+.module:hover{border-color:var(--accent,#a7273b);box-shadow:0 10px 26px #0008,0 0 22px color-mix(in srgb,var(--accent,#8b0b20) 22%,transparent)}
+.module:before{background:var(--accent,#e32643)}
+.module .icon{filter:saturate(.65) sepia(.2)}
+.module-wide{grid-column:span 2}
+.chat-message button{display:inline-block;width:auto;padding:5px 11px;margin:8px 8px 0 0;font-size:10px;letter-spacing:1px}
+.chat-user{border-color:#7a2335;background:linear-gradient(145deg,#2a0f17,#160b10)}
+
+/* Discord-inspired server workspace */
+.discord-workspace{display:grid;grid-template-columns:minmax(145px,190px) minmax(0,1fr) minmax(135px,175px);gap:10px;align-items:stretch}
+.discord-rail,.discord-members{border:1px solid #35242b;background:#0d0a0f;padding:10px;border-radius:5px;min-width:0}
+.discord-main{min-width:0}
+.discord-rail h3,.discord-members h3{font:600 11px "Share Tech Mono",monospace;letter-spacing:1px;color:#d8bdc6;margin-bottom:10px}
+.discord-channel{display:block;width:100%;text-align:left;margin:4px 0;padding:9px 8px;font-size:11px;letter-spacing:.4px;border-color:transparent;background:#151016}
+.discord-channel.active{background:#35101b;border-color:#743044}
+.discord-members .item{padding:8px;font-size:11px}
+.discord-members .presence-dot{margin-right:6px}
+.discord-topline{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.discord-topline strong{font-family:Cinzel,Georgia,serif;letter-spacing:1px}
+.achievement-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:10px}
+.achievement-card{border:1px solid #47303a;background:#130e14;padding:12px;border-radius:5px;min-width:0}
+.achievement-card.unlocked{border-color:#a76c36;background:linear-gradient(145deg,#24170f,#100d10)}
+.achievement-card .ach-icon{font-size:24px;display:block;margin-bottom:7px}
+.riddle-clock{height:5px;background:#302027;margin:8px 0 12px;overflow:hidden}
+.riddle-clock span{display:block;height:100%;width:100%;background:linear-gradient(90deg,#a70e2a,#ef5269);transform-origin:left}
+.server-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:680px){.discord-workspace{grid-template-columns:1fr}.discord-rail{order:0}.discord-main{order:1}.discord-members{order:2}.discord-rail .channel-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.discord-members{max-height:180px;overflow:auto}.server-edit-grid{grid-template-columns:1fr}}
 </style>
 </head>
 
@@ -358,7 +396,12 @@ label,.field-label{display:block;color:#b3a2aa;font-family:"Share Tech Mono",mon
       PROFILES
     </div>
 
-    <div class="module" onclick="openModule('SANTA')">
+    <div class="module" onclick="openModule('NOTIFICATIONS')">
+      <span class="icon">🔔</span>
+      <span id="notifLabel">NOTIFICATIONS</span>
+    </div>
+
+    <div class="module module-wide" onclick="openModule('SANTA')">
       <span class="icon">🤖</span>
       SANTA
     </div>
@@ -396,11 +439,13 @@ label,.field-label{display:block;color:#b3a2aa;font-family:"Share Tech Mono",mon
      MODAL
 ====================================== -->
 
+<div id="toast" class="hidden" role="status" aria-live="polite"></div>
+
 <div class="modal hidden" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" onclick="if(event.target===this)closeModule()">
 
   <div class="modal-box">
 
-    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-head"><div class="modal-title" id="modalTitle"></div><button type="button" class="modal-x" onclick="closeModule()" aria-label="Close">✕</button></div>
 
     <div class="modal-text" id="modalText"></div>
 
@@ -426,7 +471,7 @@ import {
 import {
   getFirestore, doc, getDoc, setDoc, collection, collectionGroup, addDoc, getDocs,
   query, orderBy, limit, onSnapshot, serverTimestamp, runTransaction,
-  updateDoc, deleteDoc, where
+  updateDoc, deleteDoc, where, getCountFromServer, writeBatch
 } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
 /* Firebase Web App configuration for BOSS SYSTEM. */
@@ -442,15 +487,20 @@ const FIREBASE_CONFIG = {
 
 const firebaseConfigured = !Object.values(FIREBASE_CONFIG).some(v => String(v).startsWith("YOUR_"));
 let app = null, auth = null, db = null, currentUser = null, currentProfile = null;
-let chatUnsubscribe = null, reportUnsubscribe = null, transferUnsubscribe = null, presenceUnsubscribe = null;
+let chatUnsubscribe = null, reportUnsubscribe = null, transferUnsubscribe = null, presenceUnsubscribe = null, serverChatUnsub = null, notifUnsub = null;
 let activeTransfer = null, activePeer = null, activeChannel = null, receivedChunks = [], receiveMeta = null;
 let gameState = null, quizState = null;
 const $ = id => document.getElementById(id);
+let toastTimer=null;
+function notify(message){const t=$("toast");t.textContent=message;t.classList.remove("hidden");clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.add("hidden"),6000);}
+let heartbeat=null;
+const ONLINE_WINDOW_MS=5*60*1000;
+function isOnline(d){const t=d?.lastSeenAt?.toMillis?.();return d?.presenceStatus==="online"&&!!t&&Date.now()-t<ONLINE_WINDOW_MS;}
 const RESERVED_USERNAMES = new Set(["maysi", "santa", "bossmaysi", "boss_maysi", "boss-maysi"]);
 const MAX_TRANSFER_BYTES = 25 * 1024 * 1024;
 const CHUNK_SIZE = 16 * 1024;
 
-let authObserverBusy = false;
+let authObserverBusy = false, signupInProgress = false;
 if (firebaseConfigured) {
   app = initializeApp(FIREBASE_CONFIG);
   auth = getAuth(app);
@@ -462,7 +512,7 @@ if (firebaseConfigured) {
       authObserverBusy = false;
       return;
     }
-    if (authObserverBusy) return;
+    if (signupInProgress || authObserverBusy) return;
     authObserverBusy = true;
     try {
       const snap = await getDoc(doc(db, "users", user.uid));
@@ -471,6 +521,7 @@ if (firebaseConfigured) {
         hideAllScreens();
         $("login").classList.remove("hidden");
         setAuthNotice("Firebase accepted the email/password, but this account has no users/" + user.uid + " profile document. Do not create another account. In Firestore, open the users collection and make sure the document ID is this exact UID; it needs uid, username, nickname, usernameLower and role fields. BOSS/SANTA roles must be assigned only by you in Firebase Console.");
+        await signOut(auth);
         return;
       }
       const data = snap.data();
@@ -501,7 +552,7 @@ function bootAnimation(){
   const interval = setInterval(() => {
     if (bootIndex >= bootLines.length) {
       clearInterval(interval);
-      setTimeout(() => { $("opening").classList.add("hidden"); $("access").classList.remove("hidden"); }, 350);
+      setTimeout(() => { $("opening").classList.add("hidden"); const other=[...document.querySelectorAll(".screen")].some(s=>s.id!=="opening"&&!s.classList.contains("hidden")); if(!other)$("access").classList.remove("hidden"); }, 350);
       return;
     }
     target.textContent = bootLines[bootIndex++];
@@ -522,7 +573,6 @@ function setAuthNotice(message){
 }
 function showError(err){
   console.error(err);
-  setAuthNotice(err?.code ? (err.code + ": " + (err.message||"Request failed.")) : (err?.message||"Request failed."));
   const code = err?.code || "";
   const messages = {
     "auth/email-already-in-use":"That email is already registered.",
@@ -530,11 +580,11 @@ function showError(err){
     "auth/weak-password":"Use a password with at least 6 characters.",
     "auth/invalid-credential":"Email or password is incorrect.",
     "auth/network-request-failed":"Network problem. Check your internet connection.",
-    "permission-denied":"Firebase blocked this action. Check Firestore rules and your setup."
+    "permission-denied":"You do not have permission to do that.","auth/too-many-requests":"Too many attempts. Please wait a moment and try again."
   };
-  alert(messages[code] || err?.message || "Something went wrong. Check the browser console for details.");
+  notify(messages[code] || err?.message || "Something went wrong. Check the browser console for details.");
 }
-function requireFirebase(){if(!firebaseConfigured){alert("Firebase setup is not finished. Follow BOSS-SYSTEM-SETUP.md first.");return false;}return true;}
+function requireFirebase(){if(!firebaseConfigured){notify("Firebase setup is not finished. Follow BOSS-SYSTEM-SETUP.md first.");return false;}return true;}
 function cleanUsername(value){return value.trim().toLowerCase();}
 function validUsername(value){return /^[a-zA-Z0-9_]{3,20}$/.test(value);}
 
@@ -547,12 +597,13 @@ async function signup(){
   const nickname=$("signupNickname").value.trim();
   const password=$("signupPassword").value;
   const confirm=$("signupConfirm").value;
-  if(!email||!username||!nickname||!password||!confirm){alert("All fields are required.");return;}
-  if(!validUsername(username)){alert("Username must be 3–20 characters and use only letters, numbers or underscores.");return;}
-  if(RESERVED_USERNAMES.has(usernameLower)||["boss maysi","santa"].includes(nickname.toLowerCase())){alert("That identity is reserved.");return;}
-  if(password.length<6){alert("Password must contain at least 6 characters.");return;}
-  if(password!==confirm){alert("Passwords do not match.");return;}
+  if(!email||!username||!nickname||!password||!confirm){notify("All fields are required.");return;}
+  if(!validUsername(username)){notify("Username must be 3–20 characters and use only letters, numbers or underscores.");return;}
+  if(RESERVED_USERNAMES.has(usernameLower)||["boss maysi","santa"].includes(nickname.toLowerCase())){notify("That identity is reserved.");return;}
+  if(password.length<6){notify("Password must contain at least 6 characters.");return;}
+  if(password!==confirm){notify("Passwords do not match.");return;}
   let credential=null;
+  signupInProgress=true;
   try{
     credential=await createUserWithEmailAndPassword(auth,email,password);
     currentUser=credential.user;
@@ -569,10 +620,12 @@ async function signup(){
     enterDashboard(currentProfile);
     startPresence();
     $("signupEmail").value=$("signupUsername").value=$("signupNickname").value=$("signupPassword").value=$("signupConfirm").value="";
-    alert("Account created! You're signed in now.");
+    notify("Account created! You're signed in now.");
   }catch(err){
     if(credential?.user){try{await credential.user.delete();}catch(_){}}
     showError(err);
+  }finally{
+    signupInProgress=false;
   }
 }
 async function login(){
@@ -585,27 +638,8 @@ async function login(){
   if(btn){btn.disabled=true;btn.textContent="VERIFYING ACCESS…";}
   setAuthNotice("Checking Firebase credentials…");
   try{
-    const credential=await signInWithEmailAndPassword(auth,email,password);
-    currentUser=credential.user;
-    const profileSnap=await getDoc(doc(db,"users",credential.user.uid));
-    if(!profileSnap.exists()){
-      setAuthNotice("Email/password accepted, but the matching Firestore profile is missing. UID: "+credential.user.uid+". Do not create another account. Fix the users document ID in Firestore; the exact UID must be the document ID.");
-      return;
-    }
-    const profile=profileSnap.data();
-    if(profile.uid && profile.uid!==credential.user.uid){
-      setAuthNotice("Profile UID mismatch. The users document ID and its uid field must match the UID shown in Firebase Authentication.");
-      return;
-    }
-    if(!["BOSS","SANTA","USER"].includes(profile.role)){
-      setAuthNotice("Invalid profile role. Set role to BOSS, SANTA, or USER in Firebase Console.");
-      return;
-    }
-    currentProfile={uid:credential.user.uid,...profile};
-    enterDashboard(currentProfile);
-    startPresence();
-    $("loginPassword").value="";
-    setAuthNotice("");
+    await signInWithEmailAndPassword(auth,email,password);
+    // Profile loading and its error messages are handled by onAuthStateChanged.
   }catch(err){
     const messages={
       "auth/invalid-credential":"Email or password is incorrect. Use the existing account email and password, or use Reset Password by Email.",
@@ -622,10 +656,11 @@ async function login(){
 async function resetPassword(){
   if(!requireFirebase())return;
   const email=($("loginEmail").value||"").trim().toLowerCase();
-  if(!email){alert("Enter your email address in the login box first.");return;}
-  try{await sendPasswordResetEmail(auth,email);alert("If the account exists, a password-reset email has been sent.");}
+  if(!email){notify("Enter your email address in the login box first.");return;}
+  try{await sendPasswordResetEmail(auth,email);notify("If the account exists, a password-reset email has been sent.");}
   catch(err){showError(err);}
 }
+function cancelPendingOffer(){if(db&&activeTransfer?.role==="sender"&&activeTransfer.docId)updateDoc(doc(db,"transfers",activeTransfer.docId),{status:"cancelled"}).catch(()=>{});}
 async function setOwnPresence(status){
   if(!db||!currentUser)return;
   try{await updateDoc(doc(db,"users",currentUser.uid),{presenceStatus:status,lastSeenAt:serverTimestamp()});}catch(err){console.warn("Presence update failed",err);}
@@ -633,21 +668,27 @@ async function setOwnPresence(status){
 function startPresence(){
   if(!db||!currentUser)return;
   setOwnPresence("online");
+  clearInterval(heartbeat);
+  heartbeat=setInterval(()=>{if(document.visibilityState==="visible")setOwnPresence("online");},120000);
   if(presenceUnsubscribe)presenceUnsubscribe();
   presenceUnsubscribe=onSnapshot(doc(db,"users",currentUser.uid),snap=>{
     if(snap.exists()&&currentProfile)currentProfile={...currentProfile,...snap.data()};
   },err=>console.warn("Presence listener failed",err));
 }
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&currentUser)setOwnPresence("online");});
 window.addEventListener("pagehide",()=>{
   if(!db||!currentUser)return;
-  // Best-effort status update when this page is closed.
+  // Best-effort cleanup when this page is closed.
+  cancelPendingOffer();
   updateDoc(doc(db,"users",currentUser.uid),{presenceStatus:"offline",lastSeenAt:serverTimestamp()}).catch(()=>{});
 });
 async function logout(){
+  clearInterval(heartbeat);heartbeat=null;
   await setOwnPresence("offline");
   if(presenceUnsubscribe)presenceUnsubscribe(); presenceUnsubscribe=null;
   if(chatUnsubscribe)chatUnsubscribe(); if(reportUnsubscribe)reportUnsubscribe(); if(transferUnsubscribe)transferUnsubscribe();
-  chatUnsubscribe=reportUnsubscribe=transferUnsubscribe=null;
+  chatUnsubscribe=reportUnsubscribe=transferUnsubscribe=null;if(serverChatUnsub)serverChatUnsub();serverChatUnsub=null;if(notifUnsub)notifUnsub();notifUnsub=null;santaState.riddle=null;santaState.last=null;
+  cancelPendingOffer();
   if(activePeer)activePeer.close(); activePeer=null; activeChannel=null; activeTransfer=null;
   if(auth)await signOut(auth);
   hideAllScreens();$("access").classList.remove("hidden");
@@ -657,6 +698,7 @@ window.signup=signup;window.login=login;window.resetPassword=resetPassword;windo
 function enterDashboard(profile){
   if(!profile || !currentUser || profile.uid!==currentUser.uid){setAuthNotice("Dashboard blocked: signed-in Firebase user and profile UID do not match.");return;}
   currentProfile=profile;
+  $("loginPassword").value="";
   hideAllScreens();$("dashboard").classList.remove("hidden");
   $("welcomeText").textContent=`IDENTITY VERIFIED — WELCOME, ${(profile.nickname||profile.username||"USER").toUpperCase()}.`;
   const badge=$("roleBadge");
@@ -667,6 +709,8 @@ function enterDashboard(profile){
   const now=new Date();
   $("birthdayReveal").classList.toggle("hidden",!(now.getMonth()===10&&now.getDate()===17));
   listenForTransfers();
+  checkBirthdays();
+  listenNotifications();
 }
 
 function el(tag,attrs={},text=""){
@@ -677,15 +721,30 @@ function el(tag,attrs={},text=""){
 }
 function clearExtra(){const extra=$("extraContent");extra.replaceChildren();return extra;}
 function panel(parent,title){const p=el("section",{class:"panel"});p.append(el("h3",{},title));parent.append(p);return p;}
-function field(parent,labelText,tag="input",attrs={}){const wrap=el("div");wrap.append(el("label",{class:"field-label"},labelText));const input=el(tag,attrs);wrap.append(input);parent.append(wrap);return input;}
+function field(parent,labelText,tag="input",attrs={}){const wrap=el("div");wrap.append(el("label",{class:"field-label"},labelText));const input=el(tag,attrs);if(Object.prototype.hasOwnProperty.call(attrs,"value"))input.value=attrs.value;wrap.append(input);parent.append(wrap);return input;}
 function action(parent,label,fn,cls=""){const b=el("button",{type:"button",class:cls},label);b.addEventListener("click",fn);parent.append(b);return b;}
 function item(parent,title,detail=""){const box=el("div",{class:"item"});box.append(el("strong",{},title));if(detail)box.append(el("small",{},detail));parent.append(box);return box;}
-function fmtDate(value){try{return value?.toDate?value.toDate().toLocaleString():new Date(value).toLocaleString();}catch(_){return "";}}
+function addBirthday(box,d){if(d.birthday)box.append(el("p",{class:"muted-copy"},"🎂 Birthday: "+d.birthday));}
+async function checkBirthdays(){
+  try{
+    const md=d=>String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+    const now=new Date(),tmr=new Date(now.getTime()+864e5),key="bossBdaySeen:"+currentUser.uid+":"+now.toDateString();
+    if(localStorage.getItem(key))return;
+    const who=async day=>(await getDocs(query(collection(db,"users"),where("birthday","==",md(day)),limit(10)))).docs.map(d=>d.data()).filter(u=>u.uid!==currentUser.uid);
+    const msgs=[];
+    if(currentProfile.birthday===md(now))msgs.push(`Happy Birthday, ${currentProfile.nickname||currentProfile.username}! 🎂 Wishing you an amazing year.`);
+    for(const u of await who(now))msgs.push(`Today is ${u.nickname||u.username}'s birthday! 🎂 Send your wishes.`);
+    for(const u of await who(tmr))msgs.push(`Tomorrow is ${u.nickname||u.username}'s birthday! 🎂 Don't forget to send your wishes.`);
+    if(msgs.length){$("santaMessage").textContent=msgs.join(" ");notify(msgs[0]);}
+    localStorage.setItem(key,"1");
+  }catch(e){console.warn("Birthday check failed",e);}
+}
+function fmtDate(value){try{const d=value?.toDate?value.toDate():new Date(value);return isNaN(d)?"":d.toLocaleString();}catch(_){return "";}}
 
 async function openModule(module){
-  if(!currentUser||!currentProfile){alert("Please log in first.");return;}
-  if(!firebaseConfigured){alert("Finish Firebase setup first.");return;}
-  $("modalTitle").textContent=module;
+  if(!currentUser||!currentProfile){notify("Please log in first.");return;}
+  if(!firebaseConfigured){notify("Finish Firebase setup first.");return;}
+  $("modalTitle").textContent=module;$("modal").style.setProperty("--accent",ACCENTS[module]||"#763040");
   $("modalText").textContent="Loading module…";
   const extra=clearExtra();$("modal").classList.remove("hidden");
   try{
@@ -699,6 +758,7 @@ async function openModule(module){
     else if(module==="SERVERS")await renderServers(extra);
     else if(module==="PROFILES")await renderProfiles(extra);
     else if(module==="SANTA")renderSanta(extra);
+    else if(module==="NOTIFICATIONS")await renderNotifications(extra);
   }catch(err){$("modalText").textContent="Module error: "+(err.message||"unknown error");showError(err);}
 }
 window.openModule=openModule;
@@ -706,7 +766,7 @@ window.openModule=openModule;
 async function renderLibrary(root){
   $("modalText").textContent="Your notes are saved to your signed-in account in Firestore. File attachments stay local unless you transfer them.";
   const form=panel(root,"CREATE NOTE");const title=field(form,"NOTE TITLE","input",{type:"text",placeholder:"Note title",maxlength:"100"});const body=field(form,"NOTE CONTENT","textarea",{rows:"4",placeholder:"Write your note…",maxlength:"10000"});
-  action(form,"SAVE NOTE",async()=>{if(!title.value.trim()||!body.value.trim()){alert("Enter a title and note.");return;}await addDoc(collection(db,"users",currentUser.uid,"notes"),{title:title.value.trim(),body:body.value.trim(),createdAt:serverTimestamp(),updatedAt:serverTimestamp()});title.value=body.value="";await renderLibrary(root);},"red-button");
+  action(form,"SAVE NOTE",async()=>{if(!title.value.trim()||!body.value.trim()){notify("Enter a title and note.");return;}await addDoc(collection(db,"users",currentUser.uid,"notes"),{title:title.value.trim(),body:body.value.trim(),createdAt:serverTimestamp(),updatedAt:serverTimestamp()});title.value=body.value="";await renderLibrary(root);},"red-button");
   const list=panel(root,"SAVED NOTES");const snap=await getDocs(query(collection(db,"users",currentUser.uid,"notes"),orderBy("createdAt","desc"),limit(50)));
   if(snap.empty)list.append(el("p",{class:"status-line"},"No notes yet."));
   snap.forEach(d=>{const n=d.data();const box=item(list,n.title||"Untitled",fmtDate(n.createdAt));box.append(el("p",{},n.body||""));action(box,"DELETE",async()=>{if(confirm("Delete this note?")){await deleteDoc(d.ref);await renderLibrary(root);}},"red-button");});
@@ -717,7 +777,7 @@ function openLocalDB(){return new Promise((resolve,reject)=>{const req=indexedDB
 async function fileDB(method,value){const d=await openLocalDB();return new Promise((resolve,reject)=>{const tx=d.transaction("files",method==="getAll"?"readonly":"readwrite");const store=tx.objectStore("files");let req;if(method==="put")req=store.put(value);else if(method==="delete")req=store.delete(value);else req=store.getAll();req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);tx.oncomplete=()=>d.close();tx.onerror=()=>reject(tx.error);});}
 async function renderStorage(root){
   $("modalText").textContent="Files stay on this browser/device using IndexedDB. They do not sync automatically and can be lost if site data is cleared. Direct transfer is limited to 25 MB and requires both users online.";
-  const form=panel(root,"SAVE FILE ON THIS DEVICE");const picker=field(form,"CHOOSE A FILE","input",{type:"file"});action(form,"SAVE LOCALLY",async()=>{const f=picker.files?.[0];if(!f){alert("Choose a file first.");return;}try{await fileDB("put",{id:crypto.randomUUID(),name:f.name,type:f.type,size:f.size,lastModified:f.lastModified,blob:f,createdAt:Date.now()});picker.value="";await renderStorage(root);}catch(e){alert("Browser storage failed or is full: "+e.message);}},"red-button");
+  const form=panel(root,"SAVE FILE ON THIS DEVICE");const picker=field(form,"CHOOSE A FILE","input",{type:"file"});action(form,"SAVE LOCALLY",async()=>{const f=picker.files?.[0];if(!f){notify("Choose a file first.");return;}try{await fileDB("put",{id:crypto.randomUUID(),name:f.name,type:f.type,size:f.size,lastModified:f.lastModified,blob:f,createdAt:Date.now()});picker.value="";await renderStorage(root);}catch(e){notify("Browser storage failed or is full: "+e.message);}},"red-button");
   const sendPanel=panel(root,"DIRECT SEND — NO CLOUD FILE UPLOAD");const recipient=field(sendPanel,"RECIPIENT USERNAME","input",{type:"text",placeholder:"Enter exact username"});const sendPicker=field(sendPanel,"FILE TO SEND","input",{type:"file"});action(sendPanel,"START TRANSFER",()=>startTransfer(recipient.value.trim().toLowerCase(),sendPicker.files?.[0]),"red-button");const transferStatus=el("div",{id:"transferStatus",class:"status-line"},"Transfer status: ready");sendPanel.append(transferStatus);
   const inbox=panel(root,"INCOMING TRANSFERS");const inboxList=el("div",{id:"transferInbox"});inbox.append(inboxList);loadIncomingTransfers(inboxList);
   const list=panel(root,"FILES SAVED ON THIS DEVICE");const files=await fileDB("getAll");if(!files.length)list.append(el("p",{class:"status-line"},"No local files saved yet."));
@@ -727,24 +787,26 @@ function downloadBlob(blob,name){const url=URL.createObjectURL(blob);const a=el(
 function setTransferStatus(text){const n=$("transferStatus");if(n)n.textContent=text;}
 async function waitIceComplete(pc){if(pc.iceGatheringState==="complete")return;await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error("Connection setup timed out. Try again on a different network.")),12000);pc.addEventListener("icegatheringstatechange",()=>{if(pc.iceGatheringState==="complete"){clearTimeout(timer);resolve();}});});}
 function createPeer(){return new RTCPeerConnection({iceServers:[{urls:"stun:stun.l.google.com:19302"}]});}
-async function findRecipient(username){const snap=await getDocs(query(collection(db,"usernames"),where("usernameLower","==",username),limit(1)));if(snap.empty)return null;return snap.docs[0].data().uid;}
+async function findRecipient(username){const snap=await getDoc(doc(db,"usernames",username));return snap.exists()?snap.data().uid:null;}
 async function startTransfer(username,file){
-  if(!username||!file){alert("Enter the recipient username and choose a file.");return;}
-  if(file.size>MAX_TRANSFER_BYTES){alert("This prototype supports files up to 25 MB.");return;}
-  if(username===currentProfile.usernameLower){alert("You cannot send a file to yourself.");return;}
+  if(!username||!file){notify("Enter the recipient username and choose a file.");return;}
+  if(file.size<=0){notify("This file is empty.");return;}
+  if(file.size>MAX_TRANSFER_BYTES){notify("This prototype supports files up to 25 MB.");return;}
+  if(username===currentProfile.usernameLower){notify("You cannot send a file to yourself.");return;}
   try{
-    const recipientUid=await findRecipient(username);if(!recipientUid){alert("Username not found. They must have a BOSS SYSTEM account.");return;}
+    const recipientUid=await findRecipient(username);if(!recipientUid){notify("Username not found. They must have a BOSS SYSTEM account.");return;}
     activePeer=createPeer();activeTransfer={file,recipientUid,role:"sender"};activeChannel=activePeer.createDataChannel("boss-file",{ordered:true});
     activeChannel.binaryType="arraybuffer";
-    activeChannel.onopen=async()=>{setTransferStatus("Connected. Sending file…");activeChannel.send(JSON.stringify({type:"meta",name:file.name,size:file.size,mime:file.type||"application/octet-stream"}));const buf=await file.arrayBuffer();for(let offset=0;offset<buf.byteLength;offset+=CHUNK_SIZE){if(!activeChannel||activeChannel.readyState!=="open")throw new Error("Transfer connection closed.");while(activeChannel.bufferedAmount>1024*1024)await new Promise(r=>setTimeout(r,80));activeChannel.send(buf.slice(offset,Math.min(offset+CHUNK_SIZE,buf.byteLength)));setTransferStatus(`Sending… ${Math.min(100,Math.round((offset+CHUNK_SIZE)/buf.byteLength*100))}%`);}activeChannel.send(JSON.stringify({type:"done"}));setTransferStatus("File sent. Wait for receiver confirmation.");};
+    activeChannel.onopen=async()=>{try{setTransferStatus("Connected. Sending file…");activeChannel.send(JSON.stringify({type:"meta",name:file.name,size:file.size,mime:file.type||"application/octet-stream"}));const buf=await file.arrayBuffer();for(let offset=0;offset<buf.byteLength;offset+=CHUNK_SIZE){if(!activeChannel||activeChannel.readyState!=="open")throw new Error("Transfer connection closed.");while(activeChannel.bufferedAmount>1024*1024)await new Promise(r=>setTimeout(r,80));activeChannel.send(buf.slice(offset,Math.min(offset+CHUNK_SIZE,buf.byteLength)));setTransferStatus(`Sending… ${Math.min(100,Math.round((offset+CHUNK_SIZE)/buf.byteLength*100))}%`);}activeChannel.send(JSON.stringify({type:"done"}));setTransferStatus("File sent. Wait for receiver confirmation.");}catch(e){setTransferStatus("Transfer failed: "+e.message);}};
     activeChannel.onerror=()=>setTransferStatus("Transfer channel error.");
     const offer=await activePeer.createOffer();await activePeer.setLocalDescription(offer);await waitIceComplete(activePeer);
     const ref=await addDoc(collection(db,"transfers"),{senderUid:currentUser.uid,senderName:currentProfile.nickname||currentProfile.username,recipientUid,status:"offered",offer:activePeer.localDescription.sdp,fileName:file.name,fileSize:file.size,createdAt:serverTimestamp()});activeTransfer.docId=ref.id;setTransferStatus("Offer sent. Ask recipient to open STORAGE and accept the transfer.");
+    const cancelBtn=action($("transferStatus").parentElement,"CANCEL OFFER",async()=>{try{await updateDoc(ref,{status:"cancelled"});if(activePeer)activePeer.close();cancelBtn.remove();setTransferStatus("Offer cancelled.");}catch(e){showError(e);}});
     const unsub=onSnapshot(ref,async snap=>{const data=snap.data();if(!data)return;if(data.status==="accepted"&&data.answer&&activePeer?.signalingState==="have-local-offer"){try{await activePeer.setRemoteDescription({type:"answer",sdp:data.answer});}catch(e){setTransferStatus("Could not establish connection: "+e.message);}}if(data.status==="rejected"||data.status==="cancelled"){setTransferStatus("Transfer was rejected or cancelled.");unsub();}});
   }catch(err){setTransferStatus("Transfer failed: "+err.message);showError(err);}
 }
 async function loadIncomingTransfers(root){
-  root.replaceChildren();try{const snap=await getDocs(query(collection(db,"transfers"),where("recipientUid","==",currentUser.uid),limit(20)));const docs=snap.docs.filter(d=>d.data().status==="offered");if(!docs.length){root.append(el("p",{class:"status-line"},"No pending transfers."));return;}for(const d of docs){const t=d.data();const box=item(root,t.fileName||"Incoming file",`${t.senderName||"A user"} • ${((t.fileSize||0)/1024/1024).toFixed(2)} MB`);action(box,"ACCEPT",()=>acceptTransfer(d.ref,t),"red-button");action(box,"REJECT",()=>updateDoc(d.ref,{status:"rejected"}));}}catch(err){root.append(el("p",{class:"status-line"},"Could not load transfers: "+err.message));}
+  root.replaceChildren();try{const snap=await getDocs(query(collection(db,"transfers"),where("recipientUid","==",currentUser.uid),limit(20)));const fresh=t=>{const ms=t.createdAt?.toMillis?.();return !ms||Date.now()-ms<15*60*1000;};const docs=snap.docs.filter(d=>d.data().status==="offered"&&fresh(d.data()));if(!docs.length){root.append(el("p",{class:"status-line"},"No pending transfers."));return;}for(const d of docs){const t=d.data();const box=item(root,t.fileName||"Incoming file",`${t.senderName||"A user"} • ${((t.fileSize||0)/1024/1024).toFixed(2)} MB`);action(box,"ACCEPT",()=>acceptTransfer(d.ref,t),"red-button");action(box,"REJECT",()=>updateDoc(d.ref,{status:"rejected"}));}}catch(err){root.append(el("p",{class:"status-line"},"Could not load transfers: "+err.message));}
 }
 async function listenForTransfers(){if(transferUnsubscribe)transferUnsubscribe();if(!db||!currentUser)return;transferUnsubscribe=onSnapshot(query(collection(db,"transfers"),where("recipientUid","==",currentUser.uid),limit(20)),snap=>{const pending=snap.docs.filter(d=>d.data().status==="offered");if(pending.length&&$("modalTitle").textContent==="STORAGE"){const root=$("transferInbox");if(root)loadIncomingTransfers(root);} });}
 async function acceptTransfer(ref,t){
@@ -752,57 +814,208 @@ async function acceptTransfer(ref,t){
     activePeer=createPeer();activeTransfer={role:"receiver",ref,fileName:t.fileName,fileSize:t.fileSize};receivedChunks=[];receiveMeta=null;
     activePeer.ondatachannel=event=>{activeChannel=event.channel;activeChannel.binaryType="arraybuffer";activeChannel.onmessage=async ev=>{if(typeof ev.data==="string"){let m;try{m=JSON.parse(ev.data);}catch(_){return;}if(m.type==="meta"){receiveMeta=m;receivedChunks=[];setTransferStatus(`Receiving ${m.name}…`);}else if(m.type==="done"){const blob=new Blob(receivedChunks,{type:receiveMeta?.mime||"application/octet-stream"});downloadBlob(blob,receiveMeta?.name||t.fileName||"received-file");setTransferStatus("Transfer complete. Check your downloads; save it to My Storage if you want to keep it in the browser.");receivedChunks=[];}}else{receivedChunks.push(ev.data);const total=receivedChunks.reduce((n,c)=>n+(c.byteLength||c.size||0),0);setTransferStatus(`Receiving… ${Math.min(100,Math.round(total/Math.max(1,t.fileSize)*100))}%`);}};};
     await activePeer.setRemoteDescription({type:"offer",sdp:t.offer});const answer=await activePeer.createAnswer();await activePeer.setLocalDescription(answer);await waitIceComplete(activePeer);await updateDoc(ref,{answer:activePeer.localDescription.sdp,status:"accepted"});setTransferStatus("Accepted. Connecting to sender…");closeModule();openModule("STORAGE");
-  }catch(err){alert("Could not accept transfer: "+err.message);}
+  }catch(err){notify("Could not accept transfer: "+err.message);}
 }
 
 async function renderLinks(root){
   $("modalText").textContent="Save useful URLs to your account. Only the URL and label are stored in Firestore.";
-  const form=panel(root,"SAVE A LINK");const label=field(form,"LINK NAME","input",{type:"text",placeholder:"YouTube, Instagram, study site…",maxlength:"100"});const url=field(form,"URL","input",{type:"url",placeholder:"https://example.com"});action(form,"SAVE LINK",async()=>{let parsed;try{parsed=new URL(url.value.trim());}catch(_){alert("Enter a valid full URL.");return;}if(!["https:","http:"].includes(parsed.protocol)){alert("Only http and https links are allowed.");return;}await addDoc(collection(db,"users",currentUser.uid,"links"),{label:label.value.trim()||parsed.hostname,url:parsed.href,createdAt:serverTimestamp()});label.value=url.value="";await renderLinks(root);},"red-button");
+  const form=panel(root,"SAVE A LINK");const label=field(form,"LINK NAME","input",{type:"text",placeholder:"YouTube, Instagram, study site…",maxlength:"100"});const url=field(form,"URL","input",{type:"url",placeholder:"https://example.com"});action(form,"SAVE LINK",async()=>{let parsed;try{parsed=new URL(url.value.trim());}catch(_){notify("Enter a valid full URL.");return;}if(!["https:","http:"].includes(parsed.protocol)){notify("Only http and https links are allowed.");return;}await addDoc(collection(db,"users",currentUser.uid,"links"),{label:label.value.trim()||parsed.hostname,url:parsed.href,createdAt:serverTimestamp()});label.value=url.value="";await renderLinks(root);},"red-button");
   const list=panel(root,"YOUR LINKS");const snap=await getDocs(query(collection(db,"users",currentUser.uid,"links"),orderBy("createdAt","desc"),limit(100)));if(snap.empty)list.append(el("p",{class:"status-line"},"No links saved."));snap.forEach(d=>{const v=d.data();const box=item(list,v.label||v.url,v.url);const a=el("a",{href:v.url,target:"_blank",rel:"noopener noreferrer"},"OPEN LINK");a.style.color="#ff9999";box.append(a);action(box,"DELETE",async()=>{if(confirm("Delete this link?")){await deleteDoc(d.ref);await renderLinks(root);}},"red-button");});
 }
 
 function renderGames(root){
+  root.replaceChildren();
   $("modalText").textContent="CAT MEMORY ARENA — match every pair. This version runs locally; it does not upload game data unless a score is saved.";
-  const game=panel(root,"CAT MEMORY ARENA");const stats=el("p",{class:"status-line",id:"memoryStats"},"Moves: 0 • Pairs: 0");game.append(stats);const grid=el("div",{class:"memory-grid",id:"memoryGrid"});game.append(grid);const emojis=["🐈","🌙","🖤","⭐","🍓","🦇","🎮","🌌"];let deck=[...emojis,...emojis].sort(()=>Math.random()-.5);gameState={moves:0,pairs:0,first:null,locked:false,deck,matched:new Set()};deck.forEach((emoji,i)=>{const b=el("button",{class:"memory-card",type:"button"},"?");b.addEventListener("click",()=>{if(gameState.locked||gameState.matched.has(i)||b.textContent!=="?")return;b.textContent=emoji;if(gameState.first===null){gameState.first=i;}else{gameState.moves++;const first=gameState.first;gameState.first=null;if(deck[first]===emoji){gameState.matched.add(first);gameState.matched.add(i);grid.children[first].disabled=true;b.disabled=true;gameState.pairs++;}else{gameState.locked=true;setTimeout(()=>{grid.children[first].textContent="?";b.textContent="?";gameState.locked=false;},650);}stats.textContent=`Moves: ${gameState.moves} • Pairs: ${gameState.pairs}/8`;if(gameState.pairs===8){stats.textContent+=` • Complete! Score: ${Math.max(10,1000-gameState.moves*25)}`;saveScore("CAT MEMORY ARENA",Math.max(10,1000-gameState.moves*25));}}});grid.append(b);});action(game,"RESTART GAME",()=>renderGames(root));
+  const game=panel(root,"CAT MEMORY ARENA");const stats=el("p",{class:"status-line",id:"memoryStats"},"Moves: 0 • Pairs: 0");game.append(stats);const grid=el("div",{class:"memory-grid",id:"memoryGrid"});game.append(grid);const emojis=["🐈","🌙","🖤","⭐","🍓","🦇","🎮","🌌"];let deck=[...emojis,...emojis].sort(()=>Math.random()-.5);gameState={moves:0,pairs:0,first:null,locked:false,deck,matched:new Set()};deck.forEach((emoji,i)=>{const b=el("button",{class:"memory-card",type:"button"},"?");b.addEventListener("click",()=>{if(gameState.locked||gameState.matched.has(i)||b.textContent!=="?")return;b.textContent=emoji;if(gameState.first===null){gameState.first=i;}else{gameState.moves++;const first=gameState.first;gameState.first=null;if(deck[first]===emoji){gameState.matched.add(first);gameState.matched.add(i);grid.children[first].disabled=true;b.disabled=true;gameState.pairs++;}else{gameState.locked=true;setTimeout(()=>{grid.children[first].textContent="?";b.textContent="?";gameState.locked=false;},650);}stats.textContent=`Moves: ${gameState.moves} • Pairs: ${gameState.pairs}/8`;if(gameState.pairs===8){stats.textContent+=` • Complete! Score: ${Math.max(10,1000-gameState.moves*25)}`;saveScore("CAT MEMORY ARENA",Math.max(10,1000-gameState.moves*25));unlockAchievement("first_win");unlockAchievement("memory_master");}}});grid.append(b);});action(game,"RESTART GAME",()=>renderGames(root));renderProgress(root);
 }
-async function saveScore(game,score){try{await addDoc(collection(db,"scores"),{uid:currentUser.uid,username:currentProfile.username,nickname:currentProfile.nickname,game,score,createdAt:serverTimestamp()});}catch(e){console.warn("Score not saved",e);}}
+async function saveScore(game,score){try{await addDoc(collection(db,"scores"),{uid:currentUser.uid,username:currentProfile.username,nickname:currentProfile.nickname,game,score,createdAt:serverTimestamp()});}catch(e){console.warn("Score not saved",e);}awardXp(Math.floor(score/10));}
+
+/*GAMES-START*/
+const levelOf=xp=>Math.floor(Math.sqrt((xp||0)/100))+1;
+const ACHIEVEMENTS=[
+ {id:"first_win",name:"First Victory",icon:"🏆",desc:"Finish your first game or quiz."},
+ {id:"memory_master",name:"Memory Master",icon:"🧠",desc:"Complete Cat Memory Arena."},
+ {id:"quiz_ace",name:"Quiz Ace",icon:"🎯",desc:"Finish a quiz round."},
+ {id:"riddle_solver",name:"Riddle Solver",icon:"🔐",desc:"Solve a riddle before time runs out."},
+ {id:"daily_streak",name:"Daily Thinker",icon:"🌙",desc:"Complete the daily riddle."},
+ {id:"xp_100",name:"Rising Force",icon:"⚡",desc:"Earn 100 XP or more."},
+ {id:"level_5",name:"Elite Access",icon:"👑",desc:"Reach level 5."}
+];
+function localAchievementKey(){return "bossAchievements:"+(currentUser?.uid||"guest");}
+function readLocalAchievements(){try{return JSON.parse(localStorage.getItem(localAchievementKey())||"[]");}catch(_){return [];}}
+async function unlockAchievement(id){
+ const a=ACHIEVEMENTS.find(x=>x.id===id);if(!a)return;
+ const local=readLocalAchievements();if(local.includes(id))return;
+ local.push(id);try{localStorage.setItem(localAchievementKey(),JSON.stringify(local));}catch(_){}
+ try{const ref=doc(db,"progress",currentUser.uid);const snap=await getDoc(ref);const old=snap.exists()?snap.data():{};const list=Array.isArray(old.achievements)?old.achievements:[];if(!list.includes(id))await setDoc(ref,{uid:currentUser.uid,username:currentProfile.username,nickname:currentProfile.nickname||"",achievements:[...list,id],updatedAt:serverTimestamp()},{merge:true});}catch(e){console.warn("Cloud achievement save unavailable; kept on this device.",e);}
+ notify("Achievement unlocked: "+a.name+" "+a.icon);
+}
+function unlockBadgeForProgress(xp){if(xp>=100)unlockAchievement("xp_100");if(levelOf(xp)>=5)unlockAchievement("level_5");}
+
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const dayKey=(offsetDays=0)=>{const d=new Date(Date.now()+offsetDays*864e5);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;};
+let quizTimer=null;
+
+// XP is awarded through one function. Firestore rules cap each write (+100 XP, 10 s apart) but a browser game can never be fully tamper-proof.
+async function awardXp(gain,extra={}){
+  gain=Math.max(0,Math.min(100,Math.round(gain)));
+  if(!gain)return;
+  const ref=doc(db,"progress",currentUser.uid);
+  try{
+    const s=await getDoc(ref);const old=s.exists()?s.data():{xp:0,streak:0,lastDaily:""};
+    const data={uid:currentUser.uid,username:currentProfile.username,nickname:currentProfile.nickname||"",xp:(old.xp||0)+gain,streak:extra.streak??old.streak??0,lastDaily:extra.lastDaily??old.lastDaily??"",updatedAt:serverTimestamp()};
+    await setDoc(ref,data,{merge:true});notify(`${gain>0?"+":""}${gain} XP • Level ${levelOf(data.xp)}`);unlockBadgeForProgress(data.xp);
+  }catch(e){notify(e.code==="permission-denied"?"XP not saved: you're going too fast. Try again in a few seconds.":"XP could not be saved.");}
+}
+async function renderProgress(root){
+  const p=panel(root,"PROGRESS & LEADERBOARD");
+  try{
+    const me=await getDoc(doc(db,"progress",currentUser.uid));const d=me.exists()?me.data():{xp:0,streak:0};
+    const lv=levelOf(d.xp),lo=(lv-1)**2*100,hi=lv**2*100;
+    p.append(el("p",{class:"status-line"},`Level ${lv} • ${d.xp||0} XP • Daily streak: ${d.streak||0}`));
+    const bar=el("div",{class:"progress"}),fill=el("span");fill.style.width=Math.round(((d.xp||0)-lo)/(hi-lo)*100)+"%";bar.append(fill);p.append(bar);
+    const top=await getDocs(query(collection(db,"progress"),orderBy("xp","desc"),limit(10)));
+    if(top.empty)p.append(el("p",{class:"status-line"},"No ranked players yet. Be the first."));
+    top.docs.forEach((x,i)=>{const v=x.data();item(p,`#${i+1} ${v.nickname||v.username}`,`Level ${levelOf(v.xp)} • ${v.xp} XP`);});
+    const owned=new Set([...(Array.isArray(d.achievements)?d.achievements:[]),...readLocalAchievements()]);
+    const achievements=panel(root,"ACHIEVEMENTS & BADGES");const grid=el("div",{class:"achievement-grid"});
+    ACHIEVEMENTS.forEach(a=>{const card=el("div",{class:"achievement-card"+(owned.has(a.id)?" unlocked":"")});card.append(el("span",{class:"ach-icon"},a.icon),el("strong",{},a.name),el("p",{class:"muted-copy"},a.desc),el("small",{},owned.has(a.id)?"UNLOCKED":"LOCKED"));grid.append(card);});achievements.append(grid);
+  }catch(e){p.append(el("p",{class:"status-line"},"Could not load progress: "+e.message));}
+}
 
 const riddles=[
-  {q:"I have keys but no locks, space but no room. What am I?",a:"A keyboard",hint:"You use me to type."},
-  {q:"The more you take, the more you leave behind. What are they?",a:"Footsteps",hint:"Think about walking."},
-  {q:"What has a face and two hands but no arms or legs?",a:"A clock",hint:"It helps you know the time."},
-  {q:"What gets wetter the more it dries?",a:"A towel",hint:"You use it after washing."},
-  {q:"What has many teeth but cannot bite?",a:"A comb",hint:"It helps with hair."}
+  {d:"easy",k:"keyboard",q:"I have keys but no locks, space but no room. What am I?",a:"A keyboard",hint:"You use me to type.",hint2:"I have a space bar."},
+  {d:"medium",k:"footsteps",q:"The more you take, the more you leave behind. What are they?",a:"Footsteps",hint:"Think about walking.",hint2:"They show where you've been."},
+  {d:"easy",k:"clock",q:"What has a face and two hands but no arms or legs?",a:"A clock",hint:"It helps you know the time.",hint2:"It ticks."},
+  {d:"medium",k:"towel",q:"What gets wetter the more it dries?",a:"A towel",hint:"You use it after washing.",hint2:"It hangs in the bathroom."},
+  {d:"easy",k:"comb",q:"What has many teeth but cannot bite?",a:"A comb",hint:"It helps with hair.",hint2:"You pull it through your hair."},
+  {d:"medium",k:"stamp",q:"What can travel around the world while staying in a corner?",a:"A stamp",hint:"You put me on letters.",hint2:"I'm sticky on one side."},
+  {d:"hard",k:"echo",q:"I speak without a mouth and hear without ears. What am I?",a:"An echo",hint:"Mountains and caves know me.",hint2:"I repeat what you shout."},
+  {d:"easy",k:"egg",q:"What has to be broken before you can use it?",a:"An egg",hint:"Think breakfast.",hint2:"It has a yolk."},
+  {d:"hard",k:"darkness",q:"The more of me there is, the less you see. What am I?",a:"Darkness",hint:"A light switch beats me.",hint2:"Night brings me."},
+  {d:"medium",k:"age",q:"What goes up but never comes down?",a:"Your age",hint:"Birthdays add to it.",hint2:"It counts years."}
 ];
-function renderRiddles(root){$("modalText").textContent="A little challenge from SANTA. Ask for a hint when you need one.";const p=panel(root,"RIDDLE CHAMBER");let r=riddles[Math.floor(Math.random()*riddles.length)];p.append(el("p",{},r.q));const out=el("p",{class:"status-line"});p.append(out);action(p,"HINT",()=>out.textContent="Hint: "+r.hint);action(p,"REVEAL ANSWER",()=>out.textContent="Answer: "+r.a,"red-button");action(p,"NEXT RIDDLE",()=>renderRiddles(root));}
+function startRiddle(area,r,daily){
+  area.replaceChildren();let hints=0,solved=false,left=30,timer=null;
+  area.append(el("p",{},`[${r.d.toUpperCase()}${daily?" • DAILY":" • 30-SECOND CHALLENGE"}] ${r.q}`));
+  const clock=el("div",{class:"riddle-clock"}),fill=el("span");clock.append(fill);area.append(clock);
+  const timerText=el("p",{class:"status-line"},"Time left: 30s");area.append(timerText);
+  const ans=field(area,"YOUR ANSWER","input",{type:"text",maxlength:"60",autocomplete:"off"});
+  const out=el("p",{class:"status-line"});area.append(out);
+  const base=daily?25+Math.min(daily.streak,7)*5:{easy:10,medium:20,hard:30}[r.d];
+  const finish=()=>{if(timer)clearInterval(timer);timer=null;ans.disabled=true;};
+  const check=()=>{
+    if(solved)return;const g=norm(ans.value);if(!g)return;
+    if(g.includes(r.k)||g===norm(r.a)){solved=true;finish();const gain=Math.max(5,base-hints*5);out.textContent=`Correct! 🎉 The answer is "${r.a}". +${gain} XP`+(daily?` • Streak: ${daily.streak}`:"");awardXp(gain,daily?{streak:daily.streak,lastDaily:daily.today}:{});unlockAchievement("riddle_solver");if(daily)unlockAchievement("daily_streak");}
+    else out.textContent=pick("rwrong",["Nope. 😬 Try again.","Wrong, but I admire the confidence.","Close... not really.","My router guesses better than that. 📡"]);
+  };
+  ans.addEventListener("keydown",e=>{if(e.key==="Enter")check();});
+  action(area,"SUBMIT",check,"red-button");
+  action(area,"HINT",()=>{if(solved)return;hints=Math.min(2,hints+1);out.textContent=`Hint ${hints}: `+(hints===1?r.hint:r.hint2);});
+  timer=setInterval(()=>{if(solved){clearInterval(timer);return;}left--;timerText.textContent=`Time left: ${left}s`;fill.style.width=(left/30*100)+"%";if(left<=0){finish();out.textContent=`Time's up! The answer was ${r.a}. Start a new riddle to try again.`;}},1000);
+}
+
+async function startDaily(area){
+  const today=dayKey();let old={streak:0,lastDaily:""};
+  try{const s=await getDoc(doc(db,"progress",currentUser.uid));if(s.exists())old=s.data();}catch(_){}
+  if(old.lastDaily===today){area.replaceChildren(el("p",{class:"status-line"},`You already solved today's riddle. Streak: ${old.streak}. Come back tomorrow! 🌙`));return;}
+  const streak=old.lastDaily===dayKey(-1)?(old.streak||0)+1:1;
+  const r=riddles[Math.floor(new Date(today).getTime()/864e5)%riddles.length];
+  startRiddle(area,r,{streak,today});
+}
+function renderRiddles(root){
+  root.replaceChildren();
+  $("modalText").textContent="Pick a difficulty, or take today's daily riddle to build a streak. Each hint costs 5 XP.";
+  const p=panel(root,"RIDDLE CHAMBER");
+  const level=field(p,"DIFFICULTY","select");["easy","medium","hard"].forEach(x=>level.append(el("option",{value:x},x.toUpperCase())));
+  const area=el("div");p.append(area);
+  action(p,"NEW RIDDLE",()=>startRiddle(area,pick("rid"+level.value,riddles.filter(r=>r.d===level.value)),null),"red-button");
+  action(p,"DAILY RIDDLE",()=>startDaily(area));
+}
+
 const quizzes={
-  Anime:[{q:"In Naruto, what village is Naruto from?",o:["Hidden Leaf","Hidden Sand","Hidden Mist"],a:0},{q:"Which anime features the Survey Corps?",o:["One Piece","Attack on Titan","Bleach"],a:1}],
-  Study:[{q:"What is 7 × 8?",o:["54","56","64"],a:1},{q:"What is the chemical symbol for oxygen?",o:["O","Ox","Og"],a:0}],
-  Gaming:[{q:"Which company makes the PlayStation?",o:["Nintendo","Sony","Valve"],a:1},{q:"In Minecraft, which tool is commonly used to mine stone?",o:["Pickaxe","Fishing rod","Hoe"],a:0}]
+  Anime:[
+    {q:"In Naruto, what village is Naruto from?",o:["Hidden Leaf","Hidden Sand","Hidden Mist"],a:0,e:"Naruto is from Konohagakure, the Hidden Leaf Village."},
+    {q:"Which anime features the Survey Corps?",o:["One Piece","Attack on Titan","Bleach"],a:1,e:"The Survey Corps explores beyond the walls in Attack on Titan."},
+    {q:"Who is the captain of the Straw Hat Pirates?",o:["Luffy","Zoro","Sanji"],a:0,e:"Monkey D. Luffy leads the crew."},
+    {q:"In Death Note, what is Light's Shinigami called?",o:["Ryuk","Rem","Sidoh"],a:0,e:"Ryuk drops the notebook into the human world."},
+    {q:"Which Ghibli film follows a girl working in a bathhouse?",o:["Spirited Away","My Neighbor Totoro","Princess Mononoke"],a:0,e:"Chihiro works at the bathhouse in Spirited Away."},
+    {q:"What race is Goku?",o:["Saiyan","Namekian","Human"],a:0,e:"Goku is a Saiyan raised on Earth."}],
+  Study:[
+    {q:"What is 7 × 8?",o:["54","56","64"],a:1,e:"7 × 8 = 56."},
+    {q:"What is the chemical symbol for oxygen?",o:["O","Ox","Og"],a:0,e:"Oxygen's symbol is O."},
+    {q:"What is the capital of France?",o:["Paris","Lyon","Marseille"],a:0,e:"Paris is the capital."},
+    {q:"Which is the largest planet in our solar system?",o:["Jupiter","Saturn","Earth"],a:0,e:"Jupiter is the largest planet."},
+    {q:"What is the square root of 144?",o:["12","14","16"],a:0,e:"12 × 12 = 144."},
+    {q:"What is H2O commonly known as?",o:["Water","Salt","Hydrogen peroxide"],a:0,e:"H2O is two hydrogen atoms and one oxygen atom: water."}],
+  Gaming:[
+    {q:"Which company makes the PlayStation?",o:["Nintendo","Sony","Valve"],a:1,e:"PlayStation is made by Sony."},
+    {q:"In Minecraft, which tool is commonly used to mine stone?",o:["Pickaxe","Fishing rod","Hoe"],a:0,e:"The pickaxe is the stone-mining tool."},
+    {q:"What is Mario's brother called?",o:["Luigi","Wario","Yoshi"],a:0,e:"Luigi is Mario's younger brother."},
+    {q:"Which game features Creepers?",o:["Minecraft","Roblox","Fortnite"],a:0,e:"Creepers are the green exploding mobs in Minecraft."},
+    {q:"Who is the hero of The Legend of Zelda?",o:["Link","Zelda","Ganon"],a:0,e:"You play as Link, not Zelda."},
+    {q:"Which company makes the Xbox?",o:["Microsoft","Sega","Sony"],a:0,e:"Xbox is made by Microsoft."}]
 };
-function renderQuiz(root){$("modalText").textContent="Choose a category. This starter quiz contains sample questions that can be expanded later.";const p=panel(root,"QUIZ ARENA");const select=field(p,"CATEGORY","select");["Anime","Study","Gaming"].forEach(x=>select.append(el("option",{value:x},x)));const area=el("div");p.append(area);action(p,"START QUIZ",()=>startQuiz(select.value,area));}
-function startQuiz(category,area){area.replaceChildren();const questions=quizzes[category];quizState={i:0,score:0,category,questions};showQuizQuestion(area);}
-function showQuizQuestion(area){area.replaceChildren();if(quizState.i>=quizState.questions.length){area.append(el("p",{class:"status-line"},`Quiz complete! Score: ${quizState.score}/${quizState.questions.length}`));saveScore("QUIZ: "+quizState.category,quizState.score*100);return;}const q=quizState.questions[quizState.i];area.append(el("p",{},`${quizState.i+1}. ${q.q}`));q.o.forEach((opt,i)=>action(area,opt,()=>{if(i===q.a)quizState.score++;quizState.i++;showQuizQuestion(area); }));}
+function renderQuiz(root){
+  root.replaceChildren();clearInterval(quizTimer);
+  $("modalText").textContent="Randomised 5-question rounds, 15 seconds each. Right answers in a row build a combo (up to x3).";
+  const p=panel(root,"QUIZ ARENA");
+  const select=field(p,"CATEGORY","select");Object.keys(quizzes).forEach(x=>select.append(el("option",{value:x},x)));
+  const area=el("div");p.append(area);
+  action(p,"START QUIZ",()=>startQuiz(select.value,area),"red-button");
+}
+function startQuiz(category,area){
+  const qs=shuffle(quizzes[category]).slice(0,5).map(q=>{const right=q.o[q.a],o=shuffle(q.o);return {...q,o,a:o.indexOf(right)};});
+  quizState={i:0,score:0,combo:0,category,questions:qs};showQuizQuestion(area);
+}
+function showQuizQuestion(area){
+  clearInterval(quizTimer);area.replaceChildren();
+  const S=quizState;
+  if(S.i>=S.questions.length){const total=Math.min(1000,S.score);area.append(el("p",{class:"status-line"},`Round complete! Score: ${total}`));saveScore("QUIZ: "+S.category,total);unlockAchievement("first_win");unlockAchievement("quiz_ace");action(area,"PLAY AGAIN",()=>startQuiz(S.category,area),"red-button");return;}
+  const q=S.questions[S.i];let left=15,done=false;
+  const info=el("p",{class:"status-line"}),opts=el("div"),fb=el("div");
+  area.append(info,el("p",{},`${S.i+1}/${S.questions.length}. ${q.q}`),opts,fb);
+  const paint=()=>{info.textContent=`⏱ ${left}s • Next correct answer: x${Math.min(3,S.combo+1)} • Score ${S.score}`;};paint();
+  const finish=choice=>{
+    if(done)return;done=true;clearInterval(quizTimer);
+    if(choice===q.a){S.combo++;const pts=50*Math.min(3,S.combo)+left;S.score+=pts;fb.append(el("p",{class:"status-line"},`✅ Correct! +${pts}. ${q.e||""}`));}
+    else{S.combo=0;fb.append(el("p",{class:"status-line"},(choice===-1?"⏰ Time's up! ":pick("qwrong",["Oof. 😬 ","Not quite. ","Wrong, but dramatically so. "]))+`Answer: ${q.o[q.a]}. ${q.e||""}`));}
+    [...opts.children].forEach(b=>{b.disabled=true;});
+    action(fb,S.i+1>=S.questions.length?"FINISH":"NEXT QUESTION",()=>{S.i++;showQuizQuestion(area);},"red-button");
+  };
+  q.o.forEach((opt,i)=>action(opts,opt,()=>finish(i)));
+  quizTimer=setInterval(()=>{left--;paint();if(left<=0)finish(-1);},1000);
+}
+/*GAMES-END*/
 
 function renderChat(root){
   $("modalText").textContent="Shared chat lobby. Messages are visible to signed-in users. Users can report messages; moderators can review reports. Do not post private information.";
   const form=panel(root,"SYSTEM CHAT");const list=el("div",{class:"chat-box",id:"fireChatBox"});form.append(list);const input=field(form,"MESSAGE","input",{type:"text",placeholder:"Write a message…",maxlength:"1000"});action(form,"SEND MESSAGE",async()=>{const message=input.value.trim();if(!message)return;try{await addDoc(collection(db,"chatMessages"),{uid:currentUser.uid,username:currentProfile.username,nickname:currentProfile.nickname,text:message,createdAt:serverTimestamp()});input.value="";}catch(e){showError(e);}},"red-button");
-  if(chatUnsubscribe)chatUnsubscribe();chatUnsubscribe=onSnapshot(query(collection(db,"chatMessages"),orderBy("createdAt","desc"),limit(60)),snap=>{list.replaceChildren();snap.docs.reverse().forEach(d=>{const m=d.data();const line=el("div",{class:"chat-message"});line.append(el("strong",{},(m.nickname||m.username||"USER")+": "),el("span",{},m.text||""));line.append(el("small",{},fmtDate(m.createdAt)));if(m.uid!==currentUser.uid){action(line,"REPORT",async()=>{const reason=prompt("Why are you reporting this message? (Please be specific)");if(reason===null)return;await addDoc(collection(db,"reports"),{messageId:d.id,reportedUid:m.uid,reportedName:m.nickname||m.username,reporterUid:currentUser.uid,reason:reason.slice(0,500),status:"open",createdAt:serverTimestamp()});alert("Report submitted.");});}if(["BOSS","SANTA"].includes(currentProfile.role))action(line,"REMOVE MESSAGE",async()=>{if(confirm("Remove this message?"))await deleteDoc(d.ref);},"red-button");list.append(line);});list.scrollTop=list.scrollHeight;});
-  if(["BOSS","SANTA"].includes(currentProfile.role)){const mod=panel(root,"MODERATION REPORTS");const reports=el("div");mod.append(reports);if(reportUnsubscribe)reportUnsubscribe();reportUnsubscribe=onSnapshot(query(collection(db,"reports"),where("status","==","open"),limit(30)),snap=>{reports.replaceChildren();if(snap.empty)reports.append(el("p",{class:"status-line"},"No open reports."));snap.forEach(d=>{const r=d.data();const box=item(reports,"Report: "+(r.reportedName||"user"),r.reason||"No reason provided");action(box,"MARK REVIEWED",async()=>{await updateDoc(d.ref,{status:"reviewed",reviewedBy:currentUser.uid,reviewedAt:serverTimestamp()});});});});}
+  if(chatUnsubscribe)chatUnsubscribe();chatUnsubscribe=onSnapshot(query(collection(db,"chatMessages"),orderBy("createdAt","desc"),limit(60)),snap=>{list.replaceChildren();snap.docs.reverse().forEach(d=>{const m=d.data();const line=el("div",{class:"chat-message"+(m.uid===currentUser.uid?" chat-user":"")});line.append(el("strong",{},(m.nickname||m.username||"USER")+": "),el("span",{},m.text||""));line.append(el("small",{},fmtDate(m.createdAt)));if(m.uid!==currentUser.uid){action(line,"REPORT",()=>reportMessage(d.id,m,null));}if(["BOSS","SANTA"].includes(currentProfile.role))action(line,"REMOVE MESSAGE",async()=>{if(confirm("Remove this message?"))await deleteDoc(d.ref);},"red-button");list.append(line);});list.scrollTop=list.scrollHeight;},err=>list.replaceChildren(el("p",{class:"status-line"},"Could not load chat: "+(err.code==="permission-denied"?"permission denied by Firestore rules.":err.message))));
+  if(["BOSS","SANTA"].includes(currentProfile.role)){const mod=panel(root,"MODERATION REPORTS");const reports=el("div");mod.append(reports);if(reportUnsubscribe)reportUnsubscribe();reportUnsubscribe=onSnapshot(query(collection(db,"reports"),where("status","==","open"),limit(30)),snap=>{reports.replaceChildren();if(snap.empty)reports.append(el("p",{class:"status-line"},"No open reports."));snap.forEach(d=>{const r=d.data();const box=item(reports,"Report: "+(r.reportedName||"user"),(r.reason||"No reason provided")+(r.messageText?" — Message: "+r.messageText:"")+(r.serverId?" (server chat)":""));action(box,"MARK REVIEWED",async()=>{try{await updateDoc(d.ref,{status:"reviewed",reviewedBy:currentUser.uid,reviewedAt:serverTimestamp()});await addDoc(collection(db,"notifications"),{recipientUid:r.reporterUid,senderUid:currentUser.uid,type:"report_reviewed",message:"Your report has been reviewed.",refId:d.id,read:false,createdAt:serverTimestamp()});}catch(e){showError(e);}});});});}
 }
 
 async function renderProfiles(root){
   $("modalText").textContent="Signed-in users can view public profile details and presence. Do not put private information in your profile.";
+  const me=panel(root,"MY PROFILE");
+  const nick=field(me,"NICKNAME","input",{type:"text",maxlength:"30",value:currentProfile.nickname||""});
+  const bday=field(me,"BIRTHDAY (MM-DD, optional — visible to other members)","input",{type:"text",placeholder:"11-17",maxlength:"5",value:currentProfile.birthday||""});
+  action(me,"SAVE PROFILE",async()=>{
+    const n=nick.value.trim(),b=bday.value.trim();
+    if(!n||n.length>30){notify("Nickname must be 1–30 characters.");return;}
+    if(b&&!/^(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(b)){notify("Birthday must look like 11-17 (month-day).");return;}
+    try{await updateDoc(doc(db,"users",currentUser.uid),{nickname:n,birthday:b});currentProfile={...currentProfile,nickname:n,birthday:b};notify("Profile saved.");}catch(e){showError(e);}
+  },"red-button");
   const searchPanel=panel(root,"FIND A PROFILE");
   const username=field(searchPanel,"EXACT USERNAME","input",{type:"text",placeholder:"Enter username",maxlength:"20"});
   const results=el("div");searchPanel.append(results);
   async function showProfile(uid,data){
     const box=item(results,(data.nickname||data.username||"USER")+" (@"+(data.username||"unknown")+")",data.role||"USER");
-    const online=data.presenceStatus==="online";
+    const online=isOnline(data);
     const line=el("p",{class:"status-line profile-line"});
     line.append(el("span",{class:"presence-dot"+(online?" online":"")}),el("span",{},online?"ONLINE":"OFFLINE"));
     if(!online&&data.lastSeenAt)line.append(el("span",{},"Last seen: "+fmtDate(data.lastSeenAt)));
-    box.append(line);
+    box.append(line);addBirthday(box,data);
   }
   action(searchPanel,"SEARCH USER",async()=>{
     results.replaceChildren();const key=cleanUsername(username.value);
@@ -811,7 +1024,7 @@ async function renderProfiles(root){
     catch(err){results.append(el("p",{class:"status-line"},"Could not load profile: "+err.message));}
   },"red-button");
   const recent=panel(root,"RECENT PROFILES");
-  try{const snap=await getDocs(query(collection(db,"users"),orderBy("usernameLower","asc"),limit(30)));if(snap.empty)recent.append(el("p",{class:"status-line"},"No profiles available."));snap.forEach(d=>{const data=d.data();const box=item(recent,(data.nickname||data.username||"USER")+" (@"+(data.username||"unknown")+")",data.role||"USER");const online=data.presenceStatus==="online";const line=el("p",{class:"status-line profile-line"});line.append(el("span",{class:"presence-dot"+(online?" online":"")}),el("span",{},online?"ONLINE":"OFFLINE"));if(!online&&data.lastSeenAt)line.append(el("span",{},"Last seen: "+fmtDate(data.lastSeenAt)));box.append(line);});}
+  try{const snap=await getDocs(query(collection(db,"users"),orderBy("usernameLower","asc"),limit(30)));if(snap.empty)recent.append(el("p",{class:"status-line"},"No profiles available."));snap.forEach(d=>{const data=d.data();const box=item(recent,(data.nickname||data.username||"USER")+" (@"+(data.username||"unknown")+")",data.role||"USER");const online=isOnline(data);const line=el("p",{class:"status-line profile-line"});line.append(el("span",{class:"presence-dot"+(online?" online":"")}),el("span",{},online?"ONLINE":"OFFLINE"));if(!online&&data.lastSeenAt)line.append(el("span",{},"Last seen: "+fmtDate(data.lastSeenAt)));box.append(line);addBirthday(box,data);});}
   catch(err){recent.append(el("p",{class:"status-line"},"Could not load profiles: "+err.message));}
 }
 async function renderServers(root){
@@ -819,42 +1032,237 @@ async function renderServers(root){
   const create=panel(root,"CREATE SERVER");
   const name=field(create,"SERVER NAME","input",{type:"text",placeholder:"Choose a server name",maxlength:"50"});
   const description=field(create,"DESCRIPTION","textarea",{rows:"3",placeholder:"What is this server for?",maxlength:"300"});
-  const visibility=field(create,"VISIBILITY","select");visibility.append(el("option",{value:"public"},"PUBLIC — anyone signed in can join"),el("option",{value:"private"},"PRIVATE — owner adds members"));
+  const visibility=field(create,"VISIBILITY","select");visibility.append(el("option",{value:"public"},"PUBLIC — anyone signed in can join"),el("option",{value:"private"},"PRIVATE — invite only"));
+  const invitesPanel=panel(root,"YOUR INVITATIONS");
   const ownedAndJoined=panel(root,"YOUR SERVERS");
+  const searchBox=field(panel(root,"SEARCH SERVERS"),"SERVER NAME","input",{type:"text",placeholder:"Type to filter public servers",maxlength:"50"});
+  let searchTimer=null;searchBox.addEventListener("input",()=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>refresh(),300);});
   const publicPanel=panel(root,"DISCOVER PUBLIC SERVERS");
+  async function loadInvites(){
+    invitesPanel.replaceChildren(el("h3",{},"YOUR INVITATIONS"));
+    try{
+      const s=await getDocs(query(collection(db,"serverInvites"),where("inviteeUid","==",currentUser.uid),where("status","==","pending"),limit(20)));
+      if(s.empty)invitesPanel.append(el("p",{class:"status-line"},"No pending invitations."));
+      s.forEach(d=>{const inv=d.data();const row=item(invitesPanel,"You have been invited to a private server.",inv.serverName||"Private server");
+        action(row,"ACCEPT",async()=>{try{const b=writeBatch(db);b.set(doc(db,"servers",inv.serverId,"members",currentUser.uid),{uid:currentUser.uid,username:currentProfile.username,nickname:currentProfile.nickname||"",joinedAt:serverTimestamp()});b.update(d.ref,{status:"accepted"});await b.commit();notify("Joined "+(inv.serverName||"the server")+".");await refresh();}catch(e){showError(e);}},"red-button");
+        action(row,"DECLINE",async()=>{try{await updateDoc(d.ref,{status:"declined"});await loadInvites();}catch(e){showError(e);}});
+      });
+    }catch(e){invitesPanel.append(el("p",{class:"status-line"},"Could not load invitations: "+e.message));}
+  }
+  let rv=0;
   async function refresh(){
+    const my=++rv,stale=()=>my!==rv;
+    loadInvites();
     ownedAndJoined.replaceChildren();ownedAndJoined.append(el("h3",{},"YOUR SERVERS"));
     const seen=new Set();
     try{
       const own=await getDocs(query(collection(db,"servers"),where("ownerUid","==",currentUser.uid),limit(50)));
-      for(const d of own.docs){seen.add(d.id);renderServerCard(ownedAndJoined,d.id,d.data(),true);}
+      if(stale())return;for(const d of own.docs){seen.add(d.id);renderServerCard(ownedAndJoined,d.id,d.data(),true);}
       const memberships=await getDocs(query(collectionGroup(db,"members"),where("uid","==",currentUser.uid),limit(50)));
-      for(const m of memberships.docs){const parent=m.ref.parent.parent;if(!parent||seen.has(parent.id))continue;const snap=await getDoc(parent);if(snap.exists()){seen.add(parent.id);renderServerCard(ownedAndJoined,parent.id,snap.data(),false);}}
+      if(stale())return;for(const m of memberships.docs){const parent=m.ref.parent.parent;if(!parent||seen.has(parent.id))continue;const snap=await getDoc(parent);if(stale())return;if(snap.exists()){seen.add(parent.id);renderServerCard(ownedAndJoined,parent.id,snap.data(),false);}}
       if(!seen.size)ownedAndJoined.append(el("p",{class:"status-line"},"You have not joined any servers yet."));
     }catch(err){ownedAndJoined.append(el("p",{class:"status-line"},"Could not load your servers: "+err.message));}
-    publicPanel.replaceChildren();publicPanel.append(el("h3",{},"DISCOVER PUBLIC SERVERS"));
-    try{const snap=await getDocs(query(collection(db,"servers"),where("visibility","==","public"),limit(50)));let count=0;for(const d of snap.docs){count++;const joined=await getDoc(doc(db,"servers",d.id,"members",currentUser.uid));renderServerCard(publicPanel,d.id,d.data(),false,!joined.exists());}if(!count)publicPanel.append(el("p",{class:"status-line"},"No public servers yet. Create one to get started."));}
+    publicPanel.replaceChildren();publicPanel.append(el("h3",{},"DISCOVER PUBLIC SERVERS"));const term=searchBox.value.trim().toLowerCase();
+    try{const snap=await getDocs(query(collection(db,"servers"),where("visibility","==","public"),limit(50)));if(stale())return;let count=0;for(const d of snap.docs){if(term&&!(d.data().name||"").toLowerCase().includes(term))continue;const joined=await getDoc(doc(db,"servers",d.id,"members",currentUser.uid));if(stale())return;if(joined.exists()||d.data().ownerUid===currentUser.uid)continue;count++;renderServerCard(publicPanel,d.id,d.data(),false,true);}if(!count)publicPanel.append(el("p",{class:"status-line"},"No other public servers to join right now. Create one to get started."));}
     catch(err){publicPanel.append(el("p",{class:"status-line"},"Could not load public servers: "+err.message));}
   }
   function renderServerCard(parent,id,data,isOwner,isDiscover=false){
     const box=item(parent,data.name||"Untitled server",data.description||"No description provided.");
     box.append(el("span",{class:"server-tag"},(data.visibility||"public").toUpperCase()));
+    const cnt=el("span",{class:"server-tag"},"… MEMBERS");box.append(cnt);
+    getCountFromServer(collection(db,"servers",id,"members")).then(s=>cnt.textContent=s.data().count+(s.data().count===1?" MEMBER":" MEMBERS")).catch(()=>cnt.remove());
+    if(!isDiscover)action(box,"OPEN SERVER CHAT",()=>renderServerChat(root,id,data.name),"red-button");
     const memberPath=doc(db,"servers",id,"members",currentUser.uid);
-    if(isOwner){box.append(el("p",{class:"muted-copy"},"You own this server."));const invite=field(box,"ADD MEMBER BY USERNAME","input",{type:"text",placeholder:"Username",maxlength:"20"});action(box,"ADD MEMBER",async()=>{const key=cleanUsername(invite.value);if(!validUsername(key)){alert("Enter a valid username.");return;}try{const userSnap=await getDocs(query(collection(db,"users"),where("usernameLower","==",key),limit(1)));if(userSnap.empty){alert("User not found.");return;}const target=userSnap.docs[0];await setDoc(doc(db,"servers",id,"members",target.id),{uid:target.id,username:target.data().username,nickname:target.data().nickname||"",joinedAt:serverTimestamp()});alert("Member added to server.");await refresh();}catch(err){showError(err);}},"red-button");}
-    else if(isDiscover){action(box,"JOIN PUBLIC SERVER",async()=>{try{await setDoc(memberPath,{uid:currentUser.uid,username:currentProfile.username,nickname:currentProfile.nickname||"",joinedAt:serverTimestamp()});alert("Joined server.");await refresh();}catch(err){showError(err);}},"red-button");}
+    if(isOwner){
+      box.append(el("p",{class:"muted-copy"},"You own this server."));
+      action(box,"EDIT SERVER",()=>{
+        const editor=panel(box,"EDIT SERVER DETAILS");
+        const editName=field(editor,"SERVER NAME","input",{type:"text",maxlength:"50",value:data.name||""});
+        const editDesc=field(editor,"DESCRIPTION","textarea",{rows:"3",maxlength:"300",value:data.description||""});
+        const editVis=field(editor,"VISIBILITY","select");
+        editVis.append(el("option",{value:"public"},"PUBLIC"),el("option",{value:"private"},"PRIVATE"));editVis.value=data.visibility||"public";
+        action(editor,"SAVE CHANGES",async()=>{const n=editName.value.trim();if(n.length<3){notify("Server name must contain at least 3 characters.");return;}try{await updateDoc(doc(db,"servers",id),{name:n,description:editDesc.value.trim(),visibility:editVis.value,updatedAt:serverTimestamp()});notify("Server updated.");await refresh();}catch(e){showError(e);}},"red-button");
+        action(editor,"CANCEL EDIT",()=>editor.remove());
+      });
+      action(box,"DELETE SERVER",async()=>{if(!confirm(`Delete server "${data.name||"Untitled server"}" and its messages, members and invites? This cannot be undone.`))return;try{
+        const paths=[collection(db,"servers",id,"messages"),collection(db,"servers",id,"members")];
+        for(const col of paths){let snap=await getDocs(query(col,limit(400)));while(!snap.empty){const batch=writeBatch(db);snap.docs.forEach(x=>batch.delete(x.ref));await batch.commit();if(snap.size<400)break;snap=await getDocs(query(col,limit(400)));}}
+        const inv=await getDocs(query(collection(db,"serverInvites"),where("serverId","==",id),limit(400)));for(let i=0;i<inv.docs.length;i+=400){const batch=writeBatch(db);inv.docs.slice(i,i+400).forEach(x=>batch.delete(x.ref));await batch.commit();}
+        await deleteDoc(doc(db,"servers",id));notify("Server deleted.");await refresh();
+      }catch(e){showError(e);notify("Server deletion may be incomplete if Firestore rules block a related collection.");}},"red-button");
+      if(data.visibility==="private"){
+        const invite=field(box,"INVITE BY USERNAME","input",{type:"text",placeholder:"Username",maxlength:"20"});
+        const pending=el("div");
+        const loadPending=async()=>{pending.replaceChildren();try{const s=await getDocs(query(collection(db,"serverInvites"),where("ownerUid","==",currentUser.uid),where("serverId","==",id),where("status","==","pending"),limit(20)));s.forEach(d=>{const row=item(pending,"Pending: @"+(d.data().inviteeName||"user"),"Waiting for a response");action(row,"REVOKE",async()=>{try{await updateDoc(d.ref,{status:"revoked"});await loadPending();}catch(e){showError(e);}},"red-button");});}catch(e){pending.append(el("p",{class:"status-line"},"Could not load invites: "+e.message));}};
+        action(box,"SEND INVITE",async()=>{
+          const key=cleanUsername(invite.value);if(!validUsername(key)){notify("Enter a valid username.");return;}
+          try{
+            const us=await getDoc(doc(db,"usernames",key));if(!us.exists()){notify("User not found.");return;}
+            const target=us.data();
+            if(target.uid===currentUser.uid){notify("You already own this server.");return;}
+            if((await getDoc(doc(db,"servers",id,"members",target.uid))).exists()){notify("That user is already a member.");return;}
+            const ref=doc(db,"serverInvites",id+"_"+target.uid);
+            try{await deleteDoc(ref);}catch(_){}
+            await setDoc(ref,{serverId:id,serverName:data.name,ownerUid:currentUser.uid,inviteeUid:target.uid,inviteeName:target.username,status:"pending",createdAt:serverTimestamp()});
+            try{await addDoc(collection(db,"notifications"),{recipientUid:target.uid,senderUid:currentUser.uid,type:"invite",message:"You have been invited to a private server.",refId:id,read:false,createdAt:serverTimestamp()});}catch(e){console.warn("Invite notification failed",e);}
+            invite.value="";notify("Invite sent to @"+target.username+".");await loadPending();
+          }catch(e){showError(e);}
+        },"red-button");
+        box.append(pending);loadPending();
+      }else box.append(el("p",{class:"muted-copy"},"Public server: anyone signed in can join."));
+    }
+    else if(isDiscover){action(box,"JOIN PUBLIC SERVER",async()=>{try{await setDoc(memberPath,{uid:currentUser.uid,username:currentProfile.username,nickname:currentProfile.nickname||"",joinedAt:serverTimestamp()});notify("Joined server.");await refresh();}catch(err){showError(err);}},"red-button");}
     else {action(box,"LEAVE SERVER",async()=>{if(!confirm("Leave this server?"))return;try{await deleteDoc(memberPath);await refresh();}catch(err){showError(err);}},"red-button");}
   }
-  action(create,"CREATE SERVER",async()=>{const serverName=name.value.trim();if(serverName.length<3){alert("Server name must contain at least 3 characters.");return;}try{const ref=await addDoc(collection(db,"servers"),{ownerUid:currentUser.uid,name:serverName,description:description.value.trim(),visibility:visibility.value,createdAt:serverTimestamp(),updatedAt:serverTimestamp()});await setDoc(doc(db,"servers",ref.id,"members",currentUser.uid),{uid:currentUser.uid,username:currentProfile.username,nickname:currentProfile.nickname||"",joinedAt:serverTimestamp()});name.value=description.value="";alert("Server created.");await refresh();}catch(err){showError(err);}},"red-button");
+  action(create,"CREATE SERVER",async()=>{const serverName=name.value.trim();if(serverName.length<3){notify("Server name must contain at least 3 characters.");return;}try{const ref=await addDoc(collection(db,"servers"),{ownerUid:currentUser.uid,name:serverName,description:description.value.trim(),visibility:visibility.value,createdAt:serverTimestamp(),updatedAt:serverTimestamp()});await setDoc(doc(db,"servers",ref.id,"members",currentUser.uid),{uid:currentUser.uid,username:currentProfile.username,nickname:currentProfile.nickname||"",joinedAt:serverTimestamp()});name.value=description.value="";notify("Server created.");await refresh();}catch(err){showError(err);}},"red-button");
   await refresh();
 }
 
-function renderSanta(root){
-  $("modalText").textContent="SANTA CORE // COMMAND CONSOLE. This build runs verified local commands; it is not yet connected to a conversational AI model. Admin commands are checked against the role stored in Firestore.";
-  const p=panel(root,"SANTA CORE");const log=el("div",{class:"chat-box",id:"santaLog"});log.append(el("p",{class:"chat-message chat-santa"},"SANTA: Core online. Type /help for commands."));p.append(log);const input=field(p,"COMMAND","input",{type:"text",placeholder:"/help"});action(p,"EXECUTE",()=>runSanta(input.value,log),"red-button");input.addEventListener("keydown",e=>{if(e.key==="Enter")runSanta(input.value,log);});
+function listenNotifications(){
+  if(notifUnsub)notifUnsub();
+  notifUnsub=onSnapshot(query(collection(db,"notifications"),where("recipientUid","==",currentUser.uid),where("read","==",false),limit(50)),
+    s=>{$("notifLabel").textContent=s.size?`NOTIFICATIONS (${s.size})`:"NOTIFICATIONS";},e=>console.warn("Notification listener failed",e));
 }
-async function runSanta(value,log){const cmd=value.trim();if(!cmd)return;log.append(el("p",{class:"chat-message chat-user"},"YOU: "+cmd));const lower=cmd.toLowerCase();let response="Command not recognized. Type /help.";if(lower==="/help")response="Commands: /help, /status, /whoami, /birthday. Admin only: /reports.";else if(lower==="/status")response="Frontend online. Firebase: "+(firebaseConfigured?"configured":"not configured")+". Signed in: yes.";else if(lower==="/whoami")response=`${currentProfile.nickname} (@${currentProfile.username}) — role ${currentProfile.role}.`;else if(lower==="/birthday")response="BOSS MAYSI birthday protocol is scheduled for November 17 (browser local date).";else if(lower==="/reports"){if(!["BOSS","SANTA"].includes(currentProfile.role))response="ACCESS DENIED. Moderator role required.";else{try{const snap=await getDocs(query(collection(db,"reports"),where("status","==","open"),limit(20)));response=`${snap.size} open report(s). Open CHAT to review reports and message context.`;}catch(e){response="Could not load reports: "+e.message;}}}log.append(el("p",{class:"chat-message chat-santa"},"SANTA: "+response));log.scrollTop=log.scrollHeight;}
+async function renderNotifications(root){
+  $("modalText").textContent="Your notifications. Only you can see them. Birthday reminders appear when you open the site and are not stored here.";
+  const redo=async()=>{root.replaceChildren();await renderNotifications(root);};
+  const head=panel(root,"INBOX");const list=el("div");head.append(list);
+  const snap=await getDocs(query(collection(db,"notifications"),where("recipientUid","==",currentUser.uid),limit(50)));
+  const docs=snap.docs.sort((a,b)=>(b.data().createdAt?.toMillis?.()||0)-(a.data().createdAt?.toMillis?.()||0));
+  if(!docs.length){list.append(el("p",{class:"status-line"},"No notifications yet."));return;}
+  const unread=docs.filter(d=>!d.data().read);
+  if(unread.length)action(head,"MARK ALL READ",async()=>{try{const b=writeBatch(db);unread.forEach(d=>b.update(d.ref,{read:true}));await b.commit();await redo();}catch(e){showError(e);}},"red-button");
+  docs.forEach(d=>{const n=d.data();const box=item(list,(n.read?"":"● ")+(n.message||"Notification"),fmtDate(n.createdAt));const row=el("div",{class:"row-actions"});
+    if(!n.read)action(row,"MARK READ",async()=>{try{await updateDoc(d.ref,{read:true});await redo();}catch(e){showError(e);}});
+    action(row,"DISMISS",async()=>{try{await deleteDoc(d.ref);await redo();}catch(e){showError(e);}},"red-button");box.append(row);});
+}
+async function reportMessage(messageId,m,serverId){
+  const reason=prompt("Why are you reporting this message? (Please be specific)");
+  if(reason===null)return;
+  if(!reason.trim()){notify("Please describe the problem to submit a report.");return;}
+  try{
+    const rep={messageId,reportedUid:m.uid,reportedName:m.nickname||m.username||"user",reporterUid:currentUser.uid,reason:reason.trim().slice(0,500),messageText:(m.text||"").slice(0,1000),status:"open",createdAt:serverTimestamp()};
+    if(serverId)rep.serverId=serverId;
+    await addDoc(collection(db,"reports"),rep);notify("Report submitted.");
+  }catch(e){showError(e);}
+}
+async function renderServerChat(root,serverId,serverName){
+  if(serverChatUnsub)serverChatUnsub();serverChatUnsub=null;
+  root.replaceChildren();
+  $("modalTitle").textContent=serverName||"SERVER";
+  $("modalText").textContent="Server chat. Only members can read or write here; this is enforced by Firestore rules, not just hidden in the interface.";
+  const back=()=>{if(serverChatUnsub)serverChatUnsub();serverChatUnsub=null;$("modalTitle").textContent="SERVERS";root.replaceChildren();renderServers(root);};
+  let canModerate=["BOSS","SANTA"].includes(currentProfile.role);
+  try{const srv=await getDoc(doc(db,"servers",serverId));if(srv.exists()&&srv.data().ownerUid===currentUser.uid)canModerate=true;}catch(_){}
+  const workspace=el("div",{class:"discord-workspace"});root.append(workspace);
+  const rail=el("aside",{class:"discord-rail"});rail.append(el("h3",{},"SERVER CHANNELS"));const channelList=el("div",{class:"channel-list"});
+  ["# general","# chat","# introductions"].forEach((label,i)=>{const b=el("button",{type:"button",class:"discord-channel"+(i===0?" active":"")},label);b.addEventListener("click",()=>{channelList.querySelectorAll("button").forEach(x=>x.classList.remove("active"));b.classList.add("active");if(i!==0)notify("This server currently has one shared channel: general.");});channelList.append(b);});rail.append(channelList);action(rail,"← SERVERS",back);
+  const main=el("main",{class:"discord-main"});workspace.append(rail,main);
+  const topline=el("div",{class:"discord-topline"});topline.append(el("strong",{},"# general"),el("span",{class:"muted-copy"},"Server community chat"));main.append(topline);
+  const chat=panel(main,"MESSAGES");const list=el("div",{class:"chat-box"},"Loading messages…");chat.append(list);
+  const input=field(chat,"MESSAGE","input",{type:"text",placeholder:"Message #general…",maxlength:"1000"});
+  const send=async()=>{const text=input.value.trim();if(!text)return;try{await addDoc(collection(db,"servers",serverId,"messages"),{uid:currentUser.uid,username:currentProfile.username,nickname:currentProfile.nickname||"",text,createdAt:serverTimestamp()});input.value="";}catch(e){showError(e);}};
+  input.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}});action(chat,"SEND MESSAGE",send,"red-button");
+  serverChatUnsub=onSnapshot(query(collection(db,"servers",serverId,"messages"),orderBy("createdAt","desc"),limit(60)),snap=>{
+    list.replaceChildren();if(snap.empty)list.append(el("p",{class:"status-line"},"No messages yet. Say hello."));
+    snap.docs.reverse().forEach(d=>{const m=d.data();const line=el("div",{class:"chat-message"+(m.uid===currentUser.uid?" chat-user":"")});line.append(el("strong",{},(m.nickname||m.username||"USER")+": "),el("span",{},m.text||""),el("small",{},fmtDate(m.createdAt)));if(m.uid!==currentUser.uid)action(line,"REPORT",()=>reportMessage(d.id,m,serverId));if(canModerate)action(line,"REMOVE MESSAGE",async()=>{if(confirm("Remove this message?"))try{await deleteDoc(d.ref);}catch(e){showError(e);}},"red-button");list.append(line);});list.scrollTop=list.scrollHeight;
+  },err=>list.replaceChildren(el("p",{class:"status-line"},"Could not load messages: "+(err.code==="permission-denied"?"you are not a member of this server.":err.message))));
+  const mem=el("aside",{class:"discord-members"});mem.append(el("h3",{},"MEMBERS"));workspace.append(mem);
+  try{const s=await getDocs(query(collection(db,"servers",serverId,"members"),limit(100)));let onlineCount=0;const memberDocs=s.docs;for(const d of memberDocs){const m=d.data();let profile=m;try{const u=await getDoc(doc(db,"users",m.uid||d.id));if(u.exists())profile={...m,...u.data()};}catch(_){}const online=isOnline(profile);if(online)onlineCount++;const row=item(mem,(profile.nickname||profile.username||"USER"),"@"+(profile.username||"unknown"));const line=el("p",{class:"status-line profile-line"});line.append(el("span",{class:"presence-dot"+(online?" online":"")}),el("span",{},online?"ONLINE":"OFFLINE"));row.append(line);}mem.querySelector("h3").textContent=`MEMBERS — ${onlineCount} ONLINE`;}catch(e){mem.append(el("p",{class:"status-line"},"Could not load members: "+e.message));}
+}
+function renderSanta(root){
+  $("modalText").textContent="SANTA CORE // I'm a rule-based assistant, not a full AI model: I understand built-in commands and topics, and I remember our chat only while this window is open. Type /about for details.";
+  const p=panel(root,"SANTA CORE");const log=el("div",{class:"chat-box",id:"santaLog"});log.append(el("p",{class:"chat-message chat-santa"},"SANTA: Core online. Ask me about BOSS SYSTEM, or type /help. 😏"));p.append(log);const input=field(p,"COMMAND","input",{type:"text",placeholder:"/help or just ask me something"});const go=()=>{runSanta(input.value,log);input.value="";};action(p,"SEND",go,"red-button");input.addEventListener("keydown",e=>{if(e.key==="Enter")go();});
+}
+/*SANTA-START*/
+const santaState={riddle:null,last:null,used:{}};
+const norm=s=>s.toLowerCase().replace(/[^a-z0-9 ]/g,"").replace(/^(a|an|the) /,"").trim();
+function pick(key,pool){let i;do{i=Math.floor(Math.random()*pool.length);}while(pool.length>1&&santaState.used[key]===i);santaState.used[key]=i;return pool[i];}
+const SANTA={
+  jokes:["I told my computer I needed a break. It said 'no problem' and went to sleep. 😴","Why do programmers prefer dark mode? Light attracts bugs. 🪲","I'd tell you a UDP joke, but you might not get it. 📡","Why was the developer sad? Because he didn't get arrays. 😔"],
+  roast:{
+    user:["You have the confidence of someone who never reads instructions. Respect. 😏","Your typing is fast. The accuracy is more of a suggestion.","You asked a bot to roast you. Bold strategy. Let's see how it plays out."],
+    boss:["BOSS MAYSI holds the highest authority in the system and still clicks 'Reset Password' like a speedrun. 👑","The BOSS can moderate a whole server but not their own snack intake. 🍟"],
+    santa:["Roast me? I'm basically a polite pile of if-statements. And honestly? Valid. 🤖","I'm rule-based, not heartless. Okay, maybe a little heartless. 🖤"]},
+  greet:["Hey NICK! 👋 What are we breaking today?","Welcome back, NICK. I kept your seat warm. 😏","NICK! Good timing. Ask me anything about BOSS SYSTEM."],
+  thanks:["Anytime. I work for free, which is fair, because I'm a pile of rules. 😌","You're welcome! Try not to break anything. 😏"],
+  right:["Correct! 🎉 Okay, you may keep your brain.","Nailed it. I'm almost impressed. 😏","Yes! Big-brain energy. Say 'more' for another."],
+  wrong:["Nope. 😬 Try again, or type /hint.","Close... no, not really. /hint exists for a reason.","Wrong, but confidently wrong. Respect. Try again."],
+  unknown:["I didn't catch that. I'm rule-based, not a mind reader. 😅 Type /help to see what I understand.","That one's beyond my wiring. Ask me about servers, invites, files, birthdays, notifications, reports or games.","No rule matches that, and I won't pretend otherwise. Try rephrasing, or type /help."]
+};
+const SANTA_TEXT={
+  help:"Commands: /help, /about, /status, /whoami, /birthday, /joke, /riddle, /hint, /giveup, /roast [boss|santa]. Moderators: /reports. Or just ask me about servers, invites, files, birthdays, notifications, reports or games.",
+  about:"I'm SANTA, a rule-based assistant. I match what you type against built-in commands and topics, and I remember this chat only while this window is open. I can't browse the web, read other people's data or reason about anything you throw at me like a real AI model. If I don't understand, I'll say so.",
+  privateServer:"Easy, Boss-in-training. 😏 Open SERVERS, fill in CREATE SERVER, choose PRIVATE, then use SEND INVITE with a username. They accept under YOUR INVITATIONS. No summoning ritual required.",
+  server:"Open SERVERS and fill in CREATE SERVER. PUBLIC servers can be joined by anyone signed in; PRIVATE ones are invite-only. Open a server you belong to with OPEN SERVER CHAT.",
+  joinServer:"In SERVERS, use SEARCH SERVERS to filter public servers, then JOIN PUBLIC SERVER. Private servers need an invite from the owner. You can leave from YOUR SERVERS.",
+  birthday:"Add your birthday as MM-DD in PROFILES → MY PROFILE (optional, visible to other members). Reminders appear when you open the site. I can't send them while the site is closed.",
+  notif:"The 🔔 NOTIFICATIONS tile shows your unread count. Open it to mark items read or dismiss them. You get one when you're invited to a private server or when a report of yours is reviewed.",
+  files:"STORAGE keeps files on this device only. DIRECT SEND needs the recipient's exact username, files up to 25 MB, and both of you online. The recipient accepts it from STORAGE, and you can cancel a pending offer.",
+  report:"Press REPORT under a message and say what's wrong. BOSS or SANTA will review it, and you'll get a notification when they do.",
+  games:"Try GAMES for Cat Memory Arena, QUIZ for categories, or say 'riddle' and I'll challenge you right here. GAMES shows your XP level, leaderboard, achievement badges and timed riddles.",
+  login:"Use RESET PASSWORD BY EMAIL on the login screen. I can't see or reset passwords, and nobody should be able to."
+};
+const SANTA_CMDS={
+  "/help":()=>SANTA_TEXT.help,"/about":()=>SANTA_TEXT.about,
+  "/status":()=>"Frontend online. Firebase: "+(firebaseConfigured?"configured":"not configured")+". Signed in: yes.",
+  "/whoami":()=>`${currentProfile.nickname} (@${currentProfile.username}) — role ${currentProfile.role}.`,
+  "/birthday":()=>"BOSS MAYSI's birthday protocol is November 17 (browser local date). Add yours in PROFILES → MY PROFILE.",
+  "/joke":()=>santaJoke(),"/riddle":()=>santaRiddle(),
+  "/hint":()=>santaState.riddle?"Hint: "+santaState.riddle.hint:"No riddle running. Type /riddle to start one.",
+  "/giveup":()=>{if(!santaState.riddle)return "Nothing to give up on. Type /riddle.";const a=santaState.riddle.a;santaState.riddle=null;return "The answer was: "+a+". I won't tell anyone. 🤫";},
+  "/roast":arg=>santaRoast(arg==="boss"?"boss":arg==="santa"?"santa":"user"),
+  "/secret":()=>"There are a few hidden phrases in here. Greet me like a boss and see what happens. 🤫",
+  "/reports":async()=>{if(!["BOSS","SANTA"].includes(currentProfile.role))return "ACCESS DENIED. Moderator role required.";try{const snap=await getDocs(query(collection(db,"reports"),where("status","==","open"),limit(20)));return `${snap.size} open report(s). Open CHAT to review them.`;}catch(e){return "Could not load reports: "+e.message;}}
+};
+function santaJoke(){santaState.last="joke";return pick("joke",SANTA.jokes);}
+function santaRoast(who){santaState.last="roast:"+who;return pick("roast"+who,SANTA.roast[who]);}
+function santaRiddle(){const r=riddles[Math.floor(Math.random()*riddles.length)];santaState.riddle=r;santaState.last="riddle";return "Riddle time: "+r.q+"  (Type your answer, /hint, or /giveup.)";}
+const SANTA_INTENTS=[
+  [/open sesame/,()=>"🚪 The vault creaks open... it's empty. The real treasure was the friends you invited. (There is no vault.)"],
+  [/up up down down/,()=>"+30 lives. They do nothing. Enjoy the feeling. 🎮"],
+  [/i am (the )?boss|i'm (the )?boss/,()=>currentProfile.role==="BOSS"?"Confirmed by Firestore, not by your confidence. Welcome, BOSS MAYSI. 👑":"Bold claim. Firestore says you are "+currentProfile.role+". Nice try. 😏"],
+  [/who is (the )?boss/,()=>"BOSS MAYSI. Highest authority. I just do the paperwork. 📝"],
+  [/^(more|another|again|next|one more|what else)$/,()=>{const l=santaState.last||"";return l==="joke"?santaJoke():l==="riddle"?santaRiddle():l.startsWith("roast:")?santaRoast(l.slice(6)):pick("unknown",SANTA.unknown);}],
+  [/^(hi|hello|hey|yo|sup|hola|salam|assalam)\b/,()=>pick("greet",SANTA.greet).replace("NICK",currentProfile.nickname||currentProfile.username)],
+  [/joke|funny|make me laugh/,()=>santaJoke()],
+  [/riddle|puzzle|brain teaser/,()=>santaRiddle()],
+  [/roast/,t=>santaRoast(/boss/.test(t)?"boss":/santa|yourself/.test(t)?"santa":"user")],
+  [/(create|make|start|set ?up|host).*private|private.*server/,()=>SANTA_TEXT.privateServer],
+  [/(create|make|start|set ?up|host).*server|how.*server/,()=>SANTA_TEXT.server],
+  [/invite/,()=>SANTA_TEXT.privateServer],
+  [/(join|leave|find|discover|search).*server/,()=>SANTA_TEXT.joinServer],
+  [/birthday|bday/,()=>SANTA_TEXT.birthday],
+  [/notif|bell|alert/,()=>SANTA_TEXT.notif],
+  [/file|transfer|storage|upload|share/,()=>SANTA_TEXT.files],
+  [/report|moderat|abuse|spam|harass/,()=>SANTA_TEXT.report],
+  [/game|play|bored|quiz|score|\bxp\b/,()=>SANTA_TEXT.games],
+  [/password|log ?in|sign ?in/,()=>SANTA_TEXT.login],
+  [/thank|thx|\bty\b/,()=>pick("thanks",SANTA.thanks)],
+  [/who are you|what are you|are you (an? )?(ai|bot|human|real)|what can you do|can you think/,()=>SANTA_TEXT.about]
+];
+async function santaReply(raw){
+  const t=raw.toLowerCase().trim().replace(/[!?.,]+$/,"");
+  if(t.startsWith("/")){const [c,...rest]=t.split(/\s+/);const fn=SANTA_CMDS[c];return fn?await fn(rest.join(" ")):"Unknown command "+c+". Type /help.";}
+  if(santaState.riddle&&t.split(/\s+/).length<=6){
+    if(/^(hint|give up|i give up|skip)$/.test(t))return SANTA_CMDS[t==="hint"?"/hint":"/giveup"]();
+    if(norm(t).includes(santaState.riddle.k||norm(santaState.riddle.a))){santaState.riddle=null;return pick("right",SANTA.right);}
+    return pick("wrong",SANTA.wrong);
+  }
+  for(const [re,fn] of SANTA_INTENTS)if(re.test(t))return fn(t);
+  return pick("unknown",SANTA.unknown);
+}
+async function runSanta(value,log){
+  const cmd=value.trim();if(!cmd)return;
+  log.append(el("p",{class:"chat-message chat-user"},"YOU: "+cmd));
+  let response;try{response=await santaReply(cmd);}catch(e){response="Something short-circuited: "+e.message;}
+  log.append(el("p",{class:"chat-message chat-santa"},"SANTA: "+response));log.scrollTop=log.scrollHeight;
+}
+/*SANTA-END*/
 
 function closeModule(){
+  clearInterval(quizTimer);
+  if(serverChatUnsub)serverChatUnsub();serverChatUnsub=null;
   if(chatUnsubscribe)chatUnsubscribe();
   if(reportUnsubscribe)reportUnsubscribe();
   chatUnsubscribe=reportUnsubscribe=null;
@@ -863,6 +1271,9 @@ function closeModule(){
   document.body.style.overflow="";
 }
 window.closeModule=closeModule;
+const ACCENTS={LIBRARY:"#c9a15a",STORAGE:"#6f86b8",GAMES:"#e0476b",RIDDLES:"#a678e0",QUIZ:"#e08a3d",LINKS:"#4fb0b3",CHAT:"#e32643",SERVERS:"#d4584a",PROFILES:"#c98aa5",NOTIFICATIONS:"#e0b04a",SANTA:"#ff4d6a"};
+document.querySelectorAll(".module").forEach(m=>{const k=(m.getAttribute("onclick")||"").match(/openModule\('(\w+)'\)/)?.[1];if(k&&ACCENTS[k])m.style.setProperty("--accent",ACCENTS[k]);});
+document.querySelectorAll(".module").forEach(m=>{m.setAttribute("role","button");m.tabIndex=0;m.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();m.click();}});});
 document.addEventListener("keydown",event=>{if(event.key==="Escape"&&!$("modal").classList.contains("hidden"))closeModule();});
 </script>
 
