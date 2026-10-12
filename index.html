@@ -110,25 +110,61 @@ label,.field-label{display:block;color:#b3a2aa;font-family:"Share Tech Mono",mon
 .chat-message button{display:inline-block;width:auto;padding:5px 11px;margin:8px 8px 0 0;font-size:10px;letter-spacing:1px}
 .chat-user{border-color:#7a2335;background:linear-gradient(145deg,#2a0f17,#160b10)}
 
-/* Discord-inspired server workspace */
-.discord-workspace{display:grid;grid-template-columns:minmax(145px,190px) minmax(0,1fr) minmax(135px,175px);gap:10px;align-items:stretch}
-.discord-rail,.discord-members{border:1px solid #35242b;background:#0d0a0f;padding:10px;border-radius:5px;min-width:0}
-.discord-main{min-width:0}
-.discord-rail h3,.discord-members h3{font:600 11px "Share Tech Mono",monospace;letter-spacing:1px;color:#d8bdc6;margin-bottom:10px}
-.discord-channel{display:block;width:100%;text-align:left;margin:4px 0;padding:9px 8px;font-size:11px;letter-spacing:.4px;border-color:transparent;background:#151016}
-.discord-channel.active{background:#35101b;border-color:#743044}
-.discord-members .item{padding:8px;font-size:11px}
-.discord-members .presence-dot{margin-right:6px}
-.discord-topline{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
-.discord-topline strong{font-family:Cinzel,Georgia,serif;letter-spacing:1px}
-.achievement-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:10px}
-.achievement-card{border:1px solid #47303a;background:#130e14;padding:12px;border-radius:5px;min-width:0}
-.achievement-card.unlocked{border-color:#a76c36;background:linear-gradient(145deg,#24170f,#100d10)}
-.achievement-card .ach-icon{font-size:24px;display:block;margin-bottom:7px}
-.riddle-clock{height:5px;background:#302027;margin:8px 0 12px;overflow:hidden}
-.riddle-clock span{display:block;height:100%;width:100%;background:linear-gradient(90deg,#a70e2a,#ef5269);transform-origin:left}
-.server-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-@media(max-width:680px){.discord-workspace{grid-template-columns:1fr}.discord-rail{order:0}.discord-main{order:1}.discord-members{order:2}.discord-rail .channel-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.discord-members{max-height:180px;overflow:auto}.server-edit-grid{grid-template-columns:1fr}}
+/* BOSS SYSTEM // immersive game command deck */
+:root{--blood:#c20f30;--blood2:#790b20;--line:rgba(220,188,199,.16);--panel:#0c0a0f;--gold:#c9a36a}
+.modal-box{max-width:1120px;background:radial-gradient(ellipse at 80% 0%,#2a0b16 0%,transparent 40%),linear-gradient(145deg,#111016,#08070a 65%);border-color:#53202e}
+#modalTitle{letter-spacing:3px;text-shadow:0 0 22px #b20d2233}
+#modalText{max-width:850px}
+.game-deck{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:18px 0}
+.game-hero{grid-column:1/-1;position:relative;overflow:hidden;min-height:180px;padding:clamp(20px,4vw,34px);border:1px solid #762239;background:linear-gradient(100deg,rgba(8,7,10,.98),rgba(37,8,18,.88)),repeating-linear-gradient(135deg,transparent 0 18px,rgba(190,18,48,.05) 18px 19px);display:flex;flex-direction:column;justify-content:center}
+.game-hero:after{content:'B';position:absolute;right:3%;top:-45%;font:800 clamp(180px,30vw,320px) Cinzel,serif;color:#d3193a0b;pointer-events:none}
+.game-kicker{font:11px 'Share Tech Mono',monospace;letter-spacing:3px;color:#ef526b;margin-bottom:12px}
+.game-hero h2{font:700 clamp(26px,4vw,42px) Cinzel,Georgia,serif;letter-spacing:2px;margin-bottom:10px}
+.game-hero p{max-width:620px;color:#b9aab1;line-height:1.7;font-size:13px}
+.game-tile{position:relative;text-align:left;min-height:150px;padding:20px;border:1px solid #39232c;background:linear-gradient(145deg,#171119,#0a090c);display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:18px;transition:transform .18s,border-color .18s,box-shadow .18s}
+.game-tile:hover{border-color:#c32443;box-shadow:0 10px 32px #0009,0 0 25px #ad0e2a20;transform:translateY(-3px)}
+.game-tile .tile-icon{font-size:30px;filter:drop-shadow(0 0 12px #d21c3d55)}
+.game-tile strong{font:600 16px Cinzel,Georgia,serif;letter-spacing:1px}
+.game-tile small{font:10px 'Share Tech Mono',monospace;letter-spacing:1.5px;color:#e55a70}
+.game-tile p{font-size:12px;line-height:1.6;color:#a99aa2;font-weight:400;letter-spacing:0}
+.game-hud{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}
+.game-stat{padding:12px;border:1px solid #39232c;background:#100c12}
+.game-stat small{display:block;font:10px 'Share Tech Mono',monospace;color:#a9949d;letter-spacing:1.5px;margin-bottom:6px}
+.game-stat strong{font:600 20px Cinzel,Georgia,serif;color:#f4e6eb}
+.game-stage{padding:clamp(16px,3vw,26px);border:1px solid #4c2632;background:linear-gradient(145deg,#130e14,#09080b);margin:12px 0;min-height:220px}
+.game-stage h3{font:600 20px Cinzel,Georgia,serif;letter-spacing:1px;margin-bottom:12px}
+.game-stage p{color:#c5b6bd;line-height:1.8;font-size:13px;margin:8px 0}
+.game-choice{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:16px}
+.game-choice button{margin:0;min-height:58px;text-align:left;line-height:1.5;letter-spacing:.3px;padding:12px}
+.game-code{font:700 clamp(28px,6vw,48px) 'Share Tech Mono',monospace;letter-spacing:clamp(5px,1.5vw,12px);color:#ff526d;text-align:center;padding:20px;border:1px dashed #7e2c40;background:#160910;text-shadow:0 0 20px #bd1235}
+.game-achievements{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px;margin:12px 0}
+.game-achievement{padding:12px;border:1px solid #38242d;background:#100d12;min-height:108px}
+.game-achievement.unlocked{border-color:#a87940;background:linear-gradient(145deg,#21170f,#100d11)}
+.game-achievement span{font-size:22px;display:block;margin-bottom:7px}
+.game-achievement strong{font-size:12px;display:block;margin-bottom:5px}
+.game-achievement small{color:#a7979f;line-height:1.5;display:block}
+.game-progress-track{height:5px;background:#302027;margin:12px 0;overflow:hidden}.game-progress-track span{height:100%;display:block;background:linear-gradient(90deg,#770b21,#f04461);transition:width .25s}
+.game-back{max-width:220px}
+@media(max-width:620px){.game-deck{grid-template-columns:1fr}.game-hero{grid-column:auto}.game-choice{grid-template-columns:1fr}.game-hud{grid-template-columns:1fr 1fr}.game-tile{min-height:125px}.modal-box{padding:14px}}
+
+
+/* Control-room dashboard refresh: a deliberate hierarchy, not generic red tiles */
+#dashboard{max-width:1180px!important;width:min(100% - 28px,1180px)!important;padding:clamp(18px,3vw,34px)!important;background:radial-gradient(ellipse at 92% 0%,rgba(132,10,32,.2),transparent 36%),linear-gradient(145deg,rgba(16,13,19,.98),rgba(6,5,8,.99));border-color:#51202e}
+#dashboard>.title{display:flex;align-items:center;gap:14px;font-size:clamp(24px,3.8vw,38px);margin-bottom:6px}
+#dashboard>.title:before{content:'◈';font-size:24px;color:#df2948;text-shadow:0 0 18px #b20d2266}
+#dashboard>.subtitle{display:flex;align-items:center;gap:9px;margin-bottom:20px}
+#dashboard>.subtitle:before{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;background:#75d99b;box-shadow:0 0 12px #75d99b}
+#dashboard .welcome{position:relative;overflow:hidden;border:1px solid #43212c;border-left:3px solid #bf1734;padding:20px 22px;background:linear-gradient(105deg,#270c16,#100b10 65%,#0b090c);font-size:13px}
+#dashboard .welcome:after{content:'CLASSIFIED ACCESS // BOSS SYSTEM';display:block;margin-top:12px;color:#a17c89;font:10px 'Share Tech Mono',monospace;letter-spacing:2px}
+#dashboard .modules{grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+#dashboard .module{min-height:145px;align-items:flex-start;text-align:left;padding:19px 18px;border-color:#33232b;background:linear-gradient(145deg,#171219,#0b090d 76%);font-size:13px;letter-spacing:1.8px}
+#dashboard .module .icon{font-size:27px;margin-bottom:7px}
+#dashboard .module:after{inset:auto -30% -70% 15%;height:130%;background:radial-gradient(ellipse,rgba(178,13,34,.16),transparent 65%)}
+#dashboard .module:focus-visible{outline:2px solid #ed3a58;outline-offset:3px}
+#dashboard .footer{padding-top:14px;border-top:1px solid #291a21}
+@media(max-width:760px){#dashboard .modules{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:420px){#dashboard .modules{grid-template-columns:1fr}#dashboard .module{min-height:105px}}
+
 </style>
 </head>
 
@@ -721,7 +757,7 @@ function el(tag,attrs={},text=""){
 }
 function clearExtra(){const extra=$("extraContent");extra.replaceChildren();return extra;}
 function panel(parent,title){const p=el("section",{class:"panel"});p.append(el("h3",{},title));parent.append(p);return p;}
-function field(parent,labelText,tag="input",attrs={}){const wrap=el("div");wrap.append(el("label",{class:"field-label"},labelText));const input=el(tag,attrs);if(Object.prototype.hasOwnProperty.call(attrs,"value"))input.value=attrs.value;wrap.append(input);parent.append(wrap);return input;}
+function field(parent,labelText,tag="input",attrs={}){const wrap=el("div");wrap.append(el("label",{class:"field-label"},labelText));const input=el(tag,attrs);wrap.append(input);parent.append(wrap);return input;}
 function action(parent,label,fn,cls=""){const b=el("button",{type:"button",class:cls},label);b.addEventListener("click",fn);parent.append(b);return b;}
 function item(parent,title,detail=""){const box=el("div",{class:"item"});box.append(el("strong",{},title));if(detail)box.append(el("small",{},detail));parent.append(box);return box;}
 function addBirthday(box,d){if(d.birthday)box.append(el("p",{class:"muted-copy"},"🎂 Birthday: "+d.birthday));}
@@ -825,33 +861,50 @@ async function renderLinks(root){
 
 function renderGames(root){
   root.replaceChildren();
-  $("modalText").textContent="CAT MEMORY ARENA — match every pair. This version runs locally; it does not upload game data unless a score is saved.";
-  const game=panel(root,"CAT MEMORY ARENA");const stats=el("p",{class:"status-line",id:"memoryStats"},"Moves: 0 • Pairs: 0");game.append(stats);const grid=el("div",{class:"memory-grid",id:"memoryGrid"});game.append(grid);const emojis=["🐈","🌙","🖤","⭐","🍓","🦇","🎮","🌌"];let deck=[...emojis,...emojis].sort(()=>Math.random()-.5);gameState={moves:0,pairs:0,first:null,locked:false,deck,matched:new Set()};deck.forEach((emoji,i)=>{const b=el("button",{class:"memory-card",type:"button"},"?");b.addEventListener("click",()=>{if(gameState.locked||gameState.matched.has(i)||b.textContent!=="?")return;b.textContent=emoji;if(gameState.first===null){gameState.first=i;}else{gameState.moves++;const first=gameState.first;gameState.first=null;if(deck[first]===emoji){gameState.matched.add(first);gameState.matched.add(i);grid.children[first].disabled=true;b.disabled=true;gameState.pairs++;}else{gameState.locked=true;setTimeout(()=>{grid.children[first].textContent="?";b.textContent="?";gameState.locked=false;},650);}stats.textContent=`Moves: ${gameState.moves} • Pairs: ${gameState.pairs}/8`;if(gameState.pairs===8){stats.textContent+=` • Complete! Score: ${Math.max(10,1000-gameState.moves*25)}`;saveScore("CAT MEMORY ARENA",Math.max(10,1000-gameState.moves*25));unlockAchievement("first_win");unlockAchievement("memory_master");}}});grid.append(b);});action(game,"RESTART GAME",()=>renderGames(root));renderProgress(root);
+  $('modalText').textContent='SOLO OPERATIONS // Case files, cipher runs, memory trials and tactical quizzes. Every run scales up as you improve.';
+  const shell=panel(root,'BOSS GAME DIVISION');
+  const hero=el('section',{class:'game-hero'});hero.append(el('div',{class:'game-kicker'},'CLASSIFIED // SOLO CAMPAIGN'),el('h2',{},'ENTER THE SYSTEM'),el('p',{},'Four different ways to test your instincts. Crack cases, decode signals under pressure, build memory combos and survive escalating quiz rounds. Earn XP, set records and unlock your operator profile.'));shell.append(hero);
+  const deck=el('div',{class:'game-deck'});shell.append(deck);
+  const addTile=(icon,title,tag,desc,fn)=>{const b=el('button',{class:'game-tile',type:'button'});const top=el('div');top.append(el('span',{class:'tile-icon'},icon),el('small',{},tag));b.append(top,el('strong',{},title),el('p',{},desc));b.addEventListener('click',fn);deck.append(b);};
+  addTile('🕵️','CASE FILES','INVESTIGATION // 01','Interrogate suspects, inspect evidence and identify the culprit. Cases grow less obvious each chapter.',()=>startCaseFiles(shell));
+  addTile('⌁','CIPHER RUN','TIMED // 02','Decode a scrambled signal before the timer expires. New rounds add longer codes and less time.',()=>startCipherRun(shell));
+  addTile('◈','MEMORY PROTOCOL','FOCUS // 03','Match symbols, build a streak and climb through larger boards with fewer mistakes.',()=>startMemoryProtocol(shell));
+  addTile('⚡','QUIZ ARENA','KNOWLEDGE // 04','Choose a category and take a five-question speed round with combos and rising difficulty.',()=>renderQuiz(shell));
+  addTile('⌛','RIDDLE CHAMBER','LOGIC // 05','Solve a timed riddle. Hints are available, but clean solutions score more.',()=>renderRiddles(shell));
+  addTile('♜','OPERATOR RECORD','PROFILE // 06','Review your XP, leaderboard position and achievement collection.',()=>{shell.replaceChildren();renderProgress(shell);renderAchievements(shell);action(shell,'BACK TO GAME DIVISION',()=>renderGames(root));});
+  renderProgress(shell);renderAchievements(shell);
 }
+function gameStage(root,kicker,title,copy){const stage=el('section',{class:'game-stage'});stage.append(el('div',{class:'game-kicker'},kicker),el('h3',{},title),el('p',{},copy));root.append(stage);return stage;}
+function gameHUD(root,items){const hud=el('div',{class:'game-hud'});items.forEach(([k,v])=>{const box=el('div',{class:'game-stat'});box.append(el('small',{},k),el('strong',{},String(v)));hud.append(box);});root.append(hud);return hud;}
+function startCaseFiles(root){
+ root.replaceChildren();const stage=gameStage(root,'CASE FILE // 001','THE RED LEDGER','A secure archive was accessed at 21:40. Three operators had access. One statement conflicts with the terminal logs. Gather the facts before making your accusation.');
+ const evidence=el('div',{class:'panel'});evidence.append(el('h3',{},'EVIDENCE BOARD'),el('p',{class:'status-line'},'• Access terminal: 21:40\n• Security camera: hallway empty from 21:35–21:50\n• The archive door can only be opened with an operator badge.'));stage.append(evidence);
+ const cases=[{name:'Mira — Analyst',line:'I left the building at 21:30. I never went back upstairs.',clue:'Her badge was recorded at the archive door at 21:40.',correct:false},{name:'Noah — Technician',line:'I was in the server room fixing a power alert.',clue:'The server-room maintenance log confirms his session from 21:32 to 21:48.',correct:false},{name:'Riven — Security',line:'I watched the hallway continuously from 21:30 to 22:00.',clue:'The camera feed was empty, but security-console access was disabled at 21:38.',correct:true}];
+ const q=el('div',{class:'game-stage'});q.append(el('div',{class:'game-kicker'},'PHASE 1 // INTERROGATION'),el('h3',{},'Who is hiding something?'),el('p',{},'Inspect each suspect statement, then choose who you want to investigate.'));const choices=el('div',{class:'game-choice'});q.append(choices);stage.append(q);
+ cases.forEach((c,i)=>{const b=el('button',{type:'button'},c.name+' — REVIEW STATEMENT');b.addEventListener('click',()=>{q.replaceChildren(el('div',{class:'game-kicker'},'SUSPECT DOSSIER'),el('h3',{},c.name),el('p',{},'“'+c.line+'”'),el('p',{},'Evidence check: '+c.clue));const row=el('div',{class:'game-choice'});const accuse=el('button',{type:'button',class:'red-button'},'ACCUSE THIS SUSPECT');accuse.addEventListener('click',()=>finishCase(root,c.correct,c.name));const back=el('button',{type:'button'},'REVIEW OTHER SUSPECTS');back.addEventListener('click',()=>startCaseFiles(root));row.append(accuse,back);q.append(row);});choices.append(b);});
+ action(root,'ABANDON CASE',()=>renderGames(root));
+}
+function finishCase(root,correct,name){root.replaceChildren();const stage=gameStage(root,'CASE REPORT // FINAL DECISION',correct?'CASE CLOSED':'CASE MISSED',correct?'Your timeline matches the terminal evidence. Riven had console access when the feed was disabled, and his claim of continuous observation cannot be true.':'That accusation does not fit all the evidence. Recheck the badge log and the disabled camera feed, then try the case again.');if(correct){stage.append(el('div',{class:'game-code'},'CASE +250 XP'));saveScore('CASE FILES: THE RED LEDGER',250);unlockGameBadge('case_closed');}action(root,correct?'NEXT CASE — REPLAY':'REOPEN CASE',()=>startCaseFiles(root),'red-button');action(root,'GAME DIVISION',()=>renderGames(root));}
+function startCipherRun(root){
+ root.replaceChildren();let round=1,score=0,streak=0,seconds=18,timer=null,answer='',done=false;const stage=gameStage(root,'SIGNAL INTERCEPT // TIMED','CIPHER RUN','Decode the letters by shifting each one backward through the alphabet. Example: D -> C. Each cleared round adds another character and reduces the time.');const hud=gameHUD(stage,[['ROUND',round],['SIGNAL SCORE',score],['TIME',seconds]]);const code=el('div',{class:'game-code'});stage.append(code);const feedback=el('p',{class:'status-line'});stage.append(feedback);const input=field(stage,'DECODED SIGNAL','input',{type:'text',placeholder:'Type the decoded word…',autocomplete:'off'});const btn=el('button',{type:'button',class:'red-button'},'DECODE SIGNAL');stage.append(btn);
+ const makeRound=()=>{done=false;seconds=Math.max(7,18-(round-1)*2);answer=Array.from({length:Math.min(3+round,8)},()=>String.fromCharCode(65+Math.floor(Math.random()*26))).join('');const shift=1+Math.min(round,4);code.textContent=answer.split('').map(c=>String.fromCharCode(65+(c.charCodeAt(0)-65+shift)%26)).join('');input.value='';input.disabled=false;btn.disabled=false;feedback.textContent=`Signal shifted forward by ${shift}. Decode it before the countdown ends.`;hud.children[0].querySelector('strong').textContent=round;hud.children[1].querySelector('strong').textContent=score;hud.children[2].querySelector('strong').textContent=seconds;clearInterval(timer);timer=setInterval(()=>{seconds--;hud.children[2].querySelector('strong').textContent=seconds;if(seconds<=0)finish(false);},1000);};
+ const finish=win=>{if(done)return;done=true;clearInterval(timer);input.disabled=true;btn.disabled=true;if(win){const pts=round*40+seconds*3;score+=pts;streak++;feedback.textContent=`Signal decoded. +${pts} points. Next signal will be harder.`;hud.children[1].querySelector('strong').textContent=score;saveScore('CIPHER RUN',pts);if(round>=5)unlockGameBadge('cipher_veteran');action(stage,'NEXT SIGNAL',()=>{round++;makeRound();stage.querySelectorAll('button').forEach(b=>{if(b.textContent==='NEXT SIGNAL')b.remove();});});}else{feedback.textContent=`Signal lost. The decoded signal was ${answer}. Final score: ${score}.`;saveScore('CIPHER RUN TOTAL',score);action(stage,'RETRY CIPHER RUN',()=>startCipherRun(root),'red-button');action(stage,'GAME DIVISION',()=>renderGames(root));}};
+ btn.addEventListener('click',()=>finish(input.value.trim().toUpperCase()===answer));input.addEventListener('keydown',e=>{if(e.key==='Enter')btn.click();});makeRound();action(root,'QUIT RUN',()=>{clearInterval(timer);renderGames(root);});
+}
+function startMemoryProtocol(root){
+ root.replaceChildren();let level=1,moves=0,matched=0,first=null,locked=false,points=0,deck=[],found=new Set();const stage=gameStage(root,'COGNITIVE TRIAL // PROGRESSIVE','MEMORY PROTOCOL','Memorise the symbols and match the pairs. Each level adds more pairs. Fast, accurate runs earn more points.');const hud=gameHUD(stage,[['LEVEL',level],['MOVES',moves],['SCORE',points]]);const status=el('p',{class:'status-line'});stage.append(status);const grid=el('div',{class:'memory-grid'});stage.append(grid);
+ const begin=()=>{const symbols=['☾','♜','✦','♠','♦','⌘','☠','♟','⚑','✧','♧','☼'];const pairs=Math.min(4+level,10);deck=shuffle(symbols.slice(0,pairs).concat(symbols.slice(0,pairs)));moves=0;matched=0;first=null;locked=false;found=new Set();grid.style.gridTemplateColumns=`repeat(${pairs<=5?4:5},minmax(0,1fr))`;grid.replaceChildren();status.textContent=`Level ${level}: match ${pairs} pairs.`;hud.children[0].querySelector('strong').textContent=level;hud.children[1].querySelector('strong').textContent=moves;hud.children[2].querySelector('strong').textContent=points;deck.forEach((sym,i)=>{const b=el('button',{class:'memory-card',type:'button'},'?');b.addEventListener('click',()=>{if(locked||found.has(i)||b.textContent!=='?')return;b.textContent=sym;if(first===null){first=i;return;}moves++;const prev=first;first=null;if(deck[prev]===sym){found.add(prev);found.add(i);grid.children[prev].disabled=true;b.disabled=true;matched++;points+=Math.max(5,30-Math.floor(moves/2));status.textContent=`Pair found! ${matched}/${pairs} pairs.`;}else{locked=true;setTimeout(()=>{grid.children[prev].textContent='?';b.textContent='?';locked=false;},600);}hud.children[1].querySelector('strong').textContent=moves;hud.children[2].querySelector('strong').textContent=points;if(matched===pairs){status.textContent=`LEVEL ${level} CLEARED. Total score: ${points}.`;saveScore('MEMORY PROTOCOL',points);if(level>=3)unlockGameBadge('memory_operative');action(stage,'NEXT LEVEL',()=>{level++;begin();});}});grid.append(b);});};begin();action(root,'QUIT TRIAL',()=>renderGames(root));
+}
+const GAME_BADGES=[{id:'case_closed',icon:'🕵️',name:'Case Closed',desc:'Solve the Red Ledger investigation.'},{id:'cipher_veteran',icon:'⌁',name:'Cipher Veteran',desc:'Reach round five in Cipher Run.'},{id:'memory_operative',icon:'◈',name:'Memory Operative',desc:'Clear three levels of Memory Protocol.'},{id:'quiz_survivor',icon:'⚡',name:'Quiz Survivor',desc:'Complete a full quiz round.'},{id:'riddle_solver',icon:'⌛',name:'Riddle Breaker',desc:'Solve a riddle before time runs out.'}];
+function gameBadgeKey(){return 'bossGameBadges:'+(currentUser?.uid||'guest');}
+function getGameBadges(){try{return JSON.parse(localStorage.getItem(gameBadgeKey())||'[]');}catch(_){return [];}}
+function unlockGameBadge(id){const b=GAME_BADGES.find(x=>x.id===id);if(!b)return;const got=getGameBadges();if(got.includes(id))return;got.push(id);try{localStorage.setItem(gameBadgeKey(),JSON.stringify(got));}catch(_){}notify('Achievement unlocked: '+b.name+' '+b.icon);}
+function renderAchievements(root){const p=panel(root,'ACHIEVEMENTS // OPERATOR INSIGNIA');const grid=el('div',{class:'game-achievements'});const owned=new Set(getGameBadges());GAME_BADGES.forEach(b=>{const card=el('div',{class:'game-achievement'+(owned.has(b.id)?' unlocked':'')});card.append(el('span',{},b.icon),el('strong',{},b.name),el('small',{},owned.has(b.id)?'UNLOCKED • '+b.desc:'LOCKED • '+b.desc));grid.append(card);});p.append(grid);}
+
 async function saveScore(game,score){try{await addDoc(collection(db,"scores"),{uid:currentUser.uid,username:currentProfile.username,nickname:currentProfile.nickname,game,score,createdAt:serverTimestamp()});}catch(e){console.warn("Score not saved",e);}awardXp(Math.floor(score/10));}
 
 /*GAMES-START*/
 const levelOf=xp=>Math.floor(Math.sqrt((xp||0)/100))+1;
-const ACHIEVEMENTS=[
- {id:"first_win",name:"First Victory",icon:"🏆",desc:"Finish your first game or quiz."},
- {id:"memory_master",name:"Memory Master",icon:"🧠",desc:"Complete Cat Memory Arena."},
- {id:"quiz_ace",name:"Quiz Ace",icon:"🎯",desc:"Finish a quiz round."},
- {id:"riddle_solver",name:"Riddle Solver",icon:"🔐",desc:"Solve a riddle before time runs out."},
- {id:"daily_streak",name:"Daily Thinker",icon:"🌙",desc:"Complete the daily riddle."},
- {id:"xp_100",name:"Rising Force",icon:"⚡",desc:"Earn 100 XP or more."},
- {id:"level_5",name:"Elite Access",icon:"👑",desc:"Reach level 5."}
-];
-function localAchievementKey(){return "bossAchievements:"+(currentUser?.uid||"guest");}
-function readLocalAchievements(){try{return JSON.parse(localStorage.getItem(localAchievementKey())||"[]");}catch(_){return [];}}
-async function unlockAchievement(id){
- const a=ACHIEVEMENTS.find(x=>x.id===id);if(!a)return;
- const local=readLocalAchievements();if(local.includes(id))return;
- local.push(id);try{localStorage.setItem(localAchievementKey(),JSON.stringify(local));}catch(_){}
- try{const ref=doc(db,"progress",currentUser.uid);const snap=await getDoc(ref);const old=snap.exists()?snap.data():{};const list=Array.isArray(old.achievements)?old.achievements:[];if(!list.includes(id))await setDoc(ref,{uid:currentUser.uid,username:currentProfile.username,nickname:currentProfile.nickname||"",achievements:[...list,id],updatedAt:serverTimestamp()},{merge:true});}catch(e){console.warn("Cloud achievement save unavailable; kept on this device.",e);}
- notify("Achievement unlocked: "+a.name+" "+a.icon);
-}
-function unlockBadgeForProgress(xp){if(xp>=100)unlockAchievement("xp_100");if(levelOf(xp)>=5)unlockAchievement("level_5");}
-
 const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
 const dayKey=(offsetDays=0)=>{const d=new Date(Date.now()+offsetDays*864e5);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;};
 let quizTimer=null;
@@ -864,7 +917,7 @@ async function awardXp(gain,extra={}){
   try{
     const s=await getDoc(ref);const old=s.exists()?s.data():{xp:0,streak:0,lastDaily:""};
     const data={uid:currentUser.uid,username:currentProfile.username,nickname:currentProfile.nickname||"",xp:(old.xp||0)+gain,streak:extra.streak??old.streak??0,lastDaily:extra.lastDaily??old.lastDaily??"",updatedAt:serverTimestamp()};
-    await setDoc(ref,data,{merge:true});notify(`${gain>0?"+":""}${gain} XP • Level ${levelOf(data.xp)}`);unlockBadgeForProgress(data.xp);
+    await setDoc(ref,data,{merge:true});notify(`+${gain} XP • Level ${levelOf(data.xp)}`);
   }catch(e){notify(e.code==="permission-denied"?"XP not saved: you're going too fast. Try again in a few seconds.":"XP could not be saved.");}
 }
 async function renderProgress(root){
@@ -877,9 +930,6 @@ async function renderProgress(root){
     const top=await getDocs(query(collection(db,"progress"),orderBy("xp","desc"),limit(10)));
     if(top.empty)p.append(el("p",{class:"status-line"},"No ranked players yet. Be the first."));
     top.docs.forEach((x,i)=>{const v=x.data();item(p,`#${i+1} ${v.nickname||v.username}`,`Level ${levelOf(v.xp)} • ${v.xp} XP`);});
-    const owned=new Set([...(Array.isArray(d.achievements)?d.achievements:[]),...readLocalAchievements()]);
-    const achievements=panel(root,"ACHIEVEMENTS & BADGES");const grid=el("div",{class:"achievement-grid"});
-    ACHIEVEMENTS.forEach(a=>{const card=el("div",{class:"achievement-card"+(owned.has(a.id)?" unlocked":"")});card.append(el("span",{class:"ach-icon"},a.icon),el("strong",{},a.name),el("p",{class:"muted-copy"},a.desc),el("small",{},owned.has(a.id)?"UNLOCKED":"LOCKED"));grid.append(card);});achievements.append(grid);
   }catch(e){p.append(el("p",{class:"status-line"},"Could not load progress: "+e.message));}
 }
 
@@ -896,25 +946,8 @@ const riddles=[
   {d:"medium",k:"age",q:"What goes up but never comes down?",a:"Your age",hint:"Birthdays add to it.",hint2:"It counts years."}
 ];
 function startRiddle(area,r,daily){
-  area.replaceChildren();let hints=0,solved=false,left=30,timer=null;
-  area.append(el("p",{},`[${r.d.toUpperCase()}${daily?" • DAILY":" • 30-SECOND CHALLENGE"}] ${r.q}`));
-  const clock=el("div",{class:"riddle-clock"}),fill=el("span");clock.append(fill);area.append(clock);
-  const timerText=el("p",{class:"status-line"},"Time left: 30s");area.append(timerText);
-  const ans=field(area,"YOUR ANSWER","input",{type:"text",maxlength:"60",autocomplete:"off"});
-  const out=el("p",{class:"status-line"});area.append(out);
-  const base=daily?25+Math.min(daily.streak,7)*5:{easy:10,medium:20,hard:30}[r.d];
-  const finish=()=>{if(timer)clearInterval(timer);timer=null;ans.disabled=true;};
-  const check=()=>{
-    if(solved)return;const g=norm(ans.value);if(!g)return;
-    if(g.includes(r.k)||g===norm(r.a)){solved=true;finish();const gain=Math.max(5,base-hints*5);out.textContent=`Correct! 🎉 The answer is "${r.a}". +${gain} XP`+(daily?` • Streak: ${daily.streak}`:"");awardXp(gain,daily?{streak:daily.streak,lastDaily:daily.today}:{});unlockAchievement("riddle_solver");if(daily)unlockAchievement("daily_streak");}
-    else out.textContent=pick("rwrong",["Nope. 😬 Try again.","Wrong, but I admire the confidence.","Close... not really.","My router guesses better than that. 📡"]);
-  };
-  ans.addEventListener("keydown",e=>{if(e.key==="Enter")check();});
-  action(area,"SUBMIT",check,"red-button");
-  action(area,"HINT",()=>{if(solved)return;hints=Math.min(2,hints+1);out.textContent=`Hint ${hints}: `+(hints===1?r.hint:r.hint2);});
-  timer=setInterval(()=>{if(solved){clearInterval(timer);return;}left--;timerText.textContent=`Time left: ${left}s`;fill.style.width=(left/30*100)+"%";if(left<=0){finish();out.textContent=`Time's up! The answer was ${r.a}. Start a new riddle to try again.`;}},1000);
+ area.replaceChildren();let hints=0,solved=false,left=30,timer=null;area.append(el('p',{},`[${r.d.toUpperCase()}${daily?' • DAILY':' • TIMED CHALLENGE'}] ${r.q}`));const track=el('div',{class:'game-progress-track'}),fill=el('span');fill.style.width='100%';track.append(fill);area.append(track);const clock=el('p',{class:'status-line'},'TIME LEFT: 30s');area.append(clock);const ans=field(area,'YOUR ANSWER','input',{type:'text',maxlength:'60'});const out=el('p',{class:'status-line'});area.append(out);const base=daily?25+Math.min(daily.streak,7)*5:{easy:10,medium:20,hard:30}[r.d];const stop=()=>{clearInterval(timer);timer=null;ans.disabled=true;};const check=()=>{if(solved)return;const g=norm(ans.value);if(!g)return;if(g===norm(r.a)||g.includes(r.k)){solved=true;stop();const gain=Math.max(5,base-hints*5+Math.floor(left/5));out.textContent=`Correct! +${gain} XP. Answer: ${r.a}`;awardXp(gain,daily?{streak:daily.streak,lastDaily:daily.today}:{});unlockGameBadge('riddle_solver');}else out.textContent='Not quite. Re-read the clue and try again.';};ans.addEventListener('keydown',e=>{if(e.key==='Enter')check();});action(area,'SUBMIT ANSWER',check,'red-button');action(area,'HINT',()=>{if(solved)return;hints=Math.min(2,hints+1);out.textContent=`HINT ${hints}: ${hints===1?r.hint:r.hint2}`;});timer=setInterval(()=>{if(solved){stop();return;}left--;clock.textContent=`TIME LEFT: ${left}s`;fill.style.width=(left/30*100)+'%';if(left<=0){stop();out.textContent=`Time expired. Answer: ${r.a}. Start another challenge to try again.`;}},1000);
 }
-
 async function startDaily(area){
   const today=dayKey();let old={streak:0,lastDaily:""};
   try{const s=await getDoc(doc(db,"progress",currentUser.uid));if(s.exists())old=s.data();}catch(_){}
@@ -971,7 +1004,7 @@ function startQuiz(category,area){
 function showQuizQuestion(area){
   clearInterval(quizTimer);area.replaceChildren();
   const S=quizState;
-  if(S.i>=S.questions.length){const total=Math.min(1000,S.score);area.append(el("p",{class:"status-line"},`Round complete! Score: ${total}`));saveScore("QUIZ: "+S.category,total);unlockAchievement("first_win");unlockAchievement("quiz_ace");action(area,"PLAY AGAIN",()=>startQuiz(S.category,area),"red-button");return;}
+  if(S.i>=S.questions.length){const total=Math.min(1000,S.score);area.append(el("p",{class:"status-line"},`Round complete! Score: ${total}`));saveScore("QUIZ: "+S.category,total);unlockGameBadge("quiz_survivor");action(area,"PLAY AGAIN",()=>startQuiz(S.category,area),"red-button");return;}
   const q=S.questions[S.i];let left=15,done=false;
   const info=el("p",{class:"status-line"}),opts=el("div"),fb=el("div");
   area.append(info,el("p",{},`${S.i+1}/${S.questions.length}. ${q.q}`),opts,fb);
@@ -1075,21 +1108,6 @@ async function renderServers(root){
     const memberPath=doc(db,"servers",id,"members",currentUser.uid);
     if(isOwner){
       box.append(el("p",{class:"muted-copy"},"You own this server."));
-      action(box,"EDIT SERVER",()=>{
-        const editor=panel(box,"EDIT SERVER DETAILS");
-        const editName=field(editor,"SERVER NAME","input",{type:"text",maxlength:"50",value:data.name||""});
-        const editDesc=field(editor,"DESCRIPTION","textarea",{rows:"3",maxlength:"300",value:data.description||""});
-        const editVis=field(editor,"VISIBILITY","select");
-        editVis.append(el("option",{value:"public"},"PUBLIC"),el("option",{value:"private"},"PRIVATE"));editVis.value=data.visibility||"public";
-        action(editor,"SAVE CHANGES",async()=>{const n=editName.value.trim();if(n.length<3){notify("Server name must contain at least 3 characters.");return;}try{await updateDoc(doc(db,"servers",id),{name:n,description:editDesc.value.trim(),visibility:editVis.value,updatedAt:serverTimestamp()});notify("Server updated.");await refresh();}catch(e){showError(e);}},"red-button");
-        action(editor,"CANCEL EDIT",()=>editor.remove());
-      });
-      action(box,"DELETE SERVER",async()=>{if(!confirm(`Delete server "${data.name||"Untitled server"}" and its messages, members and invites? This cannot be undone.`))return;try{
-        const paths=[collection(db,"servers",id,"messages"),collection(db,"servers",id,"members")];
-        for(const col of paths){let snap=await getDocs(query(col,limit(400)));while(!snap.empty){const batch=writeBatch(db);snap.docs.forEach(x=>batch.delete(x.ref));await batch.commit();if(snap.size<400)break;snap=await getDocs(query(col,limit(400)));}}
-        const inv=await getDocs(query(collection(db,"serverInvites"),where("serverId","==",id),limit(400)));for(let i=0;i<inv.docs.length;i+=400){const batch=writeBatch(db);inv.docs.slice(i,i+400).forEach(x=>batch.delete(x.ref));await batch.commit();}
-        await deleteDoc(doc(db,"servers",id));notify("Server deleted.");await refresh();
-      }catch(e){showError(e);notify("Server deletion may be incomplete if Firestore rules block a related collection.");}},"red-button");
       if(data.visibility==="private"){
         const invite=field(box,"INVITE BY USERNAME","input",{type:"text",placeholder:"Username",maxlength:"20"});
         const pending=el("div");
@@ -1154,21 +1172,20 @@ async function renderServerChat(root,serverId,serverName){
   const back=()=>{if(serverChatUnsub)serverChatUnsub();serverChatUnsub=null;$("modalTitle").textContent="SERVERS";root.replaceChildren();renderServers(root);};
   let canModerate=["BOSS","SANTA"].includes(currentProfile.role);
   try{const srv=await getDoc(doc(db,"servers",serverId));if(srv.exists()&&srv.data().ownerUid===currentUser.uid)canModerate=true;}catch(_){}
-  const workspace=el("div",{class:"discord-workspace"});root.append(workspace);
-  const rail=el("aside",{class:"discord-rail"});rail.append(el("h3",{},"SERVER CHANNELS"));const channelList=el("div",{class:"channel-list"});
-  ["# general","# chat","# introductions"].forEach((label,i)=>{const b=el("button",{type:"button",class:"discord-channel"+(i===0?" active":"")},label);b.addEventListener("click",()=>{channelList.querySelectorAll("button").forEach(x=>x.classList.remove("active"));b.classList.add("active");if(i!==0)notify("This server currently has one shared channel: general.");});channelList.append(b);});rail.append(channelList);action(rail,"← SERVERS",back);
-  const main=el("main",{class:"discord-main"});workspace.append(rail,main);
-  const topline=el("div",{class:"discord-topline"});topline.append(el("strong",{},"# general"),el("span",{class:"muted-copy"},"Server community chat"));main.append(topline);
-  const chat=panel(main,"MESSAGES");const list=el("div",{class:"chat-box"},"Loading messages…");chat.append(list);
-  const input=field(chat,"MESSAGE","input",{type:"text",placeholder:"Message #general…",maxlength:"1000"});
+  const chat=panel(root,"SERVER CHAT");const list=el("div",{class:"chat-box"},"Loading messages…");chat.append(list);
+  const input=field(chat,"MESSAGE","input",{type:"text",placeholder:"Write a message…",maxlength:"1000"});
   const send=async()=>{const text=input.value.trim();if(!text)return;try{await addDoc(collection(db,"servers",serverId,"messages"),{uid:currentUser.uid,username:currentProfile.username,nickname:currentProfile.nickname||"",text,createdAt:serverTimestamp()});input.value="";}catch(e){showError(e);}};
-  input.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}});action(chat,"SEND MESSAGE",send,"red-button");
+  input.addEventListener("keydown",e=>{if(e.key==="Enter")send();});
+  action(chat,"SEND MESSAGE",send,"red-button");
   serverChatUnsub=onSnapshot(query(collection(db,"servers",serverId,"messages"),orderBy("createdAt","desc"),limit(60)),snap=>{
-    list.replaceChildren();if(snap.empty)list.append(el("p",{class:"status-line"},"No messages yet. Say hello."));
-    snap.docs.reverse().forEach(d=>{const m=d.data();const line=el("div",{class:"chat-message"+(m.uid===currentUser.uid?" chat-user":"")});line.append(el("strong",{},(m.nickname||m.username||"USER")+": "),el("span",{},m.text||""),el("small",{},fmtDate(m.createdAt)));if(m.uid!==currentUser.uid)action(line,"REPORT",()=>reportMessage(d.id,m,serverId));if(canModerate)action(line,"REMOVE MESSAGE",async()=>{if(confirm("Remove this message?"))try{await deleteDoc(d.ref);}catch(e){showError(e);}},"red-button");list.append(line);});list.scrollTop=list.scrollHeight;
+    list.replaceChildren();
+    if(snap.empty)list.append(el("p",{class:"status-line"},"No messages yet. Say hello."));
+    snap.docs.reverse().forEach(d=>{const m=d.data();const line=el("div",{class:"chat-message"+(m.uid===currentUser.uid?" chat-user":"")});line.append(el("strong",{},(m.nickname||m.username||"USER")+": "),el("span",{},m.text||""),el("small",{},fmtDate(m.createdAt)));if(m.uid!==currentUser.uid)action(line,"REPORT",()=>reportMessage(d.id,m,serverId));if(canModerate)action(line,"REMOVE MESSAGE",async()=>{if(confirm("Remove this message?"))try{await deleteDoc(d.ref);}catch(e){showError(e);}},"red-button");list.append(line);});
+    list.scrollTop=list.scrollHeight;
   },err=>list.replaceChildren(el("p",{class:"status-line"},"Could not load messages: "+(err.code==="permission-denied"?"you are not a member of this server.":err.message))));
-  const mem=el("aside",{class:"discord-members"});mem.append(el("h3",{},"MEMBERS"));workspace.append(mem);
-  try{const s=await getDocs(query(collection(db,"servers",serverId,"members"),limit(100)));let onlineCount=0;const memberDocs=s.docs;for(const d of memberDocs){const m=d.data();let profile=m;try{const u=await getDoc(doc(db,"users",m.uid||d.id));if(u.exists())profile={...m,...u.data()};}catch(_){}const online=isOnline(profile);if(online)onlineCount++;const row=item(mem,(profile.nickname||profile.username||"USER"),"@"+(profile.username||"unknown"));const line=el("p",{class:"status-line profile-line"});line.append(el("span",{class:"presence-dot"+(online?" online":"")}),el("span",{},online?"ONLINE":"OFFLINE"));row.append(line);}mem.querySelector("h3").textContent=`MEMBERS — ${onlineCount} ONLINE`;}catch(e){mem.append(el("p",{class:"status-line"},"Could not load members: "+e.message));}
+  const mem=panel(root,"MEMBERS");
+  try{const s=await getDocs(query(collection(db,"servers",serverId,"members"),limit(100)));s.forEach(d=>item(mem,d.data().nickname||d.data().username||"USER","@"+(d.data().username||"unknown")));}catch(e){mem.append(el("p",{class:"status-line"},"Could not load members: "+e.message));}
+  action(root,"← BACK TO SERVERS",back);
 }
 function renderSanta(root){
   $("modalText").textContent="SANTA CORE // I'm a rule-based assistant, not a full AI model: I understand built-in commands and topics, and I remember our chat only while this window is open. Type /about for details.";
@@ -1200,7 +1217,7 @@ const SANTA_TEXT={
   notif:"The 🔔 NOTIFICATIONS tile shows your unread count. Open it to mark items read or dismiss them. You get one when you're invited to a private server or when a report of yours is reviewed.",
   files:"STORAGE keeps files on this device only. DIRECT SEND needs the recipient's exact username, files up to 25 MB, and both of you online. The recipient accepts it from STORAGE, and you can cancel a pending offer.",
   report:"Press REPORT under a message and say what's wrong. BOSS or SANTA will review it, and you'll get a notification when they do.",
-  games:"Try GAMES for Cat Memory Arena, QUIZ for categories, or say 'riddle' and I'll challenge you right here. GAMES shows your XP level, leaderboard, achievement badges and timed riddles.",
+  games:"Try GAMES for Cat Memory Arena, QUIZ for categories, or say 'riddle' and I'll challenge you right here. GAMES includes solo Case Files, Cipher Run, Memory Protocol, Quiz Arena, timed riddles and achievements.",
   login:"Use RESET PASSWORD BY EMAIL on the login screen. I can't see or reset passwords, and nobody should be able to."
 };
 const SANTA_CMDS={
